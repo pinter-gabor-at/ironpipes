@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "ironpipes:block/exposed_copper_pipe"
+  }
+}

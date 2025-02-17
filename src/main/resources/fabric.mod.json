@@ -2,16 +2,14 @@
   "schemaVersion": 1,
   "id": "${mod_id}",
   "version": "${version}",
-  "name": "Simple Copper Pipes",
-  "description": "Adds Copper Pipes with unique mechanics to Minecraft.",
+  "name": "Iron Pipes",
+  "description": "Add various pipes to carry items, water, lava, smoke and sounds around the world.",
   "authors": [
-    "Luna",
-    "Treetrain1"
+    "Pintér Gábor <pinter.gabor@gmx.at>"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/simple-copper-pipes",
-    "issues": "https://github.com/AViewFromTheTop/SimpleCopperPipesMC/issues",
-    "sources": "https://github.com/AViewFromTheTop/SimpleCopperPipesMC"
+    "homepage": "https://modrinth.com/mod/ironpipes",
+    "sources": "https://gitlab.com/pintergabor/ironpipes"
   },
   "license": "MIT",
   "icon": "eu.pintergabor.ironpipes.icon.png",

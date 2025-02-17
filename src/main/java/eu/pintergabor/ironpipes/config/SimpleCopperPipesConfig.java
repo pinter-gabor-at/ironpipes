@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-@Config(name = "simple_copper_pipes")
+@Config(name = "ironpipes")
 public class SimpleCopperPipesConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip

@@ -47,9 +47,6 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
     public int electricityCooldown;
     public boolean canWater;
     public boolean canLava;
-    public boolean canSmoke;
-    //DataFixing
-    public int lastFixVersion;
     public MoveablePipeDataHandler moveablePipeDataHandler;
 
     public AbstractModBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, MoveType moveType) {
@@ -91,26 +88,17 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
                 this.moveablePipeDataHandler.setMoveablePipeNbt(RegisterPipeNbtMethods.LAVA, new MoveablePipeDataHandler.SaveableMovablePipeNbt()
                     .withVec3dd(new Vec3d(11, 0, 0)).withShouldCopy(true).withNBTID(RegisterPipeNbtMethods.LAVA));
             }
-            if ((this.canSmoke && !this.canWater && !this.canLava) || (this.canWater && this.canLava) && SimpleCopperPipesConfig.get().carrySmoke) {
-                this.moveablePipeDataHandler.setMoveablePipeNbt(RegisterPipeNbtMethods.SMOKE, new MoveablePipeDataHandler.SaveableMovablePipeNbt()
-                    .withVec3dd(new Vec3d(11, 0, 0)).withShouldCopy(true).withNBTID(RegisterPipeNbtMethods.SMOKE));
-            }
             MoveablePipeDataHandler.SaveableMovablePipeNbt waterNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.WATER);
             MoveablePipeDataHandler.SaveableMovablePipeNbt lavaNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.LAVA);
             MoveablePipeDataHandler.SaveableMovablePipeNbt smokeNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.SMOKE);
             boolean validWater = isValidFluidNBT(waterNbt) && SimpleCopperPipesConfig.get().carryWater;
             boolean validLava = isValidFluidNBT(lavaNbt) && SimpleCopperPipesConfig.get().carryLava;
-            boolean validSmoke = isValidFluidNBT(smokeNbt) && SimpleCopperPipesConfig.get().carrySmoke;
-            if (this.canSmoke && ((this.canLava && !this.canWater) || (this.canWater && !this.canLava))) {
-                validSmoke = false;
-            }
             if (this.canWater && this.canLava) {
-                validSmoke = SimpleCopperPipesConfig.get().carrySmoke;
                 validWater = false;
                 validLava = false;
             }
             if (state.contains(ModBlockStateProperties.FLUID)) {
-                state = state.with(ModBlockStateProperties.FLUID, validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : validSmoke ? PipeFluid.SMOKE : PipeFluid.NONE);
+                state = state.with(ModBlockStateProperties.FLUID, validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : PipeFluid.NONE);
             }
             this.tickMoveableNbt((ServerWorld) level, blockPos, blockState);
             this.dispenseMoveableNbt((ServerWorld) level, blockPos, blockState);
@@ -219,8 +207,6 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
         this.electricityCooldown = nbtCompound.getInt("electricityCooldown");
         this.canWater = nbtCompound.getBoolean("canWater");
         this.canLava = nbtCompound.getBoolean("canLava");
-        this.canSmoke = nbtCompound.getBoolean("canSmoke");
-        this.lastFixVersion = nbtCompound.getInt("lastFixVersion");
         this.moveablePipeDataHandler.readNbt(nbtCompound);
     }
 
@@ -234,8 +220,6 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
         nbtCompound.putInt("electricityCooldown", this.electricityCooldown);
         nbtCompound.putBoolean("canWater", this.canWater);
         nbtCompound.putBoolean("canLava", this.canLava);
-        nbtCompound.putBoolean("canSmoke", this.canSmoke);
-        nbtCompound.putInt("lastFixVersion", this.lastFixVersion);
         this.moveablePipeDataHandler.writeNbt(nbtCompound);
     }
 

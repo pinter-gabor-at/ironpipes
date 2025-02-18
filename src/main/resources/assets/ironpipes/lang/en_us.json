@@ -18,20 +18,14 @@
   "stat.ironpipes.inspect_copper_pipe": "Copper Pipes Searched",
   "stat.ironpipes.inspect_copper_fitting": "Copper Fittings Searched",
   "text.autoconfig.ironpipes.title": "Iron Pipes Config",
-  "text.autoconfig.ironpipes.option.openableFittings": "Openable Fittings",
-  "text.autoconfig.ironpipes.option.openableFittings.@Tooltip": "Enable it to access the GUI of the fittings.",
   "text.autoconfig.ironpipes.option.dispensing": "Dispensing",
   "text.autoconfig.ironpipes.option.dispensing.@Tooltip": "Eneble pipes to dispense items.",
   "text.autoconfig.ironpipes.option.dispenseSounds": "Dispense Sounds",
   "text.autoconfig.ironpipes.option.dispenseSounds.@Tooltip": "Enable sound effect at dispensing an item.",
   "text.autoconfig.ironpipes.option.suctionSounds": "Suction Sounds",
   "text.autoconfig.ironpipes.option.suctionSounds.@Tooltip": "Enable sound effect when sucking in an item.",
-  "text.autoconfig.ironpipes.option.senseGameEvents": "Sense and carry vibrations",
-  "text.autoconfig.ironpipes.option.senseGameEvents.@Tooltip": "Enable it to sense and carry sound vibrations.",
   "text.autoconfig.ironpipes.option.carryWater": "Water transport",
   "text.autoconfig.ironpipes.option.carryWater.@Tooltip": "Enable pipes to transport water.",
   "text.autoconfig.ironpipes.option.carryLava": "Lava transport",
-  "text.autoconfig.ironpipes.option.carryLava.@Tooltip": "Enable pipes to transport lava.",
-  "text.autoconfig.ironpipes.option.carrySmoke": "Smoke transport",
-  "text.autoconfig.ironpipes.option.carrySmoke.@Tooltip": "Enable pipes to transport smoke."
+  "text.autoconfig.ironpipes.option.carryLava.@Tooltip": "Enable pipes to transport lava."
 }

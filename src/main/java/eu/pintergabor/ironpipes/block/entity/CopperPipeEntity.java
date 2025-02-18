@@ -201,12 +201,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity {
             this.canLava =
                 oppBlock == Blocks.LAVA &&
                     SimpleCopperPipesConfig.get().carryLava;
-            boolean canWaterAndLava = this.canWater && this.canLava;
-            boolean canWaterOrLava = this.canWater || this.canLava;
-            this.canSmoke = (oppBlock instanceof CampfireBlock &&
-                !canWaterOrLava ? oppState.get(Properties.LIT) : canWaterAndLava) &&
-                SimpleCopperPipesConfig.get().carrySmoke;
-            if (canWaterAndLava) {
+            if (this.canWater && this.canLava) {
                 this.canWater = false;
                 this.canLava = false;
             }
@@ -224,7 +219,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity {
                 if (SimpleCopperPipesConfig.get().suctionSounds) {
                     level.playSound(
                         null, blockPos, ModSoundEvents.ITEM_IN,
-                        SoundCategory.BLOCKS, 0.2f, (level.random.nextFloat() * 0.25f) + 0.8f);
+                        SoundCategory.BLOCKS, 0.2F, (level.random.nextFloat() * 0.25F) + 0.8F);
                 }
             }
         }

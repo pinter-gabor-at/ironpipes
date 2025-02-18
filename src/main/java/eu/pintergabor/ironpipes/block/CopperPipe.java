@@ -65,6 +65,7 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
+
 public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidizable {
     public static final EnumProperty<Direction> FACING =
         Properties.FACING;
@@ -217,12 +218,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
                 pipe.canLava =
                     (oppBlock == Blocks.LAVA) &&
                         SimpleCopperPipesConfig.get().carryLava;
-                boolean canWaterAndLava = pipe.canWater && pipe.canLava;
-                boolean canWaterOrLava = pipe.canWater || pipe.canLava;
-                pipe.canSmoke = (oppBlock instanceof CampfireBlock &&
-                    !canWaterOrLava ? oppState.get(Properties.LIT) : canWaterAndLava) &&
-                    SimpleCopperPipesConfig.get().carrySmoke;
-                if (canWaterAndLava) {
+                if (pipe.canWater && pipe.canLava) {
                     pipe.canWater = false;
                     pipe.canLava = false;
                 }
@@ -570,68 +566,67 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
     }
 
     @Override
-    public void randomDisplayTick(@NotNull BlockState blockState, @NotNull World level, @NotNull BlockPos blockPos, Random random) {
+    public void randomDisplayTick(
+        @NotNull BlockState blockState, @NotNull World world, @NotNull BlockPos blockPos, Random random) {
         Direction direction = blockState.get(FACING);
         BlockPos offsetPos = blockPos.offset(direction);
-        BlockState offsetState = level.getBlockState(offsetPos);
+        BlockState offsetState = world.getBlockState(offsetPos);
         FluidState fluidState = offsetState.getFluidState();
         boolean canWater = blockState.get(FLUID) == PipeFluid.WATER && direction != Direction.UP;
-        boolean canLava = blockState.get(FLUID) == PipeFluid.LAVA && random.nextInt(2) == 0 && direction != Direction.UP;
-        boolean canSmoke = blockState.get(FLUID) == PipeFluid.SMOKE && random.nextInt(5) == 0;
+        boolean canLava = blockState.get(FLUID) == PipeFluid.LAVA && direction != Direction.UP &&
+            random.nextInt(2) == 0;
         boolean canWaterOrLava = canWater || canLava;
-        boolean hasSmokeOrWaterOrLava = canWaterOrLava || canSmoke;
-        if (hasSmokeOrWaterOrLava) {
+        if (canWaterOrLava) {
             double outX = blockPos.getX() + getDripX(direction, random);
             double outY = blockPos.getY() + getDripY(direction, random);
             double outZ = blockPos.getZ() + getDripZ(direction, random);
-            if (canWaterOrLava && (fluidState.isEmpty() || ((fluidState.getHeight(level, offsetPos)) + (double) offsetPos.getY()) < outY)) {
-                level.addParticle(canWater ? ParticleTypes.DRIPPING_WATER : ParticleTypes.DRIPPING_LAVA, outX, outY, outZ, 0, 0, 0);
-            }
-            if (canSmoke) {
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, outX, outY, outZ, 0, 0.07D, 0);
+            if ((fluidState.isEmpty() || ((fluidState.getHeight(world, offsetPos)) + (double) offsetPos.getY()) < outY)) {
+                world.addParticle(canWater ? ParticleTypes.DRIPPING_WATER : ParticleTypes.DRIPPING_LAVA,
+                    outX, outY, outZ, 0, 0, 0);
             }
             if ((!offsetState.isAir() && fluidState.isEmpty())) {
                 double x = blockPos.getX() + getDripX(direction, random);
                 double y = blockPos.getY() + getDripY(direction, random);
                 double z = blockPos.getZ() + getDripZ(direction, random);
-                if (canWaterOrLava && direction == Direction.DOWN) {
-                    level.addParticle(canWater ? ParticleTypes.DRIPPING_WATER : ParticleTypes.DRIPPING_LAVA, x, outY, z, 0, 0, 0);
-                }
-                if (canSmoke && direction == Direction.UP) {
-                    level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0, 0.07D, 0);
+                if (direction == Direction.DOWN) {
+                    world.addParticle(canWater ? ParticleTypes.DRIPPING_WATER : ParticleTypes.DRIPPING_LAVA,
+                        x, y, z, 0, 0, 0);
                 }
             }
         }
         // If it is electified, create sparks.
         if (blockState.get(HAS_ELECTRICITY)) {
             ParticleUtil.spawnParticle(
-                direction.getAxis(), level, blockPos, 0.4D,
+                direction.getAxis(), world, blockPos, 0.4D,
                 ParticleTypes.ELECTRIC_SPARK, UniformIntProvider.create(1, 2));
         }
-        if (fluidState.isIn(FluidTags.WATER) && (random.nextFloat() <= 0.1F || offsetState.getCollisionShape(level, offsetPos).isEmpty())) {
-            level.addParticle(ParticleTypes.BUBBLE,
-                blockPos.getX() + getDripX(direction, random),
-                blockPos.getY() + getDripY(direction, random),
-                blockPos.getZ() + getDripZ(direction, random),
-                direction.getOffsetX() * 0.7D,
-                direction.getOffsetY() * 0.7D,
-                direction.getOffsetZ() * 0.7D
-            );
-            if ((canLava || canSmoke) && random.nextInt(2) == 0) {
-                level.addParticle(ParticleTypes.SMOKE,
+        // If the pipe is in water.
+        if (fluidState.isIn(FluidTags.WATER))
+            if (random.nextFloat() < 0.1F || offsetState.getCollisionShape(world, offsetPos).isEmpty()) {
+                world.addParticle(ParticleTypes.BUBBLE,
                     blockPos.getX() + getDripX(direction, random),
                     blockPos.getY() + getDripY(direction, random),
                     blockPos.getZ() + getDripZ(direction, random),
-                    direction.getOffsetX() * 0.05D,
-                    direction.getOffsetY() * 0.05D,
-                    direction.getOffsetZ() * 0.05D
-                );
+                    direction.getOffsetX() * 0.7D,
+                    direction.getOffsetY() * 0.7D,
+                    direction.getOffsetZ() * 0.7D);
+                if (canLava && random.nextFloat() < 0.5F) {
+                    world.addParticle(ParticleTypes.SMOKE,
+                        blockPos.getX() + getDripX(direction, random),
+                        blockPos.getY() + getDripY(direction, random),
+                        blockPos.getZ() + getDripZ(direction, random),
+                        direction.getOffsetX() * 0.05D,
+                        direction.getOffsetY() * 0.05D,
+                        direction.getOffsetZ() * 0.05D);
+                }
             }
-        }
     }
 
-    public double getRan(Random random) {
-        return UniformIntProvider.create(-25, 25).get(random) * 0.01;
+    /**
+     * Create a random number in the range of [-0.25…+0.25]
+     */
+    private double getRan(Random random) {
+        return random.nextDouble() / 2.0 - 0.25;
     }
 
     public double getDripX(@NotNull Direction direction, Random random) {

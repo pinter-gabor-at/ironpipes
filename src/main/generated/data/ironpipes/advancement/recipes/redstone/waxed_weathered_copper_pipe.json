@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ironpipes:waxed_weathered_copper_pipe"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_weathered_copper_pipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ironpipes:weathered_copper_pipe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_weathered_copper_pipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ironpipes:waxed_weathered_copper_pipe"
+    ]
+  }
+}

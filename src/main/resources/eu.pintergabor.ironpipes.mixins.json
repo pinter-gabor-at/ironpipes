@@ -7,8 +7,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "CampfireBlockMixin",
-    "CampfireBlockMixin",
     "CoralBlockBlockMixin",
     "CoralParentBlockMixin",
     "EntityMixin",

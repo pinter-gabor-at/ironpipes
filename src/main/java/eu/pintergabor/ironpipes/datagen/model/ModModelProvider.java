@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
+
 public final class ModModelProvider extends FabricModelProvider {
     private static final Model PIPE_MODEL = new Model(
         Optional.of(Global.modId("block/template_pipe")),
@@ -69,8 +70,7 @@ public final class ModModelProvider extends FabricModelProvider {
     }
 
     @Override
-    public void generateBlockStateModels(
-        BlockStateModelGenerator generator) {
+    public void generateBlockStateModels(BlockStateModelGenerator generator) {
         // Pipes.
         createPipe(generator, SimpleCopperPipesBlocks.COPPER_PIPE, SimpleCopperPipesBlocks.COPPER_PIPE);
         createPipe(generator, SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE);
@@ -102,7 +102,6 @@ public final class ModModelProvider extends FabricModelProvider {
             TextureMap pipeTextureMapping = new TextureMap();
             pipeTextureMapping.put(TextureKey.SIDE, TextureMap.getId(pipeBlock));
             pipeTextureMapping.put(TextureKey.FRONT, TextureMap.getSubId(pipeBlock, "_front"));
-
             PIPE_MODEL.upload(pipeBlock, pipeTextureMapping, generators.modelCollector);
             PIPE_MODEL_BACK.upload(pipeBlock, "_back_extension", pipeTextureMapping, generators.modelCollector);
             PIPE_MODEL_BACK_SMOOTH.upload(pipeBlock, "_back_smooth", pipeTextureMapping, generators.modelCollector);
@@ -110,7 +109,6 @@ public final class ModModelProvider extends FabricModelProvider {
             PIPE_MODEL_FRONT_EXTENSION.upload(pipeBlock, "_front_extension", pipeTextureMapping, generators.modelCollector);
             PIPE_MODEL_SMOOTH.upload(pipeBlock, "_smooth", pipeTextureMapping, generators.modelCollector);
         }
-
         Identifier model = ModelIds.getBlockModelId(pipeBlock);
         Identifier frontExtensionModel = ModelIds.getBlockSubModelId(pipeBlock, "_front_extension");
         Identifier doubleExtensionModel = ModelIds.getBlockSubModelId(pipeBlock, "_double_extension");
@@ -123,7 +121,8 @@ public final class ModModelProvider extends FabricModelProvider {
                 VariantsBlockStateSupplier.create(outputPipeBlock)
                     .coordinate(BlockStateModelGenerator.createNorthDefaultRotationStates())
                     .coordinate(
-                        BlockStateVariantMap.create(CopperPipe.FRONT_CONNECTED, CopperPipe.BACK_CONNECTED, CopperPipe.SMOOTH)
+                        BlockStateVariantMap.create(
+                            CopperPipe.FRONT_CONNECTED, CopperPipe.BACK_CONNECTED, CopperPipe.SMOOTH)
                             .register(false, false, false,
                                 BlockStateVariant.create().put(VariantSettings.MODEL, model))
                             .register(true, false, false,
@@ -144,16 +143,16 @@ public final class ModModelProvider extends FabricModelProvider {
             );
     }
 
-    public static void createFitting(@NotNull BlockStateModelGenerator generators, Block fittingBlock, Block outputFittingBlock) {
+    public static void createFitting(
+        @NotNull BlockStateModelGenerator generators, Block fittingBlock, Block outputFittingBlock) {
         if (fittingBlock == outputFittingBlock) {
             TextureMap fittingTextureMapping = new TextureMap();
             fittingTextureMapping.put(TextureKey.TEXTURE, TextureMap.getId(fittingBlock));
-
             FITTING_MODEL.upload(fittingBlock, fittingTextureMapping, generators.modelCollector);
         }
-
         Identifier model = ModelIds.getBlockModelId(fittingBlock);
         generators.registerParentedItemModel(outputFittingBlock, model);
-        generators.blockStateCollector.accept(BlockStateModelGenerator.createSingletonBlockState(outputFittingBlock, model));
+        generators.blockStateCollector.accept(
+            BlockStateModelGenerator.createSingletonBlockState(outputFittingBlock, model));
     }
 }

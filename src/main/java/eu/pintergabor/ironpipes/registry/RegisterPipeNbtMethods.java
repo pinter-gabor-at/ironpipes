@@ -1,34 +1,21 @@
 package eu.pintergabor.ironpipes.registry;
 
-import static eu.pintergabor.ironpipes.block.CopperPipe.FACING;
-import static net.minecraft.block.NoteBlock.INSTRUMENT;
-import static net.minecraft.block.NoteBlock.NOTE;
-
 import java.util.Map;
-import java.util.Optional;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.AbstractModBlockEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
-import eu.pintergabor.ironpipes.networking.packet.ModNoteParticlePacket;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.particle.VibrationParticleEffect;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.event.BlockPositionSource;
-import net.minecraft.world.event.GameEvent;
 
 public class RegisterPipeNbtMethods {
     public static final Identifier WATER = Global.modId("water");
@@ -85,44 +72,6 @@ public class RegisterPipeNbtMethods {
     }
 
     public static void init() {
-        register(Identifier.of("lunade", "default"), (nbt, world, pos, blockState, pipe) -> {
-            boolean noteBlock = false;
-            Optional<RegistryEntry.Reference<GameEvent>> optionalGameEvent = Registries.GAME_EVENT.getEntry(nbt.getSavedID());
-            if (optionalGameEvent.isPresent() && optionalGameEvent.get().value() == GameEvent.NOTE_BLOCK_PLAY.value()) {
-                pipe.noteBlockCooldown = 40;
-                float volume = 3.0F;
-                BlockPos originPos = BlockPos.ofFloored(nbt.getVec3dd());
-                BlockState state = world.getBlockState(originPos);
-                noteBlock = state.isOf(Blocks.NOTE_BLOCK);
-                if (noteBlock) {
-                    int k = state.get(NOTE);
-                    float f = (float) Math.pow(2.0D, (double) (k - 12) / 12.0D);
-                    world.playSound(null, pos, state.get(INSTRUMENT).getSound().value(), SoundCategory.RECORDS, volume, f);
-                    //Send NoteBlock Particle Packet To Client
-                    ModNoteParticlePacket.sendToAll(world, pos, k, world.getBlockState(pos).get(FACING));
-                }
-            }
-            world.emitGameEvent(nbt.getEntity(world), optionalGameEvent.orElse(GameEvent.BLOCK_CHANGE), pos);
-            if (noteBlock || pipe.noteBlockCooldown > 0) {
-                if (nbt.useCount == 0) {
-                    world.spawnParticles(
-                        new VibrationParticleEffect(new BlockPositionSource(nbt.getBlockPos()), 5),
-                        nbt.vec3d.x, nbt.vec3d.y, nbt.vec3d.z,
-                        1, 0.0, 0.0, 0.0, 0.0);
-                    nbt.useCount = 1;
-                }
-            }
-            pipe.inputGameEventPos = nbt.getBlockPos();
-            pipe.gameEventNbtVec3d = nbt.vec3d;
-        }, (nbt, world, pos, blockState, blockEntity) -> {
-
-        }, (nbt, world, pos, blockState, blockEntity) -> {
-            if (nbt.foundEntity != null) {
-                nbt.vec3d2 = nbt.foundEntity.getPos();
-            }
-        }, (nbt, world, pos, blockState, blockEntity) -> true);
-
-
         register(WATER, (nbt, world, pos, blockState, pipe) -> {
 
         }, (nbt, world, pos, blockState, blockEntity) -> {

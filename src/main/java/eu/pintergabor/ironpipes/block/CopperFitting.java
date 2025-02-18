@@ -55,6 +55,7 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
+
 public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxidizable {
     public static final MapCodec<CopperFitting> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
         OxidationLevel.CODEC.fieldOf("weather_state").forGetter((copperFitting -> copperFitting.weatherState)),
@@ -191,9 +192,6 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     protected @NotNull ActionResult onUse(
         BlockState state, World level, BlockPos pos,
         PlayerEntity player, BlockHitResult hitResult) {
-        if (!SimpleCopperPipesConfig.get().openableFittings) {
-            return super.onUse(state, level, pos, player, hitResult);
-        }
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof CopperFittingEntity fittingEntity) {
             player.openHandledScreen(fittingEntity);

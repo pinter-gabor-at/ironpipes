@@ -7,6 +7,7 @@ import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 
+
 public enum PipeFluid implements StringIdentifiable {
     NONE("none", Optional.empty()),
     WATER("water", Optional.of(RegisterPipeNbtMethods.WATER)),

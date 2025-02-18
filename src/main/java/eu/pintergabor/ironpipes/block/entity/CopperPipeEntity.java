@@ -1,12 +1,7 @@
 package eu.pintergabor.ironpipes.block.entity;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
-import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.Mod;
 import eu.pintergabor.ironpipes.block.CopperFitting;
 import eu.pintergabor.ironpipes.block.CopperPipe;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
@@ -14,10 +9,10 @@ import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
 import eu.pintergabor.ironpipes.registry.CopperPipeDispenseBehaviors;
-import eu.pintergabor.ironpipes.registry.PipeMovementRestrictions;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
+import eu.pintergabor.ironpipes.registry.PipeMovementRestrictions;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,14 +22,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
@@ -45,11 +36,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
-import net.minecraft.world.event.BlockPositionSource;
 import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.event.PositionSource;
-import net.minecraft.world.event.Vibrations;
-import net.minecraft.world.event.listener.GameEventListener;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -57,29 +44,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class CopperPipeEntity extends AbstractModBlockEntity
-    implements GameEventListener.Holder<Vibrations.VibrationListener>, Vibrations {
-    private static final int VIBRATION_RANGE = 8;
+public class CopperPipeEntity extends AbstractModBlockEntity {
     private static final int MAX_TRANSFER_AMOUNT = 1;
-    private final Vibrations.VibrationListener vibrationListener;
-    private final Vibrations.Callback vibrationUser;
     public int transferCooldown;
     public int dispenseCooldown;
-    public int noteBlockCooldown;
     public boolean canDispense;
     public boolean shootsControlled;
     public boolean shootsSpecial;
     public boolean canAccept;
-    public BlockPos inputGameEventPos;
-    public Vec3d gameEventNbtVec3d;
-    private Vibrations.ListenerData vibrationData;
 
     public CopperPipeEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.COPPER_PIPE_ENTITY, blockPos, blockState, MoveType.FROM_PIPE);
-        this.noteBlockCooldown = 0;
-        this.vibrationUser = this.createVibrationUser();
-        this.vibrationData = new Vibrations.ListenerData();
-        this.vibrationListener = new Vibrations.VibrationListener(this);
     }
 
     public static boolean canTransfer(
@@ -157,14 +132,6 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         level.spawnEntity(itemEntity);
     }
 
-    public static void setCooldown(@NotNull World level, BlockPos blockPos) {
-        BlockEntity entity = level.getBlockEntity(blockPos);
-        BlockState state = level.getBlockState(blockPos);
-        if (entity instanceof CopperPipeEntity pipe) {
-            pipe.setCooldown(state);
-        }
-    }
-
     public static Storage<ItemVariant> getStorageAt(World level, BlockPos blockPos, Direction direction) {
         return ItemStorage.SIDED.find(level, blockPos, level.getBlockState(blockPos), level.getBlockEntity(blockPos), direction);
     }
@@ -182,12 +149,8 @@ public class CopperPipeEntity extends AbstractModBlockEntity
 
     @Override
     public void serverTick(@NotNull World level, BlockPos blockPos, BlockState blockState) {
-        Vibrations.Ticker.tick(this.world, this.getVibrationListenerData(), this.createVibrationUser());
         super.serverTick(level, blockPos, blockState);
         if (!level.isClient()) {
-            if (this.noteBlockCooldown > 0) {
-                --this.noteBlockCooldown;
-            }
             if (this.dispenseCooldown > 0) {
                 --this.dispenseCooldown;
             } else {
@@ -455,17 +418,10 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         super.readNbt(nbtCompound, lookupProvider);
         this.transferCooldown = nbtCompound.getInt("transferCooldown");
         this.dispenseCooldown = nbtCompound.getInt("dispenseCooldown");
-        this.noteBlockCooldown = nbtCompound.getInt("noteBlockCooldown");
         this.canDispense = nbtCompound.getBoolean("canDispense");
         this.shootsControlled = nbtCompound.getBoolean("shootsControlled");
         this.shootsSpecial = nbtCompound.getBoolean("shootsSpecial");
         this.canAccept = nbtCompound.getBoolean("canAccept");
-        if (nbtCompound.contains("listener", 10)) {
-            DataResult<ListenerData> result = ListenerData.CODEC.parse(
-                new Dynamic<>(NbtOps.INSTANCE, nbtCompound.getCompound("listener")));
-            result.resultOrPartial(Global.LOGGER::error).ifPresent(
-                (data) -> this.vibrationData = data);
-        }
     }
 
     @Override
@@ -473,36 +429,10 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         super.writeNbt(nbtCompound, lookupProvider);
         nbtCompound.putInt("transferCooldown", this.transferCooldown);
         nbtCompound.putInt("dispenseCooldown", this.dispenseCooldown);
-        nbtCompound.putInt("noteBlockCooldown", this.noteBlockCooldown);
         nbtCompound.putBoolean("canDispense", this.canDispense);
         nbtCompound.putBoolean("shootsControlled", this.shootsControlled);
         nbtCompound.putBoolean("shootsSpecial", this.shootsSpecial);
         nbtCompound.putBoolean("canAccept", this.canAccept);
-        DataResult<NbtElement> dataResult = ListenerData.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData);
-        dataResult.resultOrPartial(Global.LOGGER::error).ifPresent(
-            (tag) -> nbtCompound.put("listener", tag));
-    }
-
-    public Vibrations.Callback createVibrationUser() {
-        return new VibrationCallback(this.getPos());
-    }
-
-    @Override
-    @NotNull
-    public Vibrations.ListenerData getVibrationListenerData() {
-        return this.vibrationData;
-    }
-
-    @Override
-    @NotNull
-    public Vibrations.Callback getVibrationCallback() {
-        return this.vibrationUser;
-    }
-
-    @Override
-    @NotNull
-    public Vibrations.VibrationListener getEventListener() {
-        return this.vibrationListener;
     }
 
     @Override
@@ -531,69 +461,6 @@ public class CopperPipeEntity extends AbstractModBlockEntity
                 }
                 this.moveMoveableNbt(serverWorld, blockPos, blockState);
             }
-        }
-    }
-
-    public class VibrationCallback implements Vibrations.Callback {
-        protected final BlockPos blockPos;
-        private final PositionSource positionSource;
-
-        public VibrationCallback(BlockPos blockPos) {
-            this.blockPos = blockPos;
-            this.positionSource = new BlockPositionSource(blockPos);
-        }
-
-        @Override
-        public int getRange() {
-            return VIBRATION_RANGE;
-        }
-
-        @Override
-        @NotNull
-        public PositionSource getPositionSource() {
-            return this.positionSource;
-        }
-
-        @Override
-        public boolean accepts(
-            @NotNull ServerWorld serverWorld, @NotNull BlockPos blockPos,
-            @NotNull RegistryEntry<GameEvent> gameEvent, @Nullable GameEvent.Emitter context) {
-            CopperPipeEntity parent = CopperPipeEntity.this;
-            if (SimpleCopperPipesConfig.get().senseGameEvents) {
-                boolean placeDestroy =
-                    gameEvent == GameEvent.BLOCK_DESTROY ||
-                        gameEvent == GameEvent.BLOCK_PLACE;
-                if ((serverWorld.getBlockState(blockPos).getBlock() instanceof CopperPipe) ||
-                    (blockPos == parent.getPos() && placeDestroy)) {
-                    return false;
-                }
-                if (parent.canAccept) {
-                    parent.moveablePipeDataHandler.addSaveableMoveablePipeNbt(
-                        new MoveablePipeDataHandler.SaveableMovablePipeNbt(
-                            gameEvent.value(), Vec3d.ofCenter(blockPos), context, parent.getPos())
-                            .withShouldMove(true)
-                            .withShouldSave(true));
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public void accept(
-            ServerWorld world, BlockPos pos, RegistryEntry<GameEvent> event,
-            @Nullable Entity sourceEntity, @Nullable Entity entity, float distance) {
-        }
-
-        @Override
-        public void onListen() {
-            CopperPipeEntity parent = CopperPipeEntity.this;
-            parent.markDirty();
-        }
-
-        @Override
-        public boolean requiresTickingChunksAround() {
-            return true;
         }
     }
 }

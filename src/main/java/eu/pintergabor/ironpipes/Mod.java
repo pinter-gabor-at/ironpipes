@@ -3,7 +3,6 @@ package eu.pintergabor.ironpipes;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
-import eu.pintergabor.ironpipes.networking.ModNetworking;
 import eu.pintergabor.ironpipes.registry.CopperPipeDispenseBehaviors;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
@@ -33,7 +32,6 @@ public class Mod implements ModInitializer {
         CopperPipeDispenseBehaviors.init();
         PipeMovementRestrictions.init();
         LeakingPipeDripBehaviors.init();
-        ModNetworking.init();
         ModCreativeInventorySorting.init();
         ServerLifecycleEvents.SERVER_STOPPED.register(
             server -> LeakingPipeManager.clearAll());

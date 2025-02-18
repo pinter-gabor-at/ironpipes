@@ -63,7 +63,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
-import net.minecraft.world.event.listener.GameEventListener;
 import net.minecraft.world.tick.ScheduledTickView;
 
 public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidizable {
@@ -435,16 +434,6 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
                 (level1, blockPos, blockState1, copperPipeEntity) ->
                     copperPipeEntity.serverTick(level1, blockPos, blockState1)
             );
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> GameEventListener getGameEventListener(
-        ServerWorld serverLevel, T blockEntity) {
-        if (blockEntity instanceof CopperPipeEntity pipeEntity) {
-            return pipeEntity.getEventListener();
         }
         return null;
     }

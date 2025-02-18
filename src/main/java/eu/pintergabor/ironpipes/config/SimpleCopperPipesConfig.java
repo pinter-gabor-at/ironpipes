@@ -7,12 +7,10 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.jetbrains.annotations.ApiStatus;
 
+
 @ApiStatus.Internal
 @Config(name = "ironpipes")
 public class SimpleCopperPipesConfig implements ConfigData {
-
-    @ConfigEntry.Gui.Tooltip
-    public boolean openableFittings = false;
 
     @ConfigEntry.Gui.Tooltip
     public boolean dispensing = true;
@@ -22,9 +20,6 @@ public class SimpleCopperPipesConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean suctionSounds = true;
-
-    @ConfigEntry.Gui.Tooltip
-    public boolean senseGameEvents = true;
 
     @ConfigEntry.Gui.Tooltip
     public boolean carryWater = true;

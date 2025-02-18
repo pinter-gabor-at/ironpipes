@@ -14,8 +14,6 @@
     "EntityMixin",
     "FarmlandBlockMixin",
     "HoeItemMixin",
-    "SugarCaneBlockMixin",
-    "VibrationListenerMixin",
-    "VibrationTickerMixin"
+    "SugarCaneBlockMixin"
   ]
 }

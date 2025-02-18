@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
+
 public final class ModItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     public ModItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registries) {

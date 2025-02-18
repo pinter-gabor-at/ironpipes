@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
+import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.Mod;
 import eu.pintergabor.ironpipes.block.CopperFitting;
 import eu.pintergabor.ironpipes.block.CopperPipe;
@@ -389,13 +390,16 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         return false;
     }
 
-    private ItemStack canonShoot(ServerWorld serverWorld, @NotNull BlockPos pos, ItemStack itemStack, @NotNull BlockState state, int shotLength, boolean powered, boolean fitting, boolean silent) {
+    private ItemStack canonShoot(
+        ServerWorld serverWorld, @NotNull BlockPos pos, ItemStack itemStack, @NotNull
+        BlockState state, int shotLength, boolean powered, boolean fitting, boolean silent) {
         Direction direction = state.get(Properties.FACING);
         Vec3d vec3 = CopperPipe.getOutputLocation(pos, direction);
         ItemStack itemStack2 = itemStack;
         // If powered.
         if (powered) {
-            CopperPipeDispenseBehaviors.PoweredDispense poweredDispense = CopperPipeDispenseBehaviors.getDispense(itemStack2.getItem());
+            CopperPipeDispenseBehaviors.PoweredDispense poweredDispense =
+                CopperPipeDispenseBehaviors.getDispense(itemStack2.getItem());
             if (poweredDispense != null) {
                 itemStack2 = itemStack.split(1);
                 poweredDispense.dispense(serverWorld, itemStack2, shotLength, direction, vec3, state, pos, this);
@@ -403,7 +407,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity
                     if (SimpleCopperPipesConfig.get().dispenseSounds) {
                         serverWorld.playSound(
                             null, pos, ModSoundEvents.ITEM_OUT,
-                            SoundCategory.BLOCKS, 0.2f, (serverWorld.random.nextFloat() * 0.25f) + 0.8f);
+                            SoundCategory.BLOCKS, 0.2F, (serverWorld.random.nextFloat() * 0.25F) + 0.8F);
                     }
                     serverWorld.emitGameEvent(null, GameEvent.ENTITY_PLACE, pos);
                 }
@@ -419,7 +423,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity
                 if (SimpleCopperPipesConfig.get().dispenseSounds) {
                     serverWorld.playSound(
                         null, pos, ModSoundEvents.ITEM_OUT,
-                        SoundCategory.BLOCKS, 0.2f, (serverWorld.random.nextFloat() * 0.25f) + 0.8f);
+                        SoundCategory.BLOCKS, 0.2F, (serverWorld.random.nextFloat() * 0.25F) + 0.8F);
                 }
             }
         }
@@ -459,8 +463,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         if (nbtCompound.contains("listener", 10)) {
             DataResult<ListenerData> result = ListenerData.CODEC.parse(
                 new Dynamic<>(NbtOps.INSTANCE, nbtCompound.getCompound("listener")));
-            Objects.requireNonNull(Mod.LOGGER);
-            result.resultOrPartial(Mod.LOGGER::error).ifPresent(
+            result.resultOrPartial(Global.LOGGER::error).ifPresent(
                 (data) -> this.vibrationData = data);
         }
     }
@@ -476,8 +479,7 @@ public class CopperPipeEntity extends AbstractModBlockEntity
         nbtCompound.putBoolean("shootsSpecial", this.shootsSpecial);
         nbtCompound.putBoolean("canAccept", this.canAccept);
         DataResult<NbtElement> dataResult = ListenerData.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationData);
-        Objects.requireNonNull(Mod.LOGGER);
-        dataResult.resultOrPartial(Mod.LOGGER::error).ifPresent(
+        dataResult.resultOrPartial(Global.LOGGER::error).ifPresent(
             (tag) -> nbtCompound.put("listener", tag));
     }
 

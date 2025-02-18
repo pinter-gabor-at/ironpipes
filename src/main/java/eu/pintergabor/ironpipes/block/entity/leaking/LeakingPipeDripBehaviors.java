@@ -12,14 +12,27 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 
-public class LeakingPipeDripBehaviors {
 
+public class LeakingPipeDripBehaviors {
+    /**
+     * Map blocks to drip actions.
+     */
     private static final Map<Block, DripOn> BLOCKS_TO_DRIPS = new HashMap<>();
+
+    private LeakingPipeDripBehaviors() {
+        // Static class.
+    }
 
     public static void register(Block block, DripOn drip) {
         BLOCKS_TO_DRIPS.put(block, drip);
     }
 
+    /**
+     * Check if there is any effect of dripping water or lave on a block.
+     *
+     * @param block Block to test
+     * @return Drip action
+     */
     @Nullable
     public static DripOn getDrip(Block block) {
         if (BLOCKS_TO_DRIPS.containsKey(block)) {
@@ -28,29 +41,34 @@ public class LeakingPipeDripBehaviors {
         return null;
     }
 
+    /**
+     * Initialize the lookup table.
+     */
     public static void init() {
-        register(Blocks.CAULDRON, ((lava, world, pos, state) -> {
-            if (!lava) {
+        // Water dripping on an empty cauldron will start filling it with water.
+        // Lava dripping on an empty cauldron will instantly fill it with lava.
+        register(Blocks.CAULDRON, ((isLava, world, pos, state) -> {
+            if (!isLava) {
                 world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState().with(Properties.LEVEL_3, 1));
             } else {
                 world.setBlockState(pos, Blocks.LAVA_CAULDRON.getDefaultState());
             }
         }));
-
-        register(Blocks.WATER_CAULDRON, ((lava, world, pos, state) -> {
-            if (state.get(Properties.LEVEL_3) != 3 && !lava) {
+        // Water dripping on a water cauldron slowly fills the cauldron.
+        register(Blocks.WATER_CAULDRON, ((isLava, world, pos, state) -> {
+            if (state.get(Properties.LEVEL_3) != 3 && !isLava) {
                 world.setBlockState(pos, state.cycle(Properties.LEVEL_3));
             }
         }));
-
-        register(Blocks.DIRT, ((lava, world, pos, state) -> {
-            if (!lava) {
+        // Water dripping on dirt wil change it to mud.
+        register(Blocks.DIRT, ((isLava, world, pos, state) -> {
+            if (!isLava) {
                 world.setBlockState(pos, Blocks.MUD.getDefaultState());
             }
         }));
-
-        register(Blocks.FIRE, ((lava, world, pos, state) -> {
-            if (!lava) {
+        // Water dripping on fire will extinguish the fire.
+        register(Blocks.FIRE, ((isLava, world, pos, state) -> {
+            if (!isLava) {
                 world.breakBlock(pos, true);
             }
         }));
@@ -58,7 +76,14 @@ public class LeakingPipeDripBehaviors {
 
     @FunctionalInterface
     public interface DripOn {
-        void dripOn(boolean lava, ServerWorld world, BlockPos pos, BlockState state);
+        /**
+         * Drip action.
+         *
+         * @param isLava true = lava; false = water
+         * @param world  World
+         * @param pos    Position of the block
+         * @param state  State of the block
+         */
+        void dripOn(boolean isLava, ServerWorld world, BlockPos pos, BlockState state);
     }
-
 }

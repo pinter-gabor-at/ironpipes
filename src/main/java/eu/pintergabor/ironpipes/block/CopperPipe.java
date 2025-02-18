@@ -538,33 +538,41 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
     public void randomTick(@NotNull BlockState blockState, ServerWorld serverLevel, BlockPos blockPos, Random random) {
         Direction direction = blockState.get(FACING);
         boolean isLava = blockState.get(FLUID) == PipeFluid.LAVA;
-        if (blockState.get(FLUID) == PipeFluid.WATER || isLava && direction != Direction.UP) {
+        boolean isWater = blockState.get(FLUID) == PipeFluid.WATER;
+        // Water can drip from any pipe containing water.
+        // Lava can drip from any pipe containing lava, except thos that face upwards.
+        if (isWater || (isLava && direction != Direction.UP)) {
+            // Adjust probability.
             if (random.nextFloat() <= (isLava ? 0.05859375F : 0.17578125F) * 2) {
                 BlockPos.Mutable mutableBlockPos = blockPos.mutableCopy();
-                boolean hasOffset = false;
-                for (int i = 0; i < 12; i++) { //Searches for 12 blocks
-                    if (direction != Direction.DOWN && !hasOffset) {
-                        mutableBlockPos.move(direction);
-                        hasOffset = true;
-                    }
+                if (direction != Direction.DOWN) {
+                    mutableBlockPos.move(direction);
+                }
+                // Search down to 12 blocks.
+                for (int i = 0; i < 12; i++) {
                     mutableBlockPos.move(Direction.DOWN);
                     BlockState state = serverLevel.getBlockState(mutableBlockPos);
                     if (serverLevel.getFluidState(mutableBlockPos).isEmpty()) {
-                        LeakingPipeDripBehaviors.DripOn dripOn = LeakingPipeDripBehaviors.getDrip(state.getBlock());
+                        // A block that reacts with the drip stops the drip.
+                        LeakingPipeDripBehaviors.DripOn dripOn =
+                            LeakingPipeDripBehaviors.getDrip(state.getBlock());
                         if (dripOn != null) {
                             dripOn.dripOn(isLava, serverLevel, mutableBlockPos, state);
                             break;
                         }
+                        // A solid block stops the drip.
                         if (state.getCollisionShape(serverLevel, mutableBlockPos) != VoxelShapes.empty()) {
                             break;
                         }
                     } else {
+                        // A block containing any liquid stops the drip.
                         break;
                     }
                 }
             }
         }
-        this.tickDegradation(blockState, serverLevel, blockPos, random);
+        // Copper oxidation.
+        tickDegradation(blockState, serverLevel, blockPos, random);
     }
 
     @Override

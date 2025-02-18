@@ -52,13 +52,13 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
     }
 
     @Override
-    public void serverTick(@NotNull World level, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        super.serverTick(level, blockPos, blockState);
-        if (!level.isClient()) {
+    public void serverTick(@NotNull World world, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        super.serverTick(world, blockPos, blockState);
+        if (!world.isClient()) {
             if (this.transferCooldown > 0) {
                 --this.transferCooldown;
             } else {
-                this.fittingMove(level, blockPos, blockState);
+                this.fittingMove(world, blockPos, blockState);
             }
         }
     }
@@ -151,12 +151,12 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
         return false;
     }
 
-    @Override
-    public void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
-        if (state.getBlock() instanceof CopperFitting) {
-            this.canWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
-        }
-    }
+//    @Override
+//    public void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
+//        if (state.getBlock() instanceof CopperFitting) {
+//            this.canWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
+//        }
+//    }
 
     @Override
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {

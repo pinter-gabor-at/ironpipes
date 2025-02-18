@@ -66,7 +66,8 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     public static final BooleanProperty POWERED = Properties.POWERED;
     public static final EnumProperty<PipeFluid> FLUID = ModBlockStateProperties.FLUID;
     public static final BooleanProperty HAS_ELECTRICITY = ModBlockStateProperties.HAS_ELECTRICITY;
-    private static final VoxelShape FITTING_SHAPE = Block.createCuboidShape(2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
+    private static final VoxelShape FITTING_SHAPE =
+        Block.createCuboidShape(2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
     public final int cooldown;
     private final OxidationLevel weatherState;
 
@@ -90,7 +91,8 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
         if (state.getBlock() instanceof CopperFitting) {
             BlockEntity entity = level.getBlockEntity(pos);
             if (entity instanceof CopperFittingEntity fitting) {
-                fitting.canWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
+                fitting.canWater = SimpleCopperPipesConfig.get().carryWater &&
+                    state.get(Properties.WATERLOGGED);
             }
         }
     }
@@ -108,16 +110,18 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     }
 
     @Override
-    public BlockState getPlacementState(@NotNull ItemPlacementContext itemPlacementContext) {
+    public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
+        World world = context.getWorld();
+        BlockPos pos = context.getBlockPos();
         return this.getDefaultState()
-            .with(WATERLOGGED, itemPlacementContext.getWorld().getFluidState(itemPlacementContext.getBlockPos()).getFluid() == Fluids.WATER)
-            .with(POWERED, itemPlacementContext.getWorld().isReceivingRedstonePower(itemPlacementContext.getBlockPos()));
+            .with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER)
+            .with(POWERED, world.isReceivingRedstonePower(pos));
     }
 
     @Override
     protected @NotNull BlockState getStateForNeighborUpdate(
         @NotNull BlockState blockState,
-        WorldView levelReader,
+        WorldView world,
         ScheduledTickView scheduledTickAccess,
         BlockPos blockPos,
         Direction direction,
@@ -126,19 +130,19 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
         Random randomSource
     ) {
         if (blockState.get(WATERLOGGED)) {
-            scheduledTickAccess.scheduleFluidTick(blockPos, Fluids.WATER, Fluids.WATER.getTickRate(levelReader));
+            scheduledTickAccess.scheduleFluidTick(blockPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
-        boolean electricity = blockState.get(HAS_ELECTRICITY);
-        if (neighborState.getBlock() instanceof LightningRodBlock) {
-            if (neighborState.get(POWERED)) {
-                electricity = true;
-            }
-        }
+        // The pipe is electrified if it is connected to a lightning rod, and the lightning rod is struck by lightning.
+        boolean electricity = blockState.get(HAS_ELECTRICITY) ||
+            ((neighborState.getBlock() instanceof LightningRodBlock) &&
+                neighborState.get(POWERED));
         return blockState.with(HAS_ELECTRICITY, electricity);
     }
 
     @Override
-    protected void neighborUpdate(@NotNull BlockState blockState, @NotNull World level, BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean bl) {
+    protected void neighborUpdate(
+        @NotNull BlockState blockState, @NotNull World level,
+        BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
         if (level.isReceivingRedstonePower(blockPos)) {
             level.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, true));
         } else {

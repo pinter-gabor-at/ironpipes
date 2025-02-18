@@ -58,18 +58,18 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
         this.moveType = moveType;
     }
 
-    public static void sendElectricity(World level, BlockPos blockPos) {
+    public static void sendElectricity(World world, BlockPos blockPos) {
         for (Direction direction : Direction.values()) {
             BlockPos pos = blockPos.offset(direction);
-            if (level.isPosLoaded(pos)) {
-                BlockState state = level.getBlockState(pos);
+            if (world.isPosLoaded(pos)) {
+                BlockState state = world.getBlockState(pos);
                 if (state.contains(ModBlockStateProperties.HAS_ELECTRICITY)) {
-                    BlockEntity entity = level.getBlockEntity(pos);
+                    BlockEntity entity = world.getBlockEntity(pos);
                     if (entity instanceof AbstractModBlockEntity copperBlockEntity) {
                         int axis = state.contains(Properties.FACING) ? state.get(Properties.FACING).getAxis().ordinal() : direction.getAxis().ordinal();
                         if (copperBlockEntity.electricityCooldown == -1) {
-                            level.syncWorldEvent(WorldEvents.ELECTRICITY_SPARKS, pos, axis);
-                            level.setBlockState(pos, state.with(ModBlockStateProperties.HAS_ELECTRICITY, true));
+                            world.syncWorldEvent(WorldEvents.ELECTRICITY_SPARKS, pos, axis);
+                            world.setBlockState(pos, state.with(ModBlockStateProperties.HAS_ELECTRICITY, true));
                         }
                     }
                 }
@@ -77,9 +77,9 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
         }
     }
 
-    public void serverTick(@NotNull World level, BlockPos blockPos, BlockState blockState) {
+    public void serverTick(@NotNull World world, BlockPos blockPos, BlockState blockState) {
         BlockState state = blockState;
-        if (!level.isClient()) {
+        if (!world.isClient()) {
             if (this.canWater && !this.canLava && SimpleCopperPipesConfig.get().carryWater) {
                 this.moveablePipeDataHandler.setMoveablePipeNbt(RegisterPipeNbtMethods.WATER, new MoveablePipeDataHandler.SaveableMovablePipeNbt()
                     .withVec3dd(new Vec3d(11, 0, 0)).withShouldCopy(true).withNBTID(RegisterPipeNbtMethods.WATER));
@@ -90,7 +90,6 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
             }
             MoveablePipeDataHandler.SaveableMovablePipeNbt waterNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.WATER);
             MoveablePipeDataHandler.SaveableMovablePipeNbt lavaNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.LAVA);
-            MoveablePipeDataHandler.SaveableMovablePipeNbt smokeNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.SMOKE);
             boolean validWater = isValidFluidNBT(waterNbt) && SimpleCopperPipesConfig.get().carryWater;
             boolean validLava = isValidFluidNBT(lavaNbt) && SimpleCopperPipesConfig.get().carryLava;
             if (this.canWater && this.canLava) {
@@ -98,11 +97,12 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
                 validLava = false;
             }
             if (state.contains(ModBlockStateProperties.FLUID)) {
-                state = state.with(ModBlockStateProperties.FLUID, validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : PipeFluid.NONE);
+                state = state.with(ModBlockStateProperties.FLUID,
+                    validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : PipeFluid.NONE);
             }
-            this.tickMoveableNbt((ServerWorld) level, blockPos, blockState);
-            this.dispenseMoveableNbt((ServerWorld) level, blockPos, blockState);
-            this.moveMoveableNbt((ServerWorld) level, blockPos, blockState);
+            this.tickMoveableNbt((ServerWorld) world, blockPos, blockState);
+            this.dispenseMoveableNbt((ServerWorld) world, blockPos, blockState);
+            this.moveMoveableNbt((ServerWorld) world, blockPos, blockState);
             if (this.electricityCooldown >= 0) {
                 --this.electricityCooldown;
             }
@@ -115,7 +115,7 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
                 }
             }
             if (this.electricityCooldown == 79) {
-                sendElectricity(level, blockPos);
+                sendElectricity(world, blockPos);
             }
             if (this.electricityCooldown == 0) {
                 if (state.contains(ModBlockStateProperties.HAS_ELECTRICITY)) {
@@ -123,7 +123,7 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
                 }
             }
             if (state != blockState) {
-                level.setBlockState(blockPos, state);
+                world.setBlockState(blockPos, state);
             }
         }
     }
@@ -133,10 +133,6 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
             return fluidNBT.getVec3dd().getX() > 0;
         }
         return false;
-    }
-
-    public void updateBlockEntityValues(World level, BlockPos pos, BlockState state) {
-
     }
 
     public boolean canAcceptMoveableNbt(MoveType moveType, Direction moveDirection, BlockState fromState) {

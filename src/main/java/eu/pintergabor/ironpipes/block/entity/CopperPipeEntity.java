@@ -148,15 +148,15 @@ public class CopperPipeEntity extends AbstractModBlockEntity {
     }
 
     @Override
-    public void serverTick(@NotNull World level, BlockPos blockPos, BlockState blockState) {
-        super.serverTick(level, blockPos, blockState);
-        if (!level.isClient()) {
+    public void serverTick(@NotNull World world, BlockPos blockPos, BlockState blockState) {
+        super.serverTick(world, blockPos, blockState);
+        if (!world.isClient()) {
             if (this.dispenseCooldown > 0) {
                 --this.dispenseCooldown;
             } else {
-                this.dispense((ServerWorld) level, blockPos, blockState);
+                this.dispense((ServerWorld) world, blockPos, blockState);
                 int i = 0;
-                if (level.getBlockState(blockPos.offset(blockState.get(Properties.FACING)
+                if (world.getBlockState(blockPos.offset(blockState.get(Properties.FACING)
                     .getOpposite())).getBlock() instanceof CopperFitting fitting) {
                     i = fitting.cooldown;
                 } else {
@@ -170,43 +170,43 @@ public class CopperPipeEntity extends AbstractModBlockEntity {
             if (this.transferCooldown > 0) {
                 --this.transferCooldown;
             } else {
-                this.pipeMove(level, blockPos, blockState);
+                this.pipeMove(world, blockPos, blockState);
             }
             if (blockState.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER &&
                 blockState.get(Properties.FACING) != Direction.UP) {
-                LeakingPipeManager.addPos(level, blockPos);
+                LeakingPipeManager.addPos(world, blockPos);
             }
         }
     }
 
-    @Override
-    public void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
-        if (state.getBlock() instanceof CopperPipe) {
-            Direction direction = state.get(Properties.FACING);
-            Direction directionOpp = direction.getOpposite();
-            Block dirBlock = level.getBlockState(pos.offset(direction)).getBlock();
-            BlockState oppState = level.getBlockState(pos.offset(directionOpp));
-            Block oppBlock = oppState.getBlock();
-            this.canDispense = (dirBlock == Blocks.AIR || dirBlock == Blocks.WATER) &&
-                (oppBlock != Blocks.AIR && oppBlock != Blocks.WATER);
-            this.shootsControlled = oppBlock == Blocks.DROPPER;
-            this.shootsSpecial = oppBlock == Blocks.DISPENSER;
-            this.canAccept = !(
-                oppBlock instanceof CopperPipe ||
-                    oppBlock instanceof CopperFitting ||
-                    oppState.isSolidBlock(level, pos));
-            this.canWater = (oppBlock == Blocks.WATER || state.get(Properties.WATERLOGGED) ||
-                (oppState.contains(Properties.WATERLOGGED) ? oppState.get(Properties.WATERLOGGED) : false)) &&
-                SimpleCopperPipesConfig.get().carryWater;
-            this.canLava =
-                oppBlock == Blocks.LAVA &&
-                    SimpleCopperPipesConfig.get().carryLava;
-            if (this.canWater && this.canLava) {
-                this.canWater = false;
-                this.canLava = false;
-            }
-        }
-    }
+//    @Override
+//    public void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
+//        if (state.getBlock() instanceof CopperPipe) {
+//            Direction direction = state.get(Properties.FACING);
+//            Direction directionOpp = direction.getOpposite();
+//            Block dirBlock = level.getBlockState(pos.offset(direction)).getBlock();
+//            BlockState oppState = level.getBlockState(pos.offset(directionOpp));
+//            Block oppBlock = oppState.getBlock();
+//            this.canDispense = (dirBlock == Blocks.AIR || dirBlock == Blocks.WATER) &&
+//                (oppBlock != Blocks.AIR && oppBlock != Blocks.WATER);
+//            this.shootsControlled = oppBlock == Blocks.DROPPER;
+//            this.shootsSpecial = oppBlock == Blocks.DISPENSER;
+//            this.canAccept = !(
+//                oppBlock instanceof CopperPipe ||
+//                    oppBlock instanceof CopperFitting ||
+//                    oppState.isSolidBlock(level, pos));
+//            this.canWater = (oppBlock == Blocks.WATER || state.get(Properties.WATERLOGGED) ||
+//                (oppState.contains(Properties.WATERLOGGED) ? oppState.get(Properties.WATERLOGGED) : false)) &&
+//                SimpleCopperPipesConfig.get().carryWater;
+//            this.canLava =
+//                oppBlock == Blocks.LAVA &&
+//                    SimpleCopperPipesConfig.get().carryLava;
+//            if (this.canWater && this.canLava) {
+//                this.canWater = false;
+//                this.canLava = false;
+//            }
+//        }
+//    }
 
     public void pipeMove(World level, BlockPos blockPos, @NotNull BlockState blockState) {
         Direction facing = blockState.get(Properties.FACING);

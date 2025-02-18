@@ -19,7 +19,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.LightningRodBlock;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.ShapeContext;
@@ -387,12 +386,9 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         if (blockState.get(WATERLOGGED)) {
             scheduledTickAccess.scheduleFluidTick(blockPos, Fluids.WATER, Fluids.WATER.getTickRate(levelReader));
         }
-        boolean electricity = blockState.get(HAS_ELECTRICITY);
-        if (neighborState.getBlock() instanceof LightningRodBlock) {
-            if (neighborState.get(POWERED)) {
-                electricity = true;
-            }
-        }
+        boolean electricity = blockState.get(HAS_ELECTRICITY) ||
+            ((neighborState.getBlock() instanceof LightningRodBlock) &&
+                neighborState.get(POWERED));
         Direction facing = blockState.get(FACING);
         return blockState
             .with(FRONT_CONNECTED, canConnectFront(levelReader, blockPos, facing))

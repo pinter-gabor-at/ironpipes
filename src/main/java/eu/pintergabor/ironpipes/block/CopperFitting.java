@@ -15,17 +15,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LightningRodBlock;
 import net.minecraft.block.Oxidizable;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -33,7 +30,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.particle.ParticleUtil;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
@@ -48,8 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
@@ -67,8 +61,6 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
     public static final EnumProperty<PipeFluid> FLUID = ModBlockStateProperties.FLUID;
     public static final BooleanProperty HAS_ELECTRICITY = ModBlockStateProperties.HAS_ELECTRICITY;
-    private static final VoxelShape FITTING_SHAPE =
-        Block.createCuboidShape(2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
     public final int cooldown;
     private final OxidationLevel oxidation;
 
@@ -96,25 +88,13 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
      * @param pos   Pipe position
      * @param state New state
      */
-    public static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
+    private static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
         if (state.getBlock() instanceof CopperFitting) {
             if (world.getBlockEntity(pos) instanceof CopperFittingEntity fittingEntity) {
                 fittingEntity.canWater = SimpleCopperPipesConfig.get().carryWater &&
                     state.get(Properties.WATERLOGGED);
             }
         }
-    }
-
-    @Override
-    @NotNull
-    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext shapeContext) {
-        return FITTING_SHAPE;
-    }
-
-    @Override
-    @NotNull
-    public VoxelShape getRaycastShape(BlockState blockState, BlockView blockView, BlockPos blockPos) {
-        return FITTING_SHAPE;
     }
 
     @Override
@@ -158,11 +138,6 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CopperFittingEntity(pos, state);
-    }
-
-    @Override
-    protected boolean isTransparent(@NotNull BlockState blockState) {
-        return blockState.getFluidState().isEmpty();
     }
 
     @Nullable
@@ -227,29 +202,8 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
     }
 
     @Override
-    @NotNull
-    public BlockRenderType getRenderType(BlockState blockState) {
-        return BlockRenderType.MODEL;
-    }
-
-    @Override
-    public boolean hasComparatorOutput(BlockState blockState) {
-        return true;
-    }
-
-    @Override
-    public int getComparatorOutput(BlockState blockState, @NotNull World world, BlockPos blockPos) {
-        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(blockPos));
-    }
-
-    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, POWERED, FLUID, HAS_ELECTRICITY);
-    }
-
-    @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType pathComputationType) {
-        return false;
     }
 
     @Override

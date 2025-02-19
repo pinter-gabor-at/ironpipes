@@ -1,8 +1,8 @@
 package eu.pintergabor.ironpipes.block.entity;
 
 import eu.pintergabor.ironpipes.block.CopperFitting;
+import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class CopperFittingEntity extends AbstractModBlockEntity {
+public class CopperFittingEntity extends BaseBlockEntity {
 
     private static final int MAX_TRANSFER_AMOUNT = 1;
 

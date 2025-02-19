@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import eu.pintergabor.ironpipes.block.CopperFitting;
 import eu.pintergabor.ironpipes.block.CopperPipe;
+import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
@@ -42,7 +43,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class CopperPipeEntity extends AbstractModBlockEntity {
+public class CopperPipeEntity extends BaseBlockEntity {
     private static final int MAX_TRANSFER_AMOUNT = 1;
     public int transferCooldown;
     public int dispenseCooldown;

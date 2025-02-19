@@ -1,4 +1,4 @@
-package eu.pintergabor.ironpipes.block.entity;
+package eu.pintergabor.ironpipes.block.entity.base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class AbstractModBlockEntity extends LootableContainerBlockEntity implements Inventory {
+public class BaseBlockEntity extends LootableContainerBlockEntity implements Inventory {
     public final MoveType moveType;
     public DefaultedList<ItemStack> inventory;
     public int waterCooldown;
@@ -49,7 +49,7 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
     public boolean canLava;
     public MoveablePipeDataHandler moveablePipeDataHandler;
 
-    public AbstractModBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, MoveType moveType) {
+    public BaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, MoveType moveType) {
         super(blockEntityType, blockPos, blockState);
         this.inventory = DefaultedList.ofSize(5, ItemStack.EMPTY);
         this.waterCooldown = -1;
@@ -64,12 +64,13 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
             if (world.isPosLoaded(pos)) {
                 BlockState state = world.getBlockState(pos);
                 if (state.contains(ModBlockStateProperties.HAS_ELECTRICITY)) {
-                    BlockEntity entity = world.getBlockEntity(pos);
-                    if (entity instanceof AbstractModBlockEntity copperBlockEntity) {
-                        int axis = state.contains(Properties.FACING) ? state.get(Properties.FACING).getAxis().ordinal() : direction.getAxis().ordinal();
-                        if (copperBlockEntity.electricityCooldown == -1) {
+                    if (world.getBlockEntity(pos) instanceof BaseBlockEntity entity) {
+                        int axis = state.contains(Properties.FACING) ?
+                            state.get(Properties.FACING).getAxis().ordinal() : direction.getAxis().ordinal();
+                        if (entity.electricityCooldown == -1) {
                             world.syncWorldEvent(WorldEvents.ELECTRICITY_SPARKS, pos, axis);
-                            world.setBlockState(pos, state.with(ModBlockStateProperties.HAS_ELECTRICITY, true));
+                            world.setBlockState(pos, state
+                                .with(ModBlockStateProperties.HAS_ELECTRICITY, true));
                         }
                     }
                 }
@@ -164,7 +165,7 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
                     if (serverLevel.isPosLoaded(newPos)) {
                         BlockState state = serverLevel.getBlockState(newPos);
                         BlockEntity entity = serverLevel.getBlockEntity(newPos);
-                        if (entity instanceof AbstractModBlockEntity copperEntity) {
+                        if (entity instanceof BaseBlockEntity copperEntity) {
                             if (copperEntity.canAcceptMoveableNbt(this.moveType, direction, blockState)) {
                                 for (MoveablePipeDataHandler.SaveableMovablePipeNbt nbt : nbtList) {
                                     if (nbt.getShouldMove() && (!nbt.getCanOnlyGoThroughOnePipe() || !usedNbts.contains(nbt)) && nbt.canMove(serverLevel, newPos, state, copperEntity)) {
@@ -195,15 +196,15 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
     @Override
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.readNbt(nbtCompound, lookupProvider);
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (!this.readLootTable(nbtCompound)) {
-            Inventories.readNbt(nbtCompound, this.inventory, lookupProvider);
+        inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+        if (!readLootTable(nbtCompound)) {
+            Inventories.readNbt(nbtCompound, inventory, lookupProvider);
         }
-        this.waterCooldown = nbtCompound.getInt("WaterCooldown");
-        this.electricityCooldown = nbtCompound.getInt("electricityCooldown");
-        this.canWater = nbtCompound.getBoolean("canWater");
-        this.canLava = nbtCompound.getBoolean("canLava");
-        this.moveablePipeDataHandler.readNbt(nbtCompound);
+        waterCooldown = nbtCompound.getInt("waterCooldown");
+        electricityCooldown = nbtCompound.getInt("electricityCooldown");
+        canWater = nbtCompound.getBoolean("canWater");
+        canLava = nbtCompound.getBoolean("canLava");
+        moveablePipeDataHandler.readNbt(nbtCompound);
     }
 
     @Override
@@ -212,7 +213,7 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
         if (!this.writeLootTable(nbtCompound)) {
             Inventories.writeNbt(nbtCompound, this.inventory, lookupProvider);
         }
-        nbtCompound.putInt("WaterCooldown", this.waterCooldown);
+        nbtCompound.putInt("waterCooldown", this.waterCooldown);
         nbtCompound.putInt("electricityCooldown", this.electricityCooldown);
         nbtCompound.putBoolean("canWater", this.canWater);
         nbtCompound.putBoolean("canLava", this.canLava);
@@ -222,12 +223,12 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
     @Override
     @NotNull
     protected DefaultedList<ItemStack> getHeldStacks() {
-        return this.inventory;
+        return inventory;
     }
 
     @Override
     protected void setHeldStacks(DefaultedList<ItemStack> defaultedList) {
-        this.inventory = defaultedList;
+        inventory = defaultedList;
     }
 
     @Override
@@ -238,13 +239,13 @@ public class AbstractModBlockEntity extends LootableContainerBlockEntity impleme
 
     @Override
     @NotNull
-    protected ScreenHandler createScreenHandler(int i, PlayerInventory playerInventory) {
-        return new HopperScreenHandler(i, playerInventory, this);
+    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+        return new HopperScreenHandler(syncId, playerInventory, this);
     }
 
     @Override
     public int size() {
-        return this.inventory.size();
+        return inventory.size();
     }
 
     public enum MoveType {

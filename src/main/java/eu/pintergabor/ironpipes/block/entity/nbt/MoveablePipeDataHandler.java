@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import eu.pintergabor.ironpipes.block.entity.AbstractModBlockEntity;
+import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 
@@ -311,21 +311,21 @@ public class MoveablePipeDataHandler {
 			}
 		}
 
-		public void onMove(ServerWorld world, BlockPos pos, BlockState state, AbstractModBlockEntity blockEntity) {
+		public void onMove(ServerWorld world, BlockPos pos, BlockState state, BaseBlockEntity blockEntity) {
 			RegisterPipeNbtMethods.OnMoveMethod method = RegisterPipeNbtMethods.getMove(this.getNbtID());
 			if (method != null) {
 				method.onMove(this, world, pos, state, blockEntity);
 			}
 		}
 
-		public void tick(ServerWorld world, BlockPos pos, BlockState state, AbstractModBlockEntity blockEntity) { //Will be called at the CURRENT location, not the Pipe/Fitting it moves to on that tick - it can run this method and be dispensed on the same tick.
+		public void tick(ServerWorld world, BlockPos pos, BlockState state, BaseBlockEntity blockEntity) { //Will be called at the CURRENT location, not the Pipe/Fitting it moves to on that tick - it can run this method and be dispensed on the same tick.
 			RegisterPipeNbtMethods.TickMethod method = RegisterPipeNbtMethods.getTick(this.getNbtID());
 			if (method != null) {
 				method.tick(this, world, pos, state, blockEntity);
 			}
 		}
 
-		public boolean canMove(ServerWorld world, BlockPos pos, BlockState state, AbstractModBlockEntity blockEntity) {
+		public boolean canMove(ServerWorld world, BlockPos pos, BlockState state, BaseBlockEntity blockEntity) {
 			RegisterPipeNbtMethods.CanMoveMethod method = RegisterPipeNbtMethods.getCanMove(this.getNbtID());
 			if (method != null) {
 				return method.canMove(this, world, pos, state, blockEntity);

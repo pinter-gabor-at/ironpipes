@@ -3,7 +3,7 @@ package eu.pintergabor.ironpipes.registry;
 import java.util.Map;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.block.entity.AbstractModBlockEntity;
+import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
@@ -88,7 +88,7 @@ public class RegisterPipeNbtMethods {
             (nbt, world, pos, blockState, blockEntity) -> {
                 if (blockEntity instanceof CopperFittingEntity) {
                     nbt.vec3d = new Vec3d(11, 0, 0);
-                } else if (!blockEntity.canWater && blockEntity.moveType == AbstractModBlockEntity.MoveType.FROM_PIPE) {
+                } else if (!blockEntity.canWater && blockEntity.moveType == BaseBlockEntity.MoveType.FROM_PIPE) {
                     nbt.vec3d = nbt.vec3d.add(-1, 0, 0);
                     if (nbt.vec3d.getX() <= 0) {
                         nbt.shouldSave = false;
@@ -123,7 +123,7 @@ public class RegisterPipeNbtMethods {
                 if (blockEntity.moveablePipeDataHandler.getMoveablePipeNbt(WATER) == null) {
                     if (blockEntity instanceof CopperFittingEntity) {
                         nbt.vec3d = new Vec3d(11, 0, 0);
-                    } else if (blockEntity.moveType == AbstractModBlockEntity.MoveType.FROM_PIPE) {
+                    } else if (blockEntity.moveType == BaseBlockEntity.MoveType.FROM_PIPE) {
                         nbt.vec3d = nbt.vec3d.add(-1, 0, 0);
                         if (nbt.vec3d.getX() <= 0) {
                             nbt.shouldSave = false;
@@ -182,7 +182,7 @@ public class RegisterPipeNbtMethods {
             ServerWorld world,
             BlockPos pos,
             BlockState state,
-            AbstractModBlockEntity blockEntity);
+            BaseBlockEntity blockEntity);
     }
 
     @FunctionalInterface
@@ -192,7 +192,7 @@ public class RegisterPipeNbtMethods {
             ServerWorld world,
             BlockPos pos,
             BlockState state,
-            AbstractModBlockEntity blockEntity);
+            BaseBlockEntity blockEntity);
     }
 
     @FunctionalInterface
@@ -202,7 +202,7 @@ public class RegisterPipeNbtMethods {
             ServerWorld world,
             BlockPos pos,
             BlockState state,
-            AbstractModBlockEntity blockEntity);
+            BaseBlockEntity blockEntity);
     }
 
     public record UniquePipeNbt(

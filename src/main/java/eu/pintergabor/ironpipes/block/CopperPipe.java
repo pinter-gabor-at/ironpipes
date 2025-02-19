@@ -3,6 +3,7 @@ package eu.pintergabor.ironpipes.block;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import eu.pintergabor.ironpipes.block.base.BasePipe;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LightningRodBlock;
 import net.minecraft.block.Oxidizable;
@@ -64,7 +64,7 @@ import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
 
-public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidizable {
+public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
     public static final EnumProperty<Direction> FACING =
         Properties.FACING;
     public static final BooleanProperty FRONT_CONNECTED =
@@ -73,8 +73,6 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         ModBlockStateProperties.BACK_CONNECTED;
     public static final BooleanProperty SMOOTH =
         ModBlockStateProperties.SMOOTH;
-    public static final BooleanProperty POWERED =
-        Properties.POWERED;
     public static final BooleanProperty WATERLOGGED =
         Properties.WATERLOGGED;
     public static final EnumProperty<PipeFluid> FLUID =
@@ -161,7 +159,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         Block.createCuboidShape(4D, -4D, 4D, 12D, 16D, 12D);
     public static final MapCodec<CopperPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            OxidationLevel.CODEC.fieldOf("weather_state")
+            OxidationLevel.CODEC.fieldOf("oxidation")
                 .forGetter((copperPipe -> copperPipe.oxidation)),
             createSettingsCodec(),
             Codec.INT.fieldOf("cooldown")
@@ -183,9 +181,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
             .with(SMOOTH, false)
             .with(WATERLOGGED, false)
             .with(FLUID, PipeFluid.NONE)
-            .with(HAS_ELECTRICITY, false)
-            .with(POWERED, false)
-        );
+            .with(HAS_ELECTRICITY, false));
     }
 
     @SuppressWarnings("unused")

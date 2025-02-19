@@ -3,6 +3,7 @@ package eu.pintergabor.ironpipes.block;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import eu.pintergabor.ironpipes.block.base.BaseFitting;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.LightningRodBlock;
 import net.minecraft.block.Oxidizable;
 import net.minecraft.block.ShapeContext;
@@ -56,31 +56,30 @@ import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
 
-public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxidizable {
+public class CopperFitting extends BaseFitting implements Waterloggable, Oxidizable {
     public static final MapCodec<CopperFitting> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-        OxidationLevel.CODEC.fieldOf("weather_state").forGetter((copperFitting -> copperFitting.weatherState)),
+        OxidationLevel.CODEC.fieldOf("oxidation")
+            .forGetter((copperFitting -> copperFitting.oxidation)),
         createSettingsCodec(),
-        Codec.INT.fieldOf("cooldown").forGetter((copperFitting) -> copperFitting.cooldown)
+        Codec.INT.fieldOf("cooldown")
+            .forGetter((copperFitting) -> copperFitting.cooldown)
     ).apply(instance, CopperFitting::new));
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty POWERED = Properties.POWERED;
     public static final EnumProperty<PipeFluid> FLUID = ModBlockStateProperties.FLUID;
     public static final BooleanProperty HAS_ELECTRICITY = ModBlockStateProperties.HAS_ELECTRICITY;
     private static final VoxelShape FITTING_SHAPE =
         Block.createCuboidShape(2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
     public final int cooldown;
-    private final OxidationLevel weatherState;
+    private final OxidationLevel oxidation;
 
-    public CopperFitting(OxidationLevel weatherState, Settings settings, int cooldown) {
+    public CopperFitting(OxidationLevel oxidation, Settings settings, int cooldown) {
         super(settings);
-        this.weatherState = weatherState;
+        this.oxidation = oxidation;
         this.cooldown = cooldown;
         this.setDefaultState(this.getStateManager().getDefaultState()
-            .with(POWERED, false)
             .with(WATERLOGGED, false)
             .with(FLUID, PipeFluid.NONE)
-            .with(HAS_ELECTRICITY, false)
-        );
+            .with(HAS_ELECTRICITY, false));
     }
 
     @SuppressWarnings("unused")
@@ -152,7 +151,7 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     protected void neighborUpdate(
         @NotNull BlockState blockState, @NotNull World world,
         BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
-            world.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, world.isReceivingRedstonePower(blockPos)));
+        world.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, world.isReceivingRedstonePower(blockPos)));
         updateBlockEntityValues(world, blockPos, blockState);
     }
 
@@ -288,7 +287,7 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
 
     @Override
     public @NotNull OxidationLevel getDegradationLevel() {
-        return this.weatherState;
+        return this.oxidation;
     }
 
     @Override

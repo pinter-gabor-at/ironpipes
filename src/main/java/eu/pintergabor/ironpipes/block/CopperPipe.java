@@ -59,7 +59,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
@@ -163,7 +162,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
     public static final MapCodec<CopperPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
             OxidationLevel.CODEC.fieldOf("weather_state")
-                .forGetter((copperPipe -> copperPipe.weatherState)),
+                .forGetter((copperPipe -> copperPipe.oxidation)),
             createSettingsCodec(),
             Codec.INT.fieldOf("cooldown")
                 .forGetter((copperPipe) -> copperPipe.cooldown),
@@ -172,11 +171,11 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         ).apply(instance, CopperPipe::new));
     public final int cooldown;
     public final int dispenseShotLength;
-    private final OxidationLevel weatherState;
+    private final OxidationLevel oxidation;
 
-    public CopperPipe(OxidationLevel weatherState, Settings settings, int cooldown, int dispenseShotLength) {
+    public CopperPipe(OxidationLevel oxidation, Settings settings, int cooldown, int dispenseShotLength) {
         super(settings);
-        this.weatherState = weatherState;
+        this.oxidation = oxidation;
         this.cooldown = cooldown;
         this.dispenseShotLength = dispenseShotLength;
         this.setDefaultState(this.getStateManager().getDefaultState()
@@ -194,81 +193,108 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         this(OxidationLevel.UNAFFECTED, settings, cooldown, dispenseShotLength);
     }
 
-    public static void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
+    /**
+     * Update the associated block entity parameters and behaviour.
+     * <p>
+     * Called when the state of this pipe block, or the state of its neighbours change
+     *
+     * @param world This world
+     * @param pos   Pipe position
+     * @param state New state
+     */
+    public static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
         if (state.getBlock() instanceof CopperPipe) {
             Direction direction = state.get(Properties.FACING);
-            BlockState dirState = level.getBlockState(pos.offset(direction));
-            BlockState oppState = level.getBlockState(pos.offset(direction.getOpposite()));
-            Block oppBlock = oppState.getBlock();
-            if (level.getBlockEntity(pos) instanceof CopperPipeEntity pipe) {
-                pipe.canDispense =
-                    (dirState.isAir() || dirState.getBlock() == Blocks.WATER) &&
-                        (!oppState.isAir() && oppBlock != Blocks.WATER);
-                pipe.shootsControlled = (oppBlock == Blocks.DROPPER);
-                pipe.shootsSpecial = (oppBlock == Blocks.DISPENSER);
-                pipe.canAccept = !(
-                    oppBlock instanceof CopperPipe ||
-                        oppBlock instanceof CopperFitting ||
-                        oppState.isSolidBlock(level, pos));
-                pipe.canWater = ((oppBlock == Blocks.WATER) ||
-                    state.get(Properties.WATERLOGGED) ||
-                    (oppState.contains(Properties.WATERLOGGED) && oppState.get(Properties.WATERLOGGED))) &&
-                    SimpleCopperPipesConfig.get().carryWater;
-                pipe.canLava =
-                    (oppBlock == Blocks.LAVA) &&
-                        SimpleCopperPipesConfig.get().carryLava;
-                if (pipe.canWater && pipe.canLava) {
-                    pipe.canWater = false;
-                    pipe.canLava = false;
+            // The state of the block in front of the pipe.
+            BlockState frontState = world.getBlockState(pos.offset(direction));
+            Block frontBlock = frontState.getBlock();
+            // The state of the block behind the pipe.
+            BlockState backState = world.getBlockState(pos.offset(direction.getOpposite()));
+            Block backBlock = backState.getBlock();
+            // Always true.
+            if (world.getBlockEntity(pos) instanceof CopperPipeEntity pipeEntity) {
+                //
+                pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
+                pipeEntity.shootsControlled = (backBlock == Blocks.DROPPER);
+                pipeEntity.shootsSpecial = (backBlock == Blocks.DISPENSER);
+                pipeEntity.canAccept = !(
+                    backBlock instanceof CopperPipe ||
+                        backBlock instanceof CopperFitting ||
+                        backState.isSolidBlock(world, pos));
+                pipeEntity.canWater = SimpleCopperPipesConfig.get().carryWater &&
+                    ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
+                        (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
+                pipeEntity.canLava = SimpleCopperPipesConfig.get().carryLava &&
+                    (backBlock == Blocks.LAVA);
+                if (pipeEntity.canWater && pipeEntity.canLava) {
+                    pipeEntity.canWater = false;
+                    pipeEntity.canLava = false;
                 }
             }
         }
     }
 
-    public static boolean canConnectFront(@NotNull WorldView level, @NotNull BlockPos blockPos, Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) != direction.getOpposite() && state.get(CopperPipe.FACING) != direction;
+    /**
+     * Check if a pipe can connect to another without an extension.
+     * <p>
+     * The pipe can connect to another pipe without an extension if both pipes are looking in the same way.
+     * The pipe can never connect to a fitting without an extension.
+     *
+     * @param state     State of the connecting pipe
+     * @param direction Direction of this pipe
+     * @return true if an extension is needed.
+     */
+    private static boolean canConnect(@NotNull BlockState state, @NotNull Direction direction) {
+        Block block = state.getBlock();
+        if (block instanceof CopperPipe) {
+            Direction facing = state.get(CopperPipe.FACING);
+            return facing != direction.getOpposite() && facing != direction;
         }
-        return state.getBlock() instanceof CopperFitting;
+        return block instanceof CopperFitting;
     }
 
-    public static boolean canConnectBack(@NotNull WorldView level, @NotNull BlockPos blockPos, @NotNull Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction.getOpposite()));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) != direction.getOpposite() && state.get(CopperPipe.FACING) != direction;
-        }
-        return state.getBlock() instanceof CopperFitting;
+    /**
+     * Check if the front of the pipe can connect to another without an extension.
+     *
+     * @param world     The world
+     * @param blockPos  Position of this pipe
+     * @param direction Direction of this pipe
+     * @return true if an extension is needed.
+     */
+    public static boolean canConnectFront(@NotNull BlockView world, @NotNull BlockPos blockPos, Direction direction) {
+        // Get the state of the block in front of the pipe.
+        BlockState state = world.getBlockState(blockPos.offset(direction));
+        // Check if it can be connected to.
+        return canConnect(state, direction);
     }
 
-    public static boolean isSmooth(@NotNull WorldView level, @NotNull BlockPos blockPos, Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) == direction && !canConnectFront(level, blockPos, direction);
-        }
-        return false;
+    /**
+     * Check if the back of the pipe can connect to another without an extension.
+     *
+     * @param world     The world
+     * @param blockPos  Position of this pipe
+     * @param direction Direction of this pipe
+     * @return true if an extension is needed.
+     */
+    public static boolean canConnectBack(@NotNull BlockView world, @NotNull BlockPos blockPos, @NotNull Direction direction) {
+        // Get the state of the block at the back of the pipe.
+        BlockState state = world.getBlockState(blockPos.offset(direction.getOpposite()));
+        // Check if it can be connected to.
+        return canConnect(state, direction);
     }
 
-    public static boolean canConnectFront(@NotNull WorldAccess level, @NotNull BlockPos blockPos, Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) != direction.getOpposite() && state.get(CopperPipe.FACING) != direction;
-        }
-        return state.getBlock() instanceof CopperFitting;
-    }
-
-    public static boolean canConnectBack(@NotNull WorldAccess level, @NotNull BlockPos blockPos, @NotNull Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction.getOpposite()));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) != direction.getOpposite() && state.get(CopperPipe.FACING) != direction;
-        }
-        return state.getBlock() instanceof CopperFitting;
-    }
-
-    public static boolean isSmooth(@NotNull WorldAccess level, @NotNull BlockPos blockPos, Direction direction) {
-        BlockState state = level.getBlockState(blockPos.offset(direction));
-        if (state.getBlock() instanceof CopperPipe) {
-            return state.get(CopperPipe.FACING) == direction && !canConnectFront(level, blockPos, direction);
+    /**
+     * Check if the front of the pipe shall be rendered smooth.
+     * <p>
+     * The pipe face is smooth, if it is facing this direction, and the front is not connected to anything.
+     */
+    public static boolean isSmooth(@NotNull BlockView world, @NotNull BlockPos blockPos, Direction direction) {
+        // Get the state of the block in front of the pipe.
+        BlockState state = world.getBlockState(blockPos.offset(direction));
+        Block block = state.getBlock();
+        if (block instanceof CopperPipe) {
+            Direction facing = state.get(CopperPipe.FACING);
+            return facing == direction && !canConnect(state, direction);
         }
         return false;
     }
@@ -281,21 +307,34 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         );
     }
 
-    public static boolean isReceivingRedstonePower(BlockPos blockPos, World level) {
+    /**
+     * Check if the pipe is receiving redstone power from any direction.
+     *
+     * @param world    The world
+     * @param blockPos Position of this pipe
+     * @return true if the pipe is receiving redstone power.
+     */
+    public static boolean isReceivingRedstonePower(World world, BlockPos blockPos) {
         for (Direction direction : Direction.values()) {
-            if (level.getEmittedRedstonePower(blockPos.offset(direction), direction) > 0) {
+            if (world.getEmittedRedstonePower(blockPos.offset(direction), direction) > 0) {
                 return true;
             }
         }
         return false;
     }
 
-    public VoxelShape getPipeShape(BlockState blockState) {
-        boolean front = blockState.get(FRONT_CONNECTED);
-        boolean back = blockState.get(BACK_CONNECTED);
-        boolean smooth = blockState.get(SMOOTH);
+    /**
+     * Get pipe shape for drawing the outline and detecting collisions.
+     *
+     * @param state The state of the pipe
+     * @return the shape of the outline.
+     */
+    public VoxelShape getPipeShape(BlockState state) {
+        boolean front = state.get(FRONT_CONNECTED);
+        boolean back = state.get(BACK_CONNECTED);
+        boolean smooth = state.get(SMOOTH);
         if (smooth && back) {
-            return switch (blockState.get(FACING)) {
+            return switch (state.get(FACING)) {
                 case DOWN -> DOWN_BACK_SMOOTH;
                 case UP -> UP_BACK_SMOOTH;
                 case NORTH -> NORTH_BACK_SMOOTH;
@@ -305,21 +344,21 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
             };
         }
         if (smooth) {
-            return switch (blockState.get(FACING)) {
+            return switch (state.get(FACING)) {
                 case DOWN, UP -> DOWN_SMOOTH;
                 case NORTH, SOUTH -> NORTH_SMOOTH;
                 case EAST, WEST -> EAST_SMOOTH;
             };
         }
         if (front && back) {
-            return switch (blockState.get(FACING)) {
+            return switch (state.get(FACING)) {
                 case DOWN, UP -> DOWN_DOUBLE;
                 case NORTH, SOUTH -> NORTH_DOUBLE;
                 case EAST, WEST -> EAST_DOUBLE;
             };
         }
         if (front) {
-            return switch (blockState.get(FACING)) {
+            return switch (state.get(FACING)) {
                 case DOWN -> DOWN_FRONT;
                 case UP -> UP_FRONT;
                 case NORTH -> NORTH_FRONT;
@@ -329,7 +368,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
             };
         }
         if (back) {
-            return switch (blockState.get(FACING)) {
+            return switch (state.get(FACING)) {
                 case DOWN -> DOWN_BACK;
                 case UP -> UP_BACK;
                 case NORTH -> NORTH_BACK;
@@ -338,7 +377,7 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
                 case WEST -> WEST_BACK;
             };
         }
-        return switch (blockState.get(FACING)) {
+        return switch (state.get(FACING)) {
             case DOWN -> DOWN_SHAPE;
             case UP -> UP_SHAPE;
             case NORTH -> NORTH_SHAPE;
@@ -360,50 +399,64 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         return getPipeShape(blockState);
     }
 
+    /**
+     * Determine the initial state of the pipe based on its surroundings.
+     *
+     * @return the initial state of the block
+     */
     @Override
-    public BlockState getPlacementState(@NotNull ItemPlacementContext itemPlacementContext) {
-        Direction direction = itemPlacementContext.getSide();
-        BlockPos blockPos = itemPlacementContext.getBlockPos();
-        return this.getDefaultState()
+    public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
+        Direction direction = context.getSide();
+        BlockPos blockPos = context.getBlockPos();
+        return getDefaultState()
             .with(FACING, direction)
-            .with(FRONT_CONNECTED, canConnectFront(itemPlacementContext.getWorld(), blockPos, direction))
-            .with(BACK_CONNECTED, canConnectBack(itemPlacementContext.getWorld(), blockPos, direction))
-            .with(SMOOTH, isSmooth(itemPlacementContext.getWorld(), blockPos, direction))
-            .with(WATERLOGGED, itemPlacementContext.getWorld().getFluidState(blockPos).getFluid() == Fluids.WATER);
+            .with(FRONT_CONNECTED, canConnectFront(context.getWorld(), blockPos, direction))
+            .with(BACK_CONNECTED, canConnectBack(context.getWorld(), blockPos, direction))
+            .with(SMOOTH, isSmooth(context.getWorld(), blockPos, direction))
+            .with(WATERLOGGED, context.getWorld().getFluidState(blockPos).getFluid() == Fluids.WATER);
     }
 
+    /**
+     * Handle state changes when the neighboring block's state changes.
+     *
+     * @return the state of the pipe after a neighboring block's state changes.
+     */
     @Override
     protected @NotNull BlockState getStateForNeighborUpdate(
         @NotNull BlockState blockState,
-        WorldView levelReader,
+        WorldView world,
         ScheduledTickView scheduledTickAccess,
-        BlockPos blockPos,
+        BlockPos pos,
         Direction direction,
         BlockPos neighborPos,
         BlockState neighborState,
         Random randomSource
     ) {
         if (blockState.get(WATERLOGGED)) {
-            scheduledTickAccess.scheduleFluidTick(blockPos, Fluids.WATER, Fluids.WATER.getTickRate(levelReader));
+            scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
+        // The pipe is electrified if it is connected to a lightning rod, and lightnings strikes the lightning rod.
         boolean electricity = blockState.get(HAS_ELECTRICITY) ||
             ((neighborState.getBlock() instanceof LightningRodBlock) &&
                 neighborState.get(POWERED));
         Direction facing = blockState.get(FACING);
         return blockState
-            .with(FRONT_CONNECTED, canConnectFront(levelReader, blockPos, facing))
-            .with(BACK_CONNECTED, canConnectBack(levelReader, blockPos, facing))
-            .with(SMOOTH, isSmooth(levelReader, blockPos, facing))
+            .with(FRONT_CONNECTED, canConnectFront(world, pos, facing))
+            .with(BACK_CONNECTED, canConnectBack(world, pos, facing))
+            .with(SMOOTH, isSmooth(world, pos, facing))
             .with(HAS_ELECTRICITY, electricity);
     }
 
+    /**
+     * Handle side effects when the neighboring block's state changes.
+     */
     @Override
-    protected void neighborUpdate(@NotNull BlockState blockState, @NotNull World level, BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean bl) {
-        boolean powered = isReceivingRedstonePower(blockPos, level);
+    protected void neighborUpdate(@NotNull BlockState blockState, @NotNull World world, BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean bl) {
+        boolean powered = isReceivingRedstonePower(world, blockPos);
         if (powered != blockState.get(POWERED)) {
-            level.setBlockState(blockPos, blockState.with(POWERED, powered));
+            world.setBlockState(blockPos, blockState.with(POWERED, powered));
         }
-        updateBlockEntityValues(level, blockPos, blockState);
+        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     @Override
@@ -411,20 +464,25 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         return new CopperPipeEntity(pos, state);
     }
 
+    /**
+     * Pipes do not block light.
+     *
+     * @return true
+     */
     @Override
-    protected boolean isTransparent(@NotNull BlockState blockState) {
-        return blockState.getFluidState().isEmpty();
+    protected boolean isTransparent(@NotNull BlockState state) {
+        return true;
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-        @NotNull World level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        if (!level.isClient()) {
+        @NotNull World world, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (!world.isClient()) {
             return validateTicker(
                 blockEntityType, ModBlockEntities.COPPER_PIPE_ENTITY,
-                (level1, blockPos, blockState1, copperPipeEntity) ->
-                    copperPipeEntity.serverTick(level1, blockPos, blockState1)
+                (world1, pos1, state1, copperPipeEntity) ->
+                    copperPipeEntity.serverTick(world1, pos1, state1)
             );
         }
         return null;
@@ -432,10 +490,10 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
 
     @Override
     public void onPlaced(
-        World level, BlockPos blockPos, BlockState blockState,
+        World world, BlockPos blockPos, BlockState blockState,
         LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        super.onPlaced(level, blockPos, blockState, livingEntity, itemStack);
-        updateBlockEntityValues(level, blockPos, blockState);
+        super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
+        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     @Override
@@ -447,11 +505,16 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         return super.getFluidState(blockState);
     }
 
+    /**
+     * Use empty hand on a pipe.
+     * <p>
+     * Open gui.
+     */
     @Override
     protected @NotNull ActionResult onUse(
-        BlockState state, @NotNull World level, BlockPos pos,
+        BlockState state, @NotNull World world, BlockPos pos,
         PlayerEntity player, BlockHitResult hitResult) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof CopperPipeEntity copperPipeEntity) {
             player.openHandledScreen(copperPipeEntity);
             player.incrementStat(Stats.CUSTOM.getOrCreateStat(
@@ -461,17 +524,24 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         return ActionResult.PASS;
     }
 
+    /**
+     * Use item on a pipe.
+     * <p>
+     * If it is another piece of pipe or fitting then place it,
+     * otherwise open the GUI.
+     */
     @Override
     protected @NotNull ActionResult onUseWithItem(
         @NotNull ItemStack stack,
         BlockState state,
-        World level,
+        World world,
         BlockPos pos,
         PlayerEntity player,
         Hand hand,
         BlockHitResult hitResult
     ) {
-        if (stack.isIn(ModItemTags.IGNORES_COPPER_PIPE_MENU)) {
+        // Allow placing pipes next to pipes and fittings.
+        if (stack.isIn(ModItemTags.PIPES_AND_FITTINGS)) {
             return ActionResult.PASS;
         }
         return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
@@ -488,15 +558,18 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         return true;
     }
 
+    /**
+     * Calculate the comparator output the same way as for other blocks with inventory.
+     */
     @Override
-    public int getComparatorOutput(BlockState blockState, @NotNull World level, BlockPos blockPos) {
-        return ScreenHandler.calculateComparatorOutput(level.getBlockEntity(blockPos));
+    public int getComparatorOutput(BlockState blockState, @NotNull World world, BlockPos blockPos) {
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(blockPos));
     }
 
     @Override
     @NotNull
-    public BlockState rotate(@NotNull BlockState blockState, BlockRotation blockRotation) {
-        return blockState.with(FACING, blockRotation.rotate(blockState.get(FACING)));
+    public BlockState rotate(@NotNull BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
@@ -510,8 +583,11 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
         builder.add(FACING, FRONT_CONNECTED, BACK_CONNECTED, SMOOTH, WATERLOGGED, FLUID, HAS_ELECTRICITY, POWERED);
     }
 
+    /**
+     * Entities cannot walk through a pipe.
+     */
     @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType pathComputationType) {
+    protected boolean canPathfindThrough(BlockState state, NavigationType navType) {
         return false;
     }
 
@@ -653,19 +729,26 @@ public class CopperPipe extends BlockWithEntity implements Waterloggable, Oxidiz
 
     @Override
     public @NotNull OxidationLevel getDegradationLevel() {
-        return this.weatherState;
+        return this.oxidation;
     }
 
+    /**
+     * The pipe was removed or its state changed.
+     */
     @Override
-    public void onStateReplaced(BlockState blockState, World level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        updateBlockEntityValues(level, blockPos, blockState);
-        if (blockState.hasBlockEntity() && !(blockState2.getBlock() instanceof CopperPipe)) {
-            BlockEntity blockEntity = level.getBlockEntity(blockPos);
-            if (blockEntity instanceof CopperPipeEntity) {
-                ItemScatterer.spawn(level, blockPos, (CopperPipeEntity) blockEntity);
-                level.updateComparators(blockPos, this);
+    public void onStateReplaced(
+        BlockState oldState, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (oldState.isOf(newState.getBlock())) {
+            // Update block entity with new values.
+            updateBlockEntityValues(world, pos, newState);
+        } else {
+            // Remove block and block entity.
+            if (world.getBlockEntity(pos) instanceof CopperPipeEntity copperPipeEntity) {
+                // Drop inventory.
+                ItemScatterer.spawn(world, pos, copperPipeEntity);
+                world.updateComparators(pos, this);
             }
-            level.removeBlockEntity(blockPos);
+            world.removeBlockEntity(pos);
         }
     }
 

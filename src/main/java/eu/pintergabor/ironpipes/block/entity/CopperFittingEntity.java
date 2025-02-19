@@ -1,8 +1,8 @@
 package eu.pintergabor.ironpipes.block.entity;
 
 import eu.pintergabor.ironpipes.block.CopperFitting;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
+import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
@@ -32,9 +32,9 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
         super(ModBlockEntities.COPPER_FITTING_ENTITY, blockPos, blockState, MoveType.FROM_FITTING);
     }
 
-    public static boolean canTransfer(@NotNull World level, BlockPos pos, Direction direction, boolean to) {
-        BlockState blockState = level.getBlockState(pos);
-        return level.getBlockEntity(pos) instanceof CopperPipeEntity pipe &&
+    public static boolean canTransfer(@NotNull World world, BlockPos pos, Direction direction, boolean to) {
+        BlockState blockState = world.getBlockState(pos);
+        return world.getBlockEntity(pos) instanceof CopperPipeEntity pipe &&
             (!to || pipe.transferCooldown <= 0) &&
             blockState.contains(Properties.FACING) &&
             blockState.get(Properties.FACING) == direction;
@@ -63,23 +63,23 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
         }
     }
 
-    public void fittingMove(@NotNull World level, BlockPos blockPos, @NotNull BlockState blockState) {
-        boolean bl1 = blockState.contains(Properties.POWERED) && !blockState.get(Properties.POWERED) && this.moveOut(level, blockPos, level.random);
-        boolean bl2 = this.moveIn(level, blockPos, level.random);
+    public void fittingMove(@NotNull World world, BlockPos blockPos, @NotNull BlockState blockState) {
+        boolean bl1 = blockState.contains(Properties.POWERED) && !blockState.get(Properties.POWERED) && this.moveOut(world, blockPos, world.random);
+        boolean bl2 = this.moveIn(world, blockPos, world.random);
         if (bl1 || bl2) {
             setCooldown(blockState);
-            markDirty(level, blockPos, blockState);
+            markDirty(world, blockPos, blockState);
         }
     }
 
-    private boolean moveIn(World level, @NotNull BlockPos blockPos, Random randomSource) {
+    private boolean moveIn(World world, @NotNull BlockPos blockPos, Random randomSource) {
         boolean result = false;
         for (Direction direction : Util.copyShuffled(Direction.values(), randomSource)) {
             Direction opposite = direction.getOpposite();
             BlockPos offsetOppPos = blockPos.offset(opposite);
-            Storage<ItemVariant> inventory = CopperPipeEntity.getStorageAt(level, offsetOppPos, direction);
-            Storage<ItemVariant> fittingInventory = CopperPipeEntity.getStorageAt(level, blockPos, opposite);
-            if (inventory != null && fittingInventory != null && canTransfer(level, offsetOppPos, direction, false)) {
+            Storage<ItemVariant> inventory = CopperPipeEntity.getStorageAt(world, offsetOppPos, direction);
+            Storage<ItemVariant> fittingInventory = CopperPipeEntity.getStorageAt(world, blockPos, opposite);
+            if (inventory != null && fittingInventory != null && canTransfer(world, offsetOppPos, direction, false)) {
                 for (StorageView<ItemVariant> storageView : inventory) {
                     if (!storageView.isResourceBlank() && storageView.getAmount() > 0) {
                         Transaction transaction = Transaction.openOuter();
@@ -101,14 +101,14 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
         return result;
     }
 
-    private boolean moveOut(World level, @NotNull BlockPos blockPos, Random random) {
+    private boolean moveOut(World world, @NotNull BlockPos blockPos, Random random) {
         boolean result = false;
         for (Direction direction : Util.copyShuffled(Direction.values(), random)) {
             BlockPos offsetPos = blockPos.offset(direction);
             Direction opposite = direction.getOpposite();
-            Storage<ItemVariant> inventory = ItemStorage.SIDED.find(level, offsetPos, level.getBlockState(offsetPos), level.getBlockEntity(offsetPos), opposite);
-            Storage<ItemVariant> fittingInventory = ItemStorage.SIDED.find(level, blockPos, level.getBlockState(blockPos), level.getBlockEntity(blockPos), direction);
-            if (inventory != null && fittingInventory != null && canTransfer(level, offsetPos, direction, true)) {
+            Storage<ItemVariant> inventory = ItemStorage.SIDED.find(world, offsetPos, world.getBlockState(offsetPos), world.getBlockEntity(offsetPos), opposite);
+            Storage<ItemVariant> fittingInventory = ItemStorage.SIDED.find(world, blockPos, world.getBlockState(blockPos), world.getBlockEntity(blockPos), direction);
+            if (inventory != null && fittingInventory != null && canTransfer(world, offsetPos, direction, true)) {
                 for (StorageView<ItemVariant> storageView : fittingInventory) {
                     if (!storageView.isResourceBlank() && 0 < storageView.getAmount()) {
                         Transaction transaction = Transaction.openOuter();
@@ -152,7 +152,7 @@ public class CopperFittingEntity extends AbstractModBlockEntity {
     }
 
 //    @Override
-//    public void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
+//    public void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
 //        if (state.getBlock() instanceof CopperFitting) {
 //            this.canWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
 //        }

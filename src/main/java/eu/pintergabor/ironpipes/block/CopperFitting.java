@@ -83,15 +83,24 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
         );
     }
 
+    @SuppressWarnings("unused")
     public CopperFitting(Settings settings, int cooldown) {
         this(OxidationLevel.UNAFFECTED, settings, cooldown);
     }
 
-    public static void updateBlockEntityValues(World level, BlockPos pos, @NotNull BlockState state) {
+    /**
+     * Update the associated block entity parameters and behaviour.
+     * <p>
+     * Called when the state of this pipe block, or the state of its neighbours change
+     *
+     * @param world This world
+     * @param pos   Pipe position
+     * @param state New state
+     */
+    public static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
         if (state.getBlock() instanceof CopperFitting) {
-            BlockEntity entity = level.getBlockEntity(pos);
-            if (entity instanceof CopperFittingEntity fitting) {
-                fitting.canWater = SimpleCopperPipesConfig.get().carryWater &&
+            if (world.getBlockEntity(pos) instanceof CopperFittingEntity fittingEntity) {
+                fittingEntity.canWater = SimpleCopperPipesConfig.get().carryWater &&
                     state.get(Properties.WATERLOGGED);
             }
         }
@@ -141,14 +150,10 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
 
     @Override
     protected void neighborUpdate(
-        @NotNull BlockState blockState, @NotNull World level,
+        @NotNull BlockState blockState, @NotNull World world,
         BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
-        if (level.isReceivingRedstonePower(blockPos)) {
-            level.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, true));
-        } else {
-            level.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, false));
-        }
-        updateBlockEntityValues(level, blockPos, blockState);
+            world.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, world.isReceivingRedstonePower(blockPos)));
+        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     @Override
@@ -163,13 +168,13 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-        @NotNull World level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        if (!level.isClient()) {
+        @NotNull World world, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        if (!world.isClient()) {
             return validateTicker(
                 blockEntityType,
                 ModBlockEntities.COPPER_FITTING_ENTITY,
-                (level1, blockPos, blockState1, copperFittingEntity) ->
-                    copperFittingEntity.serverTick(level1, blockPos, blockState1)
+                (world1, blockPos, blockState1, copperFittingEntity) ->
+                    copperFittingEntity.serverTick(world1, blockPos, blockState1)
             );
         }
         return null;
@@ -177,10 +182,10 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
 
     @Override
     public void onPlaced(
-        @NotNull World level, @NotNull BlockPos blockPos, @NotNull BlockState blockState,
+        @NotNull World world, @NotNull BlockPos blockPos, @NotNull BlockState blockState,
         LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        super.onPlaced(level, blockPos, blockState, livingEntity, itemStack);
-        updateBlockEntityValues(level, blockPos, blockState);
+        super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
+        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     @Override
@@ -194,9 +199,9 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
 
     @Override
     protected @NotNull ActionResult onUse(
-        BlockState state, World level, BlockPos pos,
+        BlockState state, World world, BlockPos pos,
         PlayerEntity player, BlockHitResult hitResult) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof CopperFittingEntity fittingEntity) {
             player.openHandledScreen(fittingEntity);
             player.incrementStat(Stats.CUSTOM.getOrCreateStat(
@@ -210,13 +215,13 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     protected @NotNull ActionResult onUseWithItem(
         @NotNull ItemStack stack,
         BlockState state,
-        World level,
+        World world,
         BlockPos pos,
         PlayerEntity player,
         Hand hand,
         BlockHitResult hitResult
     ) {
-        if (stack.isIn(ModItemTags.IGNORES_COPPER_PIPE_MENU)) {
+        if (stack.isIn(ModItemTags.PIPES_AND_FITTINGS)) {
             return ActionResult.PASS;
         }
         return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
@@ -234,8 +239,8 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     }
 
     @Override
-    public int getComparatorOutput(BlockState blockState, @NotNull World level, BlockPos blockPos) {
-        return ScreenHandler.calculateComparatorOutput(level.getBlockEntity(blockPos));
+    public int getComparatorOutput(BlockState blockState, @NotNull World world, BlockPos blockPos) {
+        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(blockPos));
     }
 
     @Override
@@ -259,25 +264,25 @@ public class CopperFitting extends BlockWithEntity implements Waterloggable, Oxi
     }
 
     @Override
-    public void randomDisplayTick(@NotNull BlockState blockState, @NotNull World level, @NotNull BlockPos blockPos, Random random) {
+    public void randomDisplayTick(@NotNull BlockState blockState, @NotNull World world, @NotNull BlockPos blockPos, Random random) {
         // If it is electified, create sparks.
         if (blockState.get(HAS_ELECTRICITY)) {
             ParticleUtil.spawnParticle(
-                Direction.UP.getAxis(), level, blockPos, 0.55,
+                Direction.UP.getAxis(), world, blockPos, 0.55,
                 ParticleTypes.ELECTRIC_SPARK, UniformIntProvider.create(1, 2));
         }
     }
 
     @Override
-    public void onStateReplaced(BlockState blockState, World level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        updateBlockEntityValues(level, blockPos, blockState);
+    public void onStateReplaced(BlockState blockState, World world, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        updateBlockEntityValues(world, blockPos, blockState);
         if (blockState.hasBlockEntity() && !(blockState2.getBlock() instanceof CopperFitting)) {
-            BlockEntity blockEntity = level.getBlockEntity(blockPos);
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof CopperFittingEntity) {
-                ItemScatterer.spawn(level, blockPos, (CopperFittingEntity) blockEntity);
-                level.updateComparators(blockPos, this);
+                ItemScatterer.spawn(world, blockPos, (CopperFittingEntity) blockEntity);
+                world.updateComparators(blockPos, this);
             }
-            level.removeBlockEntity(blockPos);
+            world.removeBlockEntity(blockPos);
         }
     }
 

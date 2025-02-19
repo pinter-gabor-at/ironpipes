@@ -6,7 +6,6 @@ import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -40,10 +39,9 @@ public final class ModItemTagProvider extends FabricTagProvider.ItemTagProvider 
             .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING.asItem())
             .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING.asItem())
             .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING.asItem());
-        // TODO: What is it?
-        this.getOrCreateTagBuilder(ModItemTags.IGNORES_COPPER_PIPE_MENU)
+        // All pipes and fittings.
+        this.getOrCreateTagBuilder(ModItemTags.PIPES_AND_FITTINGS)
             .addOptionalTag(ModItemTags.COPPER_PIPES)
-            .addOptionalTag(ModItemTags.COPPER_FITTINGS)
-            .addOptional(Identifier.of("create", "wrench"));
+            .addOptionalTag(ModItemTags.COPPER_FITTINGS);
     }
 }

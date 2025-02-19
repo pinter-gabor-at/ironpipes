@@ -41,20 +41,20 @@ public abstract class HoeItemMixin {
         locals = LocalCapture.CAPTURE_FAILSOFT
     )
     private void useOnBlock(
-        ItemUsageContext itemUsageContext, CallbackInfoReturnable<ActionResult> info,
+        ItemUsageContext context, CallbackInfoReturnable<ActionResult> info,
         @Local World world, @Local BlockPos blockPos
     ) {
         BlockState blockState = world.getBlockState(blockPos);
-        // If the hoe is used on a block.
+        // If the hoe is used on a pipe block.
         if (blockState.getBlock() instanceof CopperPipe) {
-            PlayerEntity playerEntity = itemUsageContext.getPlayer();
-            ItemStack itemStack = itemUsageContext.getStack();
+            PlayerEntity playerEntity = context.getPlayer();
+            ItemStack itemStack = context.getStack();
             // Increase statistics on the server.
             if (playerEntity instanceof ServerPlayerEntity player) {
                 Criteria.ITEM_USED_ON_BLOCK.trigger(player, blockPos, itemStack);
             }
             // Turn the pipe, if it is facing any other direction.
-            Direction face = itemUsageContext.getSide();
+            Direction face = context.getSide();
             if (face != blockState.get(CopperPipe.FACING)) {
                 BlockState state = blockState
                     .with(CopperPipe.FACING, face)
@@ -63,11 +63,11 @@ public abstract class HoeItemMixin {
                     .with(CopperPipe.SMOOTH, CopperPipe.isSmooth(world, blockPos, face));
                 world.setBlockState(blockPos, state);
                 world.playSound(null, blockPos, ModSoundEvents.TURN,
-                    SoundCategory.BLOCKS, 0.5f, 1f);
+                    SoundCategory.BLOCKS, 0.5F, 1F);
                 // Damage the hoe.
                 if (playerEntity != null) {
-                    itemUsageContext.getStack()
-                        .damage(1, playerEntity, LivingEntity.getSlotForHand(itemUsageContext.getHand()));
+                    context.getStack()
+                        .damage(1, playerEntity, LivingEntity.getSlotForHand(context.getHand()));
                 }
             }
             info.setReturnValue(ActionResult.SUCCESS);

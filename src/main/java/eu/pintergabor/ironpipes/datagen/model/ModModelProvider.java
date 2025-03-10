@@ -122,23 +122,23 @@ public final class ModModelProvider extends FabricModelProvider {
                     .coordinate(BlockStateModelGenerator.createNorthDefaultRotationStates())
                     .coordinate(
                         BlockStateVariantMap.create(
-                            CopperPipe.FRONT_CONNECTED, CopperPipe.BACK_CONNECTED, CopperPipe.SMOOTH)
+                                CopperPipe.FRONT_CONNECTED, CopperPipe.BACK_CONNECTED, CopperPipe.SMOOTH)
                             .register(false, false, false,
                                 BlockStateVariant.create().put(VariantSettings.MODEL, model))
-                            .register(true, false, false,
-                                BlockStateVariant.create().put(VariantSettings.MODEL, frontExtensionModel))
-                            .register(true, true, false,
-                                BlockStateVariant.create().put(VariantSettings.MODEL, doubleExtensionModel))
-                            .register(true, true, true,
-                                BlockStateVariant.create().put(VariantSettings.MODEL, doubleExtensionModel))
-                            .register(true, false, true,
-                                BlockStateVariant.create().put(VariantSettings.MODEL, frontExtensionModel))
                             .register(false, false, true,
                                 BlockStateVariant.create().put(VariantSettings.MODEL, smoothModel))
                             .register(false, true, false,
                                 BlockStateVariant.create().put(VariantSettings.MODEL, backExtensionModel))
                             .register(false, true, true,
                                 BlockStateVariant.create().put(VariantSettings.MODEL, backSmoothModel))
+                            .register(true, false, false,
+                                BlockStateVariant.create().put(VariantSettings.MODEL, frontExtensionModel))
+                            .register(true, false, true,
+                                BlockStateVariant.create().put(VariantSettings.MODEL, frontExtensionModel))
+                            .register(true, true, false,
+                                BlockStateVariant.create().put(VariantSettings.MODEL, doubleExtensionModel))
+                            .register(true, true, true,
+                                BlockStateVariant.create().put(VariantSettings.MODEL, doubleExtensionModel))
                     )
             );
     }

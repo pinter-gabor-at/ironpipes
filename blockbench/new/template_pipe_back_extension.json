@@ -1,11 +1,14 @@
 {
+	"credit": "Made with Blockbench",
 	"parent": "block/block",
-  "textures": {
-    "particle": "#side"
-  },
+	"textures": {
+		"particle": "template_pipe",
+		"side": "template_pipe",
+		"front": "template_pipe_front"
+	},
 	"elements": [
 		{
-			"name": "bracket",
+			"name": "extension",
 			"from": [4, 4, 15],
 			"to": [12, 12, 20],
 			"faces": {
@@ -49,6 +52,14 @@
 				"up": {"uv": [16, 0, 8, 2], "texture": "#side"},
 				"down": {"uv": [8, 2, 16, 0], "texture": "#side"}
 			}
+		}
+	],
+	"groups": [
+		{
+			"name": "template_pipe_back_extension",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0, 1, 2, 3]
 		}
 	]
 }

@@ -7,7 +7,7 @@ import eu.pintergabor.ironpipes.block.base.BasePipe;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModStats;
@@ -47,12 +47,10 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
@@ -126,10 +124,10 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                     backBlock instanceof CopperPipe ||
                         backBlock instanceof CopperFitting ||
                         backState.isSolidBlock(world, pos));
-                pipeEntity.canWater = SimpleCopperPipesConfig.get().carryWater &&
+                pipeEntity.canWater = ModConfig.get().carryWater &&
                     ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
                         (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
-                pipeEntity.canLava = SimpleCopperPipesConfig.get().carryLava &&
+                pipeEntity.canLava = ModConfig.get().carryLava &&
                     (backBlock == Blocks.LAVA);
                 if (pipeEntity.canWater && pipeEntity.canLava) {
                     pipeEntity.canWater = false;
@@ -186,8 +184,8 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                 neighborState.get(POWERED));
         Direction facing = blockState.get(FACING);
         return blockState
-            .with(FRONT_CONNECTED, canConnectFront(world, pos, facing))
-            .with(BACK_CONNECTED, canConnectBack(world, pos, facing))
+            .with(FRONT_CONNECTED, needFrontExtension(world, pos, facing))
+            .with(BACK_CONNECTED, needBackExtension(world, pos, facing))
             .with(SMOOTH, isSmooth(world, pos, facing))
             .with(HAS_ELECTRICITY, electricity);
     }

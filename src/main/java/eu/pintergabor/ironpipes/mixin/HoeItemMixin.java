@@ -58,8 +58,8 @@ public abstract class HoeItemMixin {
             if (face != blockState.get(CopperPipe.FACING)) {
                 BlockState state = blockState
                     .with(CopperPipe.FACING, face)
-                    .with(CopperPipe.BACK_CONNECTED, CopperPipe.canConnectBack(world, blockPos, face))
-                    .with(CopperPipe.FRONT_CONNECTED, CopperPipe.canConnectFront(world, blockPos, face))
+                    .with(CopperPipe.BACK_CONNECTED, CopperPipe.needBackExtension(world, blockPos, face))
+                    .with(CopperPipe.FRONT_CONNECTED, CopperPipe.needFrontExtension(world, blockPos, face))
                     .with(CopperPipe.SMOOTH, CopperPipe.isSmooth(world, blockPos, face));
                 world.setBlockState(blockPos, state);
                 world.playSound(null, blockPos, ModSoundEvents.TURN,

@@ -6,12 +6,13 @@ import java.util.Optional;
 
 import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
-import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModSoundEvents;
+import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
 
-import net.minecraft.world.WorldEvents;
+import net.minecraft.sound.SoundCategory;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldEvents;
+
 
 public class BaseBlockEntity extends LootableContainerBlockEntity implements Inventory {
     public final MoveType moveType;
@@ -78,21 +81,29 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         }
     }
 
+    protected static void playDispenseSound(ServerWorld serverWorld, BlockPos blockPos) {
+        if (ModConfig.get().dispenseSounds) {
+            serverWorld.playSound(
+                null, blockPos, ModSoundEvents.LAUNCH,
+                SoundCategory.BLOCKS, 0.2f, (serverWorld.random.nextFloat() * 0.25f) + 0.8f);
+        }
+    }
+
     public void serverTick(@NotNull World world, BlockPos blockPos, BlockState blockState) {
         BlockState state = blockState;
         if (!world.isClient()) {
-            if (this.canWater && !this.canLava && SimpleCopperPipesConfig.get().carryWater) {
+            if (this.canWater && !this.canLava && ModConfig.get().carryWater) {
                 this.moveablePipeDataHandler.setMoveablePipeNbt(RegisterPipeNbtMethods.WATER, new MoveablePipeDataHandler.SaveableMovablePipeNbt()
                     .withVec3dd(new Vec3d(11, 0, 0)).withShouldCopy(true).withNBTID(RegisterPipeNbtMethods.WATER));
             }
-            if (this.canLava && !this.canWater && SimpleCopperPipesConfig.get().carryLava) {
+            if (this.canLava && !this.canWater && ModConfig.get().carryLava) {
                 this.moveablePipeDataHandler.setMoveablePipeNbt(RegisterPipeNbtMethods.LAVA, new MoveablePipeDataHandler.SaveableMovablePipeNbt()
                     .withVec3dd(new Vec3d(11, 0, 0)).withShouldCopy(true).withNBTID(RegisterPipeNbtMethods.LAVA));
             }
             MoveablePipeDataHandler.SaveableMovablePipeNbt waterNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.WATER);
             MoveablePipeDataHandler.SaveableMovablePipeNbt lavaNbt = this.moveablePipeDataHandler.getMoveablePipeNbt(RegisterPipeNbtMethods.LAVA);
-            boolean validWater = isValidFluidNBT(waterNbt) && SimpleCopperPipesConfig.get().carryWater;
-            boolean validLava = isValidFluidNBT(lavaNbt) && SimpleCopperPipesConfig.get().carryLava;
+            boolean validWater = isValidFluidNBT(waterNbt) && ModConfig.get().carryWater;
+            boolean validLava = isValidFluidNBT(lavaNbt) && ModConfig.get().carryLava;
             if (this.canWater && this.canLava) {
                 validWater = false;
                 validLava = false;
@@ -160,23 +171,23 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         if (!nbtList.isEmpty()) {
             List<Direction> dirs = Util.copyShuffled(Direction.values(), serverLevel.getRandom());
             for (Direction direction : dirs) {
-                if (this.canMoveNbtInDirection(direction, blockState)) {
+                if (canMoveNbtInDirection(direction, blockState)) {
                     BlockPos newPos = blockPos.offset(direction);
                     if (serverLevel.isPosLoaded(newPos)) {
                         BlockState state = serverLevel.getBlockState(newPos);
                         BlockEntity entity = serverLevel.getBlockEntity(newPos);
-                        if (entity instanceof BaseBlockEntity copperEntity) {
-                            if (copperEntity.canAcceptMoveableNbt(this.moveType, direction, blockState)) {
+                        if (entity instanceof BaseBlockEntity baseBlockEntity) {
+                            if (baseBlockEntity.canAcceptMoveableNbt(this.moveType, direction, blockState)) {
                                 for (MoveablePipeDataHandler.SaveableMovablePipeNbt nbt : nbtList) {
-                                    if (nbt.getShouldMove() && (!nbt.getCanOnlyGoThroughOnePipe() || !usedNbts.contains(nbt)) && nbt.canMove(serverLevel, newPos, state, copperEntity)) {
+                                    if (nbt.getShouldMove() && (!nbt.getCanOnlyGoThroughOnePipe() || !usedNbts.contains(nbt)) && nbt.canMove(serverLevel, newPos, state, baseBlockEntity)) {
                                         MoveablePipeDataHandler.SaveableMovablePipeNbt onMove;
                                         if (nbt.getShouldCopy()) {
                                             onMove = nbt.copyOf();
                                         } else {
                                             onMove = nbt;
                                         }
-                                        copperEntity.moveablePipeDataHandler.setMoveablePipeNbt(nbt.getNbtID(), onMove);
-                                        onMove.onMove(serverLevel, newPos, state, copperEntity);
+                                        baseBlockEntity.moveablePipeDataHandler.setMoveablePipeNbt(nbt.getNbtID(), onMove);
+                                        onMove.onMove(serverLevel, newPos, state, baseBlockEntity);
                                         if (!usedNbts.contains(nbt)) {
                                             usedNbts.add(nbt);
                                         }

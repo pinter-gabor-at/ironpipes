@@ -1,8 +1,10 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import eu.pintergabor.ironpipes.block.CopperFitting;
 import eu.pintergabor.ironpipes.block.CopperPipe;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+
+import net.minecraft.world.World;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -193,20 +195,27 @@ public abstract class BasePipe extends BaseBlock {
     /**
      * Check if a pipe can connect to another without an extension.
      * <p>
-     * The pipe can connect to another pipe without an extension if both pipes are looking in the same way.
+     * The pipe can connect to another pipe without an extension
+     * if both pipes are facing the same or opposite direction.
      * The pipe can never connect to a fitting without an extension.
      *
-     * @param state     State of the connecting pipe
-     * @param direction Direction of this pipe
+     * @param otherBlockState State of the other block
+     * @param direction       Direction of this pipe
      * @return true if an extension is needed.
      */
-    private static boolean canConnect(@NotNull BlockState state, @NotNull Direction direction) {
-        Block block = state.getBlock();
-        if (block instanceof CopperPipe) {
-            Direction facing = state.get(CopperPipe.FACING);
+    private static boolean needExtension(
+        @NotNull BlockState otherBlockState, @NotNull Direction direction) {
+        // Get the block in front of the pipe.
+        Block otherBlock = otherBlockState.getBlock();
+        if (otherBlock instanceof BasePipe) {
+            Direction facing = otherBlockState.get(BasePipe.FACING);
+            // The pipe can connect to another pipe without an extension
+            // if both pipes are facing the same or opposite direction.
             return facing != direction.getOpposite() && facing != direction;
         }
-        return block instanceof CopperFitting;
+        // The pipe can never connect to a fitting without an extension,
+        // but the pipe can connect to any other block without an extension.
+        return otherBlock instanceof BaseFitting;
     }
 
     /**
@@ -217,11 +226,13 @@ public abstract class BasePipe extends BaseBlock {
      * @param direction Direction of this pipe
      * @return true if an extension is needed.
      */
-    public static boolean canConnectFront(@NotNull BlockView world, @NotNull BlockPos blockPos, Direction direction) {
+    public static boolean needFrontExtension(
+        @NotNull BlockView world,
+        @NotNull BlockPos blockPos, Direction direction) {
         // Get the state of the block in front of the pipe.
         BlockState state = world.getBlockState(blockPos.offset(direction));
-        // Check if it can be connected to.
-        return canConnect(state, direction);
+        // Check if an extension is needed to connect to it.
+        return needExtension(state, direction);
     }
 
     /**
@@ -232,11 +243,13 @@ public abstract class BasePipe extends BaseBlock {
      * @param direction Direction of this pipe
      * @return true if an extension is needed.
      */
-    public static boolean canConnectBack(@NotNull BlockView world, @NotNull BlockPos blockPos, @NotNull Direction direction) {
+    public static boolean needBackExtension(
+        @NotNull BlockView world,
+        @NotNull BlockPos blockPos, @NotNull Direction direction) {
         // Get the state of the block at the back of the pipe.
         BlockState state = world.getBlockState(blockPos.offset(direction.getOpposite()));
-        // Check if it can be connected to.
-        return canConnect(state, direction);
+        // Check if an extension is needed to connect to it.
+        return needExtension(state, direction);
     }
 
     /**
@@ -246,11 +259,11 @@ public abstract class BasePipe extends BaseBlock {
      */
     public static boolean isSmooth(@NotNull BlockView world, @NotNull BlockPos blockPos, Direction direction) {
         // Get the state of the block in front of the pipe.
-        BlockState state = world.getBlockState(blockPos.offset(direction));
-        Block block = state.getBlock();
-        if (block instanceof CopperPipe) {
-            Direction facing = state.get(CopperPipe.FACING);
-            return facing == direction && !canConnect(state, direction);
+        BlockState otherBlockState = world.getBlockState(blockPos.offset(direction));
+        Block otherBlock = otherBlockState.getBlock();
+        if (otherBlock instanceof BasePipe) {
+            Direction facing = otherBlockState.get(BasePipe.FACING);
+            return facing == direction && !needExtension(otherBlockState, direction);
         }
         return false;
     }
@@ -265,11 +278,12 @@ public abstract class BasePipe extends BaseBlock {
     public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
         Direction direction = context.getSide();
         BlockPos pos = context.getBlockPos();
+        World world = context.getWorld();
         return getDefaultState()
             .with(FACING, direction)
-            .with(FRONT_CONNECTED, canConnectFront(context.getWorld(), pos, direction))
-            .with(BACK_CONNECTED, canConnectBack(context.getWorld(), pos, direction))
-            .with(SMOOTH, isSmooth(context.getWorld(), pos, direction));
+            .with(FRONT_CONNECTED, needFrontExtension(world, pos, direction))
+            .with(BACK_CONNECTED, needBackExtension(world, pos, direction))
+            .with(SMOOTH, isSmooth(world, pos, direction));
     }
 
     /**

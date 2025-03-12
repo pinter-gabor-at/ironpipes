@@ -7,7 +7,7 @@ import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,7 +102,7 @@ public class RegisterPipeNbtMethods {
             },
             // Can move.
             (nbt, world, pos, blockState, blockEntity) -> {
-                if (!SimpleCopperPipesConfig.get().carryWater) {
+                if (!ModConfig.get().carryWater) {
                     return false;
                 }
                 MoveablePipeDataHandler.SaveableMovablePipeNbt movablePipeNbt =
@@ -153,7 +153,7 @@ public class RegisterPipeNbtMethods {
             },
             // Can move.
             (nbt, world, pos, blockState, blockEntity) -> {
-                if (!SimpleCopperPipesConfig.get().carryLava) {
+                if (!ModConfig.get().carryLava) {
                     return false;
                 }
                 MoveablePipeDataHandler.SaveableMovablePipeNbt movablePipeNbt =

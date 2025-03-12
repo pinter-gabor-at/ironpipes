@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes;
 
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.CopperPipeDispenseBehaviors;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
@@ -23,7 +23,7 @@ public class Mod implements ModInitializer {
     @Override
     public void onInitialize() {
         ModBlockStateProperties.init();
-        SimpleCopperPipesConfig.init();
+        ModConfig.init();
         SimpleCopperPipesBlocks.init();
         ModBlockEntities.init();
         ModSoundEvents.init();

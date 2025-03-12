@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import eu.pintergabor.ironpipes.block.base.BaseFitting;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.config.SimpleCopperPipesConfig;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModStats;
@@ -91,7 +91,7 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
     private static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
         if (state.getBlock() instanceof CopperFitting) {
             if (world.getBlockEntity(pos) instanceof CopperFittingEntity fittingEntity) {
-                fittingEntity.canWater = SimpleCopperPipesConfig.get().carryWater &&
+                fittingEntity.canWater = ModConfig.get().carryWater &&
                     state.get(Properties.WATERLOGGED);
             }
         }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 @Config(name = "ironpipes")
-public class SimpleCopperPipesConfig implements ConfigData {
+public class ModConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean dispensing = true;
@@ -27,14 +27,11 @@ public class SimpleCopperPipesConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean carryLava = true;
 
-    @ConfigEntry.Gui.Tooltip
-    public boolean carrySmoke = true;
-
     public static void init() {
-        AutoConfig.register(SimpleCopperPipesConfig.class, Toml4jConfigSerializer::new);
+        AutoConfig.register(ModConfig.class, Toml4jConfigSerializer::new);
     }
 
-    public static SimpleCopperPipesConfig get() {
-        return AutoConfig.getConfigHolder(SimpleCopperPipesConfig.class).getConfig();
+    public static ModConfig get() {
+        return AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 }

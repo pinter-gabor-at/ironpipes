@@ -81,11 +81,14 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         }
     }
 
-    protected static void playDispenseSound(ServerWorld serverWorld, BlockPos blockPos) {
+    /**
+     * Play dispensing sound.
+     */
+    protected static void playDispenseSound(ServerWorld world, BlockPos soundPos) {
         if (ModConfig.get().dispenseSounds) {
-            serverWorld.playSound(
-                null, blockPos, ModSoundEvents.LAUNCH,
-                SoundCategory.BLOCKS, 0.2f, (serverWorld.random.nextFloat() * 0.25f) + 0.8f);
+            world.playSound(
+                null, soundPos, ModSoundEvents.LAUNCH,
+                SoundCategory.BLOCKS, 0.2f, (world.random.nextFloat() * 0.25f) + 0.8f);
         }
     }
 
@@ -177,7 +180,7 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
                         BlockState state = serverLevel.getBlockState(newPos);
                         BlockEntity entity = serverLevel.getBlockEntity(newPos);
                         if (entity instanceof BaseBlockEntity baseBlockEntity) {
-                            if (baseBlockEntity.canAcceptMoveableNbt(this.moveType, direction, blockState)) {
+                            if (baseBlockEntity.canAcceptMoveableNbt(moveType, direction, blockState)) {
                                 for (MoveablePipeDataHandler.SaveableMovablePipeNbt nbt : nbtList) {
                                     if (nbt.getShouldMove() && (!nbt.getCanOnlyGoThroughOnePipe() || !usedNbts.contains(nbt)) && nbt.canMove(serverLevel, newPos, state, baseBlockEntity)) {
                                         MoveablePipeDataHandler.SaveableMovablePipeNbt onMove;
@@ -198,9 +201,9 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
                     }
                 }
             }
-            this.moveablePipeDataHandler.clearAllButNonMoveable();
+            moveablePipeDataHandler.clearAllButNonMoveable();
             usedNbts.clear();
-            this.markDirty();
+            markDirty();
         }
     }
 
@@ -221,14 +224,14 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
     @Override
     protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.writeNbt(nbtCompound, lookupProvider);
-        if (!this.writeLootTable(nbtCompound)) {
-            Inventories.writeNbt(nbtCompound, this.inventory, lookupProvider);
+        if (!writeLootTable(nbtCompound)) {
+            Inventories.writeNbt(nbtCompound, inventory, lookupProvider);
         }
-        nbtCompound.putInt("waterCooldown", this.waterCooldown);
-        nbtCompound.putInt("electricityCooldown", this.electricityCooldown);
-        nbtCompound.putBoolean("canWater", this.canWater);
-        nbtCompound.putBoolean("canLava", this.canLava);
-        this.moveablePipeDataHandler.writeNbt(nbtCompound);
+        nbtCompound.putInt("waterCooldown", waterCooldown);
+        nbtCompound.putInt("electricityCooldown", electricityCooldown);
+        nbtCompound.putBoolean("canWater", canWater);
+        nbtCompound.putBoolean("canLava", canLava);
+        moveablePipeDataHandler.writeNbt(nbtCompound);
     }
 
     @Override
@@ -245,7 +248,7 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
     @Override
     @NotNull
     protected Text getContainerName() {
-        return Text.translatable(this.getCachedState().getBlock().getTranslationKey());
+        return Text.translatable(getCachedState().getBlock().getTranslationKey());
     }
 
     @Override

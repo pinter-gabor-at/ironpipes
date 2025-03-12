@@ -1,7 +1,5 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import net.minecraft.util.math.Direction;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockRenderType;
@@ -12,6 +10,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 

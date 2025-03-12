@@ -241,7 +241,7 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
 
     @Override
     public @NotNull OxidationLevel getDegradationLevel() {
-        return this.oxidation;
+        return oxidation;
     }
 
     @Override

@@ -60,7 +60,7 @@ public class CopperPipeEntity extends BaseBlockEntity {
     public static boolean canTransfer(
         World world, BlockPos pos, boolean to, @NotNull CopperPipeEntity copperPipe,
         @Nullable Storage<ItemVariant> inventory, @Nullable Storage<ItemVariant> pipeInventory) {
-        if (copperPipe.transferCooldown > 0) {
+        if (0 < copperPipe.transferCooldown) {
             return false;
         }
         boolean transferApiCheck = true;

@@ -405,7 +405,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
 
     @Override
     public @NotNull OxidationLevel getDegradationLevel() {
-        return this.oxidation;
+        return oxidation;
     }
 
     /**

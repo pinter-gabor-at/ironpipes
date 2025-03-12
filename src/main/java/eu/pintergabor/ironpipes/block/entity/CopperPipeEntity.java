@@ -32,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import net.minecraft.world.event.GameEvent;
@@ -133,18 +132,8 @@ public class CopperPipeEntity extends BaseBlockEntity {
     }
 
     public static Storage<ItemVariant> getStorageAt(World world, BlockPos blockPos, Direction direction) {
-        return ItemStorage.SIDED.find(world, blockPos, world.getBlockState(blockPos), world.getBlockEntity(blockPos), direction);
-    }
-
-    @Override
-    public void setStack(int i, ItemStack itemStack) {
-        generateLoot(null);
-        if (itemStack != null) {
-            getHeldStacks().set(i, itemStack);
-            if (itemStack.getCount() > getMaxCountPerStack()) {
-                itemStack.setCount(getMaxCountPerStack());
-            }
-        }
+        return ItemStorage.SIDED.find(
+            world, blockPos, world.getBlockState(blockPos), world.getBlockEntity(blockPos), direction);
     }
 
     @Override
@@ -380,54 +369,42 @@ public class CopperPipeEntity extends BaseBlockEntity {
         return itemStack;
     }
 
-    public int chooseNonEmptySlot(Random random) {
-        this.generateLoot(null);
-        int i = -1;
-        int j = 1;
-        for (int k = 0; k < this.inventory.size(); ++k) {
-            if (!this.inventory.get(k).isEmpty() && random.nextInt(j++) == 0) {
-                i = k;
-            }
-        }
-        return i;
-    }
-
     public void setCooldown(@NotNull BlockState state) {
         int i = 2;
         if (state.getBlock() instanceof CopperPipe pipe) {
             i = pipe.cooldown;
         }
-        this.transferCooldown = i;
+        transferCooldown = i;
     }
 
     @Override
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.readNbt(nbtCompound, lookupProvider);
-        this.transferCooldown = nbtCompound.getInt("transferCooldown");
-        this.dispenseCooldown = nbtCompound.getInt("dispenseCooldown");
-        this.canDispense = nbtCompound.getBoolean("canDispense");
-        this.shootsControlled = nbtCompound.getBoolean("shootsControlled");
-        this.shootsSpecial = nbtCompound.getBoolean("shootsSpecial");
-        this.canAccept = nbtCompound.getBoolean("canAccept");
+        transferCooldown = nbtCompound.getInt("transferCooldown");
+        dispenseCooldown = nbtCompound.getInt("dispenseCooldown");
+        canDispense = nbtCompound.getBoolean("canDispense");
+        shootsControlled = nbtCompound.getBoolean("shootsControlled");
+        shootsSpecial = nbtCompound.getBoolean("shootsSpecial");
+        canAccept = nbtCompound.getBoolean("canAccept");
     }
 
     @Override
     protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.writeNbt(nbtCompound, lookupProvider);
-        nbtCompound.putInt("transferCooldown", this.transferCooldown);
-        nbtCompound.putInt("dispenseCooldown", this.dispenseCooldown);
-        nbtCompound.putBoolean("canDispense", this.canDispense);
-        nbtCompound.putBoolean("shootsControlled", this.shootsControlled);
-        nbtCompound.putBoolean("shootsSpecial", this.shootsSpecial);
-        nbtCompound.putBoolean("canAccept", this.canAccept);
+        nbtCompound.putInt("transferCooldown", transferCooldown);
+        nbtCompound.putInt("dispenseCooldown", dispenseCooldown);
+        nbtCompound.putBoolean("canDispense", canDispense);
+        nbtCompound.putBoolean("shootsControlled", shootsControlled);
+        nbtCompound.putBoolean("shootsSpecial", shootsSpecial);
+        nbtCompound.putBoolean("canAccept", canAccept);
     }
 
     @Override
     public boolean canAcceptMoveableNbt(MoveType moveType, Direction moveDirection, BlockState fromState) {
         if (moveType == MoveType.FROM_FITTING) {
-            return this.getCachedState().get(Properties.FACING) == moveDirection;
+            return getCachedState().get(Properties.FACING) == moveDirection;
         }
-        return this.getCachedState().get(Properties.FACING) == moveDirection ||
+        return getCachedState().get(Properties.FACING) == moveDirection ||
             moveDirection == fromState.get(Properties.FACING);
     }
 
@@ -439,14 +416,15 @@ public class CopperPipeEntity extends BaseBlockEntity {
     @Override
     public void dispenseMoveableNbt(ServerWorld serverWorld, BlockPos blockPos, BlockState blockState) {
         if (canDispense) {
-            ArrayList<MoveablePipeDataHandler.SaveableMovablePipeNbt> nbtList = moveablePipeDataHandler.getSavedNbtList();
+            ArrayList<MoveablePipeDataHandler.SaveableMovablePipeNbt> nbtList =
+                moveablePipeDataHandler.getSavedNbtList();
             if (!nbtList.isEmpty()) {
                 for (MoveablePipeDataHandler.SaveableMovablePipeNbt nbt : nbtList) {
                     if (nbt.getShouldMove()) {
                         nbt.dispense(serverWorld, blockPos, blockState, this);
                     }
                 }
-                this.moveMoveableNbt(serverWorld, blockPos, blockState);
+                moveMoveableNbt(serverWorld, blockPos, blockState);
             }
         }
     }

@@ -116,8 +116,9 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
             Block backBlock = backState.getBlock();
             // Always true.
             if (world.getBlockEntity(pos) instanceof CopperPipeEntity pipeEntity) {
-                //
+                // The pipe can dispense if there is air or water in fron of it.
                 pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
+                // The dispensing is controlled if there is dropper behind it.
                 pipeEntity.shootsControlled = (backBlock == Blocks.DROPPER);
                 pipeEntity.shootsSpecial = (backBlock == Blocks.DISPENSER);
                 pipeEntity.canAccept = !(
@@ -137,6 +138,12 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
         }
     }
 
+    /**
+     * The output
+     * @param pos
+     * @param facing
+     * @return
+     */
     public static Vec3d getOutputLocation(@NotNull BlockPos pos, @NotNull Direction facing) {
         return new Vec3d(
             ((double) pos.getX() + 0.5D) + 0.7D * (double) facing.getOffsetX(),

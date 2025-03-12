@@ -14,6 +14,8 @@ import eu.pintergabor.ironpipes.tag.ModBlockTags;
 
 import net.minecraft.sound.SoundCategory;
 
+import net.minecraft.util.math.random.Random;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +61,38 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         this.electricityCooldown = -1;
         this.moveablePipeDataHandler = new MoveablePipeDataHandler();
         this.moveType = moveType;
+    }
+
+    /**
+     * Choose one of the non-empty slots of the inventory with equal probability.
+     *
+     * @return The slot number of one of the non-empty slots, or -1 if all slots are empty.
+     */
+    public int chooseNonEmptySlot(Random random) {
+        generateLoot(null);
+        int chosenSlot = -1;
+        int nonEmptySlotCount = 1;
+        for (int i = 0; i < inventory.size(); i++) {
+            // Choose the next non-empty slot with 1/nonEmptySlotCount probability.
+            if (!inventory.get(i).isEmpty() && random.nextInt(nonEmptySlotCount++) == 0) {
+                chosenSlot = i;
+            }
+        }
+        return chosenSlot;
+    }
+
+    /**
+     * Set inventory slot to itemStack.
+     */
+    @Override
+    public void setStack(int slot, ItemStack itemStack) {
+        generateLoot(null);
+        if (itemStack != null) {
+            getHeldStacks().set(slot, itemStack);
+            if (getMaxCountPerStack() < itemStack.getCount()) {
+                itemStack.setCount(getMaxCountPerStack());
+            }
+        }
     }
 
     public static void sendElectricity(World world, BlockPos blockPos) {

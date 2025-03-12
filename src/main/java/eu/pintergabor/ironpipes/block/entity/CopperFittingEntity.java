@@ -6,7 +6,6 @@ import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Properties;
@@ -21,6 +20,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+
 
 public class CopperFittingEntity extends BaseBlockEntity {
 
@@ -38,17 +38,6 @@ public class CopperFittingEntity extends BaseBlockEntity {
             (!to || pipe.transferCooldown <= 0) &&
             blockState.contains(Properties.FACING) &&
             blockState.get(Properties.FACING) == direction;
-    }
-
-    @Override
-    public void setStack(int i, ItemStack itemStack) {
-        this.generateLoot(null);
-        if (itemStack != null) {
-            this.getHeldStacks().set(i, itemStack);
-            if (itemStack.getCount() > this.getMaxCountPerStack()) {
-                itemStack.setCount(this.getMaxCountPerStack());
-            }
-        }
     }
 
     @Override

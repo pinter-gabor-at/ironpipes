@@ -21,8 +21,8 @@ import net.minecraft.util.math.Vec3d;
 public class RegisterPipeNbtMethods {
     public static final Identifier WATER = Global.modId("water");
     public static final Identifier LAVA = Global.modId("lava");
-    public static final Identifier SMOKE = Global.modId("smoke");
-    private static final Map<Identifier, UniquePipeNbt> UNIQUE_PIPE_NBTS = new Object2ObjectLinkedOpenHashMap<>();
+    private static final Map<Identifier, UniquePipeNbt> UNIQUE_PIPE_NBTS =
+        new Object2ObjectLinkedOpenHashMap<>();
 
     public static void register(
         Identifier id,

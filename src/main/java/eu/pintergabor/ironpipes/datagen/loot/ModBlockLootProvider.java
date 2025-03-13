@@ -20,22 +20,24 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
-        // Pipes.
+        // Wooden pipes.
+        drops(ModBlocks.OAK_PIPE);
+        // Copper pipes.
         drops(ModBlocks.COPPER_PIPE);
         drops(ModBlocks.EXPOSED_COPPER_PIPE);
         drops(ModBlocks.WEATHERED_COPPER_PIPE);
         drops(ModBlocks.OXIDIZED_COPPER_PIPE);
-        // Waxed pipes.
+        // Waxed copper pipes.
         drops(ModBlocks.WAXED_COPPER_PIPE);
         drops(ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
         drops(ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
         drops(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
-        // Fittings.
+        // Copper fittings.
         drops(ModBlocks.COPPER_FITTING);
         drops(ModBlocks.EXPOSED_COPPER_FITTING);
         drops(ModBlocks.WEATHERED_COPPER_FITTING);
         drops(ModBlocks.OXIDIZED_COPPER_FITTING);
-        // Waxed fitting.
+        // Waxed copper fittings.
         drops(ModBlocks.WAXED_COPPER_FITTING);
         drops(ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
         drops(ModBlocks.WAXED_WEATHERED_COPPER_FITTING);

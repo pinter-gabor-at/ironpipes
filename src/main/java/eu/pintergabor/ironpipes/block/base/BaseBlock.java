@@ -15,13 +15,13 @@ import net.minecraft.world.World;
 
 
 public abstract class BaseBlock extends BlockWithEntity {
-    public static final BooleanProperty POWERED =
-        Properties.POWERED;
+//    public static final BooleanProperty POWERED =
+//        Properties.POWERED;
 
     protected BaseBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getStateManager().getDefaultState()
-            .with(POWERED, false));
+//        this.setDefaultState(this.getStateManager().getDefaultState()
+//            .with(POWERED, false));
     }
 
     /**
@@ -41,7 +41,7 @@ public abstract class BaseBlock extends BlockWithEntity {
     }
 
     /**
-     * Pipes and fitings do not block light.
+     * Pipes and fittings do not block light.
      *
      * @return true
      */

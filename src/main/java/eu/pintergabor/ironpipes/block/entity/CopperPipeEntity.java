@@ -289,7 +289,7 @@ public class CopperPipeEntity extends BaseBlockEntity {
     private boolean dispense(ServerWorld serverWorld, BlockPos blockPos, @NotNull BlockState blockState) {
         Direction direction = blockState.get(Properties.FACING);
         Direction directionOpp = direction.getOpposite();
-        boolean powered = blockState.get(CopperPipe.POWERED);
+        //boolean powered = blockState.get(CopperPipe.POWERED);
         if (canDispense) {
             int slot = chooseNonEmptySlot(serverWorld.random);
             if (0 <= slot) {
@@ -310,9 +310,9 @@ public class CopperPipeEntity extends BaseBlockEntity {
                     }
                     boolean silent = blockState.isIn(ModBlockTags.SILENT_PIPES);
                     if (serverWorld.getBlockState(blockPos.offset(directionOpp)).getBlock() instanceof CopperFitting) {
-                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, powered, true, silent);
+                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, true, silent);
                     } else {
-                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, powered, false, silent);
+                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, false, silent);
                         serverWorld.syncWorldEvent(WorldEvents.CRAFTER_SHOOTS, blockPos, direction.getId());
                     }
                     setStack(slot, itemStack2);
@@ -325,28 +325,10 @@ public class CopperPipeEntity extends BaseBlockEntity {
 
     private ItemStack canonShoot(
         ServerWorld serverWorld, @NotNull BlockPos pos, ItemStack itemStack, @NotNull
-        BlockState state, int shotLength, boolean powered, boolean fitting, boolean silent) {
+        BlockState state, int shotLength, boolean fitting, boolean silent) {
         Direction direction = state.get(Properties.FACING);
         Vec3d vec3 = CopperPipe.getOutputLocation(pos, direction);
         ItemStack itemStack2 = itemStack;
-        // If powered.
-        if (powered) {
-            CopperPipeDispenseBehaviors.PoweredDispense poweredDispense =
-                CopperPipeDispenseBehaviors.getDispense(itemStack2.getItem());
-            if (poweredDispense != null) {
-                itemStack2 = itemStack.split(1);
-                poweredDispense.dispense(serverWorld, itemStack2, shotLength, direction, vec3, state, pos, this);
-                if (!fitting && !silent) {
-                    if (ModConfig.get().dispenseSounds) {
-                        serverWorld.playSound(
-                            null, pos, ModSoundEvents.ITEM_OUT,
-                            SoundCategory.BLOCKS, 0.2F, (serverWorld.random.nextFloat() * 0.25F) + 0.8F);
-                    }
-                    serverWorld.emitGameEvent(null, GameEvent.ENTITY_PLACE, pos);
-                }
-                return itemStack;
-            }
-        }
         if (ModConfig.get().dispensing) {
             itemStack2 = itemStack.split(1);
             serverWorld.syncWorldEvent(WorldEvents.DISPENSER_ACTIVATED, pos, direction.getId());

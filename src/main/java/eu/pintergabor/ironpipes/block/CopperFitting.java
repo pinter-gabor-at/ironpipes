@@ -49,6 +49,8 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
+import static net.minecraft.block.LightningRodBlock.POWERED;
+
 
 public class CopperFitting extends BaseFitting implements Waterloggable, Oxidizable {
     public static final MapCodec<CopperFitting> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
@@ -102,8 +104,7 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
         World world = context.getWorld();
         BlockPos pos = context.getBlockPos();
         return this.getDefaultState()
-            .with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER)
-            .with(POWERED, world.isReceivingRedstonePower(pos));
+            .with(WATERLOGGED, world.getFluidState(pos).getFluid() == Fluids.WATER);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
     protected void neighborUpdate(
         @NotNull BlockState blockState, @NotNull World world,
         BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
-        world.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, world.isReceivingRedstonePower(blockPos)));
+        //world.setBlockState(blockPos, blockState.with(CopperFitting.POWERED, world.isReceivingRedstonePower(blockPos)));
         updateBlockEntityValues(world, blockPos, blockState);
     }
 

@@ -71,22 +71,24 @@ public final class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
-        // Pipes.
-        createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.COPPER_PIPE);
-        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.EXPOSED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WEATHERED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.OXIDIZED_COPPER_PIPE);
-        // Waxed pipes.
+        // Wooden pipes.
+        createPipe(generator, ModBlocks.OAK_PIPE);
+        // Copper pipes.
+        createPipe(generator, ModBlocks.COPPER_PIPE);
+        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE);
+        // Waxed copper pipes.
         createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.WAXED_COPPER_PIPE);
         createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
         createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
         createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
-        // Fittings.
-        createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.COPPER_FITTING);
-        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.EXPOSED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WEATHERED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING, ModBlocks.OXIDIZED_COPPER_FITTING);
-        // Waxed fittings.
+        // Copper fittings.
+        createFitting(generator, ModBlocks.COPPER_FITTING);
+        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING);
+        // Waxed copper fittings.
         createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.WAXED_COPPER_FITTING);
         createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
         createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
@@ -97,18 +99,12 @@ public final class ModModelProvider extends FabricModelProvider {
     public void generateItemModels(@NotNull ItemModelGenerator generator) {
     }
 
-    public static void createPipe(@NotNull BlockStateModelGenerator generators, Block pipeBlock, Block outputPipeBlock) {
-        if (pipeBlock == outputPipeBlock) {
-            TextureMap pipeTextureMapping = new TextureMap();
-            pipeTextureMapping.put(TextureKey.SIDE, TextureMap.getId(pipeBlock));
-            pipeTextureMapping.put(TextureKey.FRONT, TextureMap.getSubId(pipeBlock, "_front"));
-            PIPE_MODEL.upload(pipeBlock, pipeTextureMapping, generators.modelCollector);
-            PIPE_MODEL_BACK.upload(pipeBlock, "_back_extension", pipeTextureMapping, generators.modelCollector);
-            PIPE_MODEL_BACK_SMOOTH.upload(pipeBlock, "_back_smooth", pipeTextureMapping, generators.modelCollector);
-            PIPE_MODEL_DOUBLE_EXTENSION.upload(pipeBlock, "_double_extension", pipeTextureMapping, generators.modelCollector);
-            PIPE_MODEL_FRONT_EXTENSION.upload(pipeBlock, "_front_extension", pipeTextureMapping, generators.modelCollector);
-            PIPE_MODEL_SMOOTH.upload(pipeBlock, "_smooth", pipeTextureMapping, generators.modelCollector);
-        }
+    /**
+     * Create models for one derived type of pipe.
+     */
+    public static void createPipe(
+        @NotNull BlockStateModelGenerator generators,
+        Block pipeBlock, Block outputPipeBlock) {
         Identifier model = ModelIds.getBlockModelId(pipeBlock);
         Identifier frontExtensionModel = ModelIds.getBlockSubModelId(pipeBlock, "_front_extension");
         Identifier doubleExtensionModel = ModelIds.getBlockSubModelId(pipeBlock, "_double_extension");
@@ -143,16 +139,46 @@ public final class ModModelProvider extends FabricModelProvider {
             );
     }
 
+    /**
+     * Create models for one base type of pipe.
+     */
+    public static void createPipe(
+        @NotNull BlockStateModelGenerator generators, Block pipeBlock) {
+        // Create base type.
+        TextureMap pipeTextureMapping = new TextureMap();
+        pipeTextureMapping.put(TextureKey.SIDE, TextureMap.getId(pipeBlock));
+        pipeTextureMapping.put(TextureKey.FRONT, TextureMap.getSubId(pipeBlock, "_front"));
+        PIPE_MODEL.upload(pipeBlock, pipeTextureMapping, generators.modelCollector);
+        PIPE_MODEL_BACK.upload(pipeBlock, "_back_extension", pipeTextureMapping, generators.modelCollector);
+        PIPE_MODEL_BACK_SMOOTH.upload(pipeBlock, "_back_smooth", pipeTextureMapping, generators.modelCollector);
+        PIPE_MODEL_DOUBLE_EXTENSION.upload(pipeBlock, "_double_extension", pipeTextureMapping, generators.modelCollector);
+        PIPE_MODEL_FRONT_EXTENSION.upload(pipeBlock, "_front_extension", pipeTextureMapping, generators.modelCollector);
+        PIPE_MODEL_SMOOTH.upload(pipeBlock, "_smooth", pipeTextureMapping, generators.modelCollector);
+        // Create derived types.
+        createPipe(generators, pipeBlock, pipeBlock);
+    }
+
+    /**
+     * Create models for one derived type of fitting.
+     */
     public static void createFitting(
         @NotNull BlockStateModelGenerator generators, Block fittingBlock, Block outputFittingBlock) {
-        if (fittingBlock == outputFittingBlock) {
-            TextureMap fittingTextureMapping = new TextureMap();
-            fittingTextureMapping.put(TextureKey.TEXTURE, TextureMap.getId(fittingBlock));
-            FITTING_MODEL.upload(fittingBlock, fittingTextureMapping, generators.modelCollector);
-        }
         Identifier model = ModelIds.getBlockModelId(fittingBlock);
         generators.registerParentedItemModel(outputFittingBlock, model);
         generators.blockStateCollector.accept(
             BlockStateModelGenerator.createSingletonBlockState(outputFittingBlock, model));
+    }
+
+    /**
+     * Create models for one base type of fitting.
+     */
+    public static void createFitting(
+        @NotNull BlockStateModelGenerator generators, Block fittingBlock) {
+        // Create base type.
+        TextureMap fittingTextureMapping = new TextureMap();
+        fittingTextureMapping.put(TextureKey.TEXTURE, TextureMap.getId(fittingBlock));
+        FITTING_MODEL.upload(fittingBlock, fittingTextureMapping, generators.modelCollector);
+        // Create derived types.
+        createFitting(generators, fittingBlock, fittingBlock);
     }
 }

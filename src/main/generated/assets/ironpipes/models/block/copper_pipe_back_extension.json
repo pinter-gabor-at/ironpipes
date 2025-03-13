@@ -1,7 +1,0 @@
-{
-  "parent": "ironpipes:block/template_pipe_back_extension",
-  "textures": {
-    "front": "ironpipes:block/copper_pipe_front",
-    "side": "ironpipes:block/copper_pipe"
-  }
-}

@@ -3,6 +3,7 @@ package eu.pintergabor.ironpipes.registry;
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
+import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -15,7 +16,12 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 
 public final class ModBlockEntities {
-
+    // Wooden pipes.
+    public static final BlockEntityType<WoodenPipeEntity> WOODEN_PIPE_ENTITY = register(
+        "wooden_pipe",
+        WoodenPipeEntity::new,
+        ModBlocks.OAK_PIPE);
+    // Copper pipes.
     public static final BlockEntityType<CopperPipeEntity> COPPER_PIPE_ENTITY = register(
         "copper_pipe",
         CopperPipeEntity::new,
@@ -26,9 +32,8 @@ public final class ModBlockEntities {
         ModBlocks.WAXED_COPPER_PIPE,
         ModBlocks.WAXED_EXPOSED_COPPER_PIPE,
         ModBlocks.WAXED_WEATHERED_COPPER_PIPE,
-        ModBlocks.WAXED_OXIDIZED_COPPER_PIPE
-    );
-
+        ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
+    // Copper fittings.
     public static final BlockEntityType<CopperFittingEntity> COPPER_FITTING_ENTITY = register(
         "copper_fitting",
         CopperFittingEntity::new,
@@ -39,8 +44,7 @@ public final class ModBlockEntities {
         ModBlocks.WAXED_COPPER_FITTING,
         ModBlocks.WAXED_EXPOSED_COPPER_FITTING,
         ModBlocks.WAXED_WEATHERED_COPPER_FITTING,
-        ModBlocks.WAXED_OXIDIZED_COPPER_FITTING
-    );
+        ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
 
     @NotNull
     private static <T extends BlockEntity> BlockEntityType<T> register(

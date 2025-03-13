@@ -7,7 +7,9 @@ import net.minecraft.block.Block;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.TagKey;
 
+
 public class ModBlockTags {
+    public static final TagKey<Block> WOODEN_PIPES = bind("wooden_pipes");
     public static final TagKey<Block> COPPER_PIPES = bind("copper_pipes");
     public static final TagKey<Block> COPPER_FITTINGS = bind("copper_fittings");
     public static final TagKey<Block> WAXED = bind("waxed");

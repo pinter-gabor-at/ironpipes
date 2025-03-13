@@ -12,6 +12,9 @@ public class ModCreativeInventorySorting {
         // Creative tabs, functional item group.
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(
             entries -> {
+                // Add wooden pipes and fittings after buckets
+                entries.addAfter(Items.WATER_BUCKET,
+                    ModBlocks.OAK_PIPE);
                 // Add normal copper pipes and fittings after similar copper bulbs.
                 entries.addAfter(Items.COPPER_BULB,
                     ModBlocks.COPPER_PIPE, ModBlocks.COPPER_FITTING);

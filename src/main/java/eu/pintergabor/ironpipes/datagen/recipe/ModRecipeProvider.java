@@ -28,7 +28,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
             @Override
             public void generate() {
-                // Pipes.
+                // Wooden pipes.
+                createShaped(RecipeCategory.TRANSPORTATION, ModBlocks.OAK_PIPE, 3)
+                    .input('#', Items.OAK_PLANKS)
+                    .pattern("###")
+                    .pattern("   ")
+                    .pattern("###")
+                    .criterion(hasItem(Items.OAK_PLANKS),
+                        conditionsFromItem(Items.OAK_PLANKS))
+                    .offerTo(exporter);
+                // Copper pipes.
                 createShaped(RecipeCategory.REDSTONE, ModBlocks.COPPER_PIPE, 3)
                     .input('#', Items.COPPER_INGOT)
                     .pattern("###")
@@ -37,7 +46,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     .criterion(hasItem(Items.COPPER_INGOT),
                         conditionsFromItem(Items.COPPER_INGOT))
                     .offerTo(exporter);
-                // Waxed pipes.
+                // Waxed copper pipes.
                 createShapeless(RecipeCategory.REDSTONE, ModBlocks.WAXED_COPPER_PIPE)
                     .input(ModBlocks.COPPER_PIPE)
                     .input(Items.HONEYCOMB)
@@ -62,7 +71,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     .criterion(hasItem(ModBlocks.OXIDIZED_COPPER_PIPE),
                         conditionsFromItem(ModBlocks.OXIDIZED_COPPER_PIPE))
                     .offerTo(exporter);
-                // Fittings.
+                // Copper fittings.
                 createShaped(RecipeCategory.REDSTONE, ModBlocks.COPPER_FITTING, 4)
                     .input('#', Items.COPPER_INGOT)
                     .pattern("###")
@@ -71,7 +80,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                     .criterion(hasItem(Items.COPPER_INGOT),
                         conditionsFromItem(Items.COPPER_INGOT))
                     .offerTo(exporter);
-                // Waxed fittings
+                // Waxed copper fittings.
                 createShapeless(RecipeCategory.REDSTONE, ModBlocks.WAXED_COPPER_FITTING)
                     .input(ModBlocks.COPPER_FITTING)
                     .input(Items.HONEYCOMB)

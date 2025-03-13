@@ -1,15 +1,14 @@
 package eu.pintergabor.ironpipes.block;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import eu.pintergabor.ironpipes.block.base.BasePipe;
+import eu.pintergabor.ironpipes.block.base.FluidPipe;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
+import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LightningRodBlock;
 import net.minecraft.block.Oxidizable;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,13 +28,10 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.particle.ParticleUtil;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -45,8 +39,6 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
@@ -54,46 +46,15 @@ import net.minecraft.world.WorldView;
 import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
-import static net.minecraft.block.LightningRodBlock.POWERED;
 
-
-public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
-    public static final BooleanProperty WATERLOGGED =
-        Properties.WATERLOGGED;
-    public static final EnumProperty<PipeFluid> FLUID =
-        ModBlockStateProperties.FLUID;
-    public static final BooleanProperty HAS_ELECTRICITY =
-        ModBlockStateProperties.HAS_ELECTRICITY;
-    public static final MapCodec<CopperPipe> CODEC =
+public class WoodenPipe extends FluidPipe {
+    public static final MapCodec<WoodenPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            OxidationLevel.CODEC.fieldOf("oxidation")
-                .forGetter((copperPipe -> copperPipe.oxidation)),
-            createSettingsCodec(),
-            Codec.INT.fieldOf("cooldown")
-                .forGetter((copperPipe) -> copperPipe.cooldown),
-            Codec.INT.fieldOf("dispense_shot_length")
-                .forGetter((copperPipe) -> copperPipe.dispenseShotLength)
-        ).apply(instance, CopperPipe::new));
-    public final int cooldown;
-    public final int dispenseShotLength;
-    private final OxidationLevel oxidation;
+            createSettingsCodec()
+        ).apply(instance, WoodenPipe::new));
 
-    public CopperPipe(OxidationLevel oxidation, Settings settings, int cooldown, int dispenseShotLength) {
+    public WoodenPipe(Settings settings) {
         super(settings);
-        this.oxidation = oxidation;
-        this.cooldown = cooldown;
-        this.dispenseShotLength = dispenseShotLength;
-        this.setDefaultState(this.getStateManager().getDefaultState()
-            .with(FACING, Direction.DOWN)
-            .with(SMOOTH, false)
-            .with(WATERLOGGED, false)
-            .with(FLUID, PipeFluid.NONE)
-            .with(HAS_ELECTRICITY, false));
-    }
-
-    @SuppressWarnings("unused")
-    public CopperPipe(Settings settings, int cooldown, int dispenseShotLength) {
-        this(OxidationLevel.UNAFFECTED, settings, cooldown, dispenseShotLength);
     }
 
     /**
@@ -106,7 +67,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
      * @param state New state
      */
     private static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
-        if (state.getBlock() instanceof CopperPipe) {
+        if (state.getBlock() instanceof WoodenPipe) {
             Direction direction = state.get(Properties.FACING);
             // The state of the block in front of the pipe.
             BlockState frontState = world.getBlockState(pos.offset(direction));
@@ -116,15 +77,8 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
             Block backBlock = backState.getBlock();
             // Always true.
             if (world.getBlockEntity(pos) instanceof CopperPipeEntity pipeEntity) {
-                // The pipe can dispense if there is air or water in fron of it.
+                // The pipe can dispense if there is air or water in front of it.
                 pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
-                // The dispensing is controlled if there is dropper behind it.
-                pipeEntity.shootsControlled = (backBlock == Blocks.DROPPER);
-                pipeEntity.shootsSpecial = (backBlock == Blocks.DISPENSER);
-                pipeEntity.canAccept = !(
-                    backBlock instanceof CopperPipe ||
-                        backBlock instanceof CopperFitting ||
-                        backState.isSolidBlock(world, pos));
                 pipeEntity.canWater = ModConfig.get().carryWater &&
                     ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
                         (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
@@ -136,17 +90,6 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                 }
             }
         }
-    }
-
-    /**
-     * The item output location is just in front of the pipe.
-     */
-    public static Vec3d getOutputLocation(@NotNull BlockPos pos, @NotNull Direction facing) {
-        return new Vec3d(
-            ((double) pos.getX() + 0.5D) + 0.7D * (double) facing.getOffsetX(),
-            ((double) pos.getY() + 0.5D) + 0.7D * (double) facing.getOffsetY(),
-            ((double) pos.getZ() + 0.5D) + 0.7D * (double) facing.getOffsetZ()
-        );
     }
 
     /**
@@ -181,15 +124,11 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
         if (blockState.get(WATERLOGGED)) {
             scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
-        // The pipe is electrified if it is connected to a lightning rod, and lightnings strikes the lightning rod.
-        boolean electricity = blockState.get(HAS_ELECTRICITY) ||
-            ((neighborState.getBlock() instanceof LightningRodBlock) && neighborState.get(POWERED));
         Direction facing = blockState.get(FACING);
         return blockState
             .with(FRONT_CONNECTED, needFrontExtension(world, pos, facing))
             .with(BACK_CONNECTED, needBackExtension(world, pos, facing))
-            .with(SMOOTH, isSmooth(world, pos, facing))
-            .with(HAS_ELECTRICITY, electricity);
+            .with(SMOOTH, isSmooth(world, pos, facing));
     }
 
     /**
@@ -203,7 +142,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
 //        if (powered != blockState.get(POWERED)) {
 //            world.setBlockState(blockPos, blockState.with(POWERED, powered));
 //        }
-        updateBlockEntityValues(world, blockPos, blockState);
+//        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     /**
@@ -211,7 +150,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
      */
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CopperPipeEntity(pos, state);
+        return new WoodenPipeEntity(pos, state);
     }
 
     /**
@@ -223,9 +162,9 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
         @NotNull World world, BlockState state, BlockEntityType<T> blockEntityType) {
         if (!world.isClient()) {
             return validateTicker(
-                blockEntityType, ModBlockEntities.COPPER_PIPE_ENTITY,
-                (world1, pos1, state1, copperPipeEntity) ->
-                    copperPipeEntity.serverTick(world1, pos1, state1)
+                blockEntityType, ModBlockEntities.WOODEN_PIPE_ENTITY,
+                (world1, pos1, state1, pipeEntity) ->
+                    pipeEntity.serverTick(world1, pos1, state1)
             );
         }
         return null;
@@ -287,7 +226,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FRONT_CONNECTED, BACK_CONNECTED, SMOOTH, WATERLOGGED, FLUID, HAS_ELECTRICITY, POWERED);
+        builder.add(FACING, FRONT_CONNECTED, BACK_CONNECTED, SMOOTH, WATERLOGGED, FLUID);
     }
 
     @Override
@@ -327,8 +266,6 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                 }
             }
         }
-        // Copper oxidation.
-        tickDegradation(blockState, serverLevel, blockPos, random);
     }
 
     @Override
@@ -366,12 +303,6 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                 }
             }
         }
-        // If it is electified, create sparks.
-        if (blockState.get(HAS_ELECTRICITY)) {
-            ParticleUtil.spawnParticle(
-                direction.getAxis(), world, blockPos, 0.4D,
-                ParticleTypes.ELECTRIC_SPARK, UniformIntProvider.create(1, 2));
-        }
         // If the pipe is in water.
         if (fluidState.isIn(FluidTags.WATER))
             if (random.nextFloat() < 0.1F || offsetState.getCollisionShape(world, offsetPos).isEmpty()) {
@@ -392,11 +323,6 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
                         direction.getOffsetZ() * 0.05D);
                 }
             }
-    }
-
-    @Override
-    public @NotNull OxidationLevel getDegradationLevel() {
-        return oxidation;
     }
 
     /**
@@ -420,7 +346,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends CopperPipe> getCodec() {
+    protected @NotNull MapCodec<? extends WoodenPipe> getCodec() {
         return CODEC;
     }
 }

@@ -14,17 +14,25 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
 public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
-    public ModBlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registries) {
+    public ModBlockTagProvider(
+        FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registries) {
         super(output, registries);
     }
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup provider) {
-        // Remove pipes and fittings only with a pickaxe.
+        // Remove pipes and fittings only with a pickaxe,
+        // and wooden pipes with axe too.
+        getOrCreateTagBuilder(BlockTags.AXE_MINEABLE)
+            .addOptionalTag(ModBlockTags.WOODEN_PIPES);
         getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+            .addOptionalTag(ModBlockTags.WOODEN_PIPES)
             .addOptionalTag(ModBlockTags.COPPER_PIPES)
             .addOptionalTag(ModBlockTags.COPPER_FITTINGS);
-        // Pipes.
+        // Wooden pipes.
+        getOrCreateTagBuilder(ModBlockTags.WOODEN_PIPES)
+            .add(ModBlocks.OAK_PIPE);
+        // Copper pipes.
         getOrCreateTagBuilder(ModBlockTags.COPPER_PIPES)
             .add(ModBlocks.COPPER_PIPE)
             .add(ModBlocks.EXPOSED_COPPER_PIPE)
@@ -34,7 +42,7 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
             .add(ModBlocks.WAXED_EXPOSED_COPPER_PIPE)
             .add(ModBlocks.WAXED_WEATHERED_COPPER_PIPE)
             .add(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
-        // Fittings.
+        // Copper fittings.
         getOrCreateTagBuilder(ModBlockTags.COPPER_FITTINGS)
             .add(ModBlocks.COPPER_FITTING)
             .add(ModBlocks.EXPOSED_COPPER_FITTING)
@@ -44,7 +52,7 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
             .add(ModBlocks.WAXED_EXPOSED_COPPER_FITTING)
             .add(ModBlocks.WAXED_WEATHERED_COPPER_FITTING)
             .add(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
-        // Waxed pipes and fittings.
+        // Waxed copper pipes and fittings.
         getOrCreateTagBuilder(ModBlockTags.WAXED)
             .add(ModBlocks.WAXED_COPPER_PIPE)
             .add(ModBlocks.WAXED_EXPOSED_COPPER_PIPE)

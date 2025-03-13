@@ -13,7 +13,6 @@ import eu.pintergabor.ironpipes.registry.CopperPipeDispenseBehaviors;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
-import eu.pintergabor.ironpipes.registry.PipeMovementRestrictions;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,26 +78,6 @@ public class CopperPipeEntity extends BaseBlockEntity {
             }
             if (entity instanceof CopperFittingEntity) {
                 return false;
-            }
-            if (!world.isClient()) {
-                ServerWorld serverWorld = (ServerWorld) world;
-                if (to) {
-                    PipeMovementRestrictions.CanTransferTo<BlockEntity> canTransfer =
-                        PipeMovementRestrictions.getCanTransferTo(entity);
-                    if (canTransfer != null) {
-                        return canTransfer.canTransfer(
-                            serverWorld, pos, world.getBlockState(pos), copperPipe, entity) &&
-                            transferApiCheck;
-                    }
-                } else {
-                    PipeMovementRestrictions.CanTakeFrom<BlockEntity> canTake =
-                        PipeMovementRestrictions.getCanTakeFrom(entity);
-                    if (canTake != null) {
-                        return canTake.canTake(
-                            serverWorld, pos, world.getBlockState(pos), copperPipe, entity) &&
-                            transferApiCheck;
-                    }
-                }
             }
         }
         return usingTransferApi && transferApiCheck;

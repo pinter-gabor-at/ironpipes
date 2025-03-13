@@ -5,6 +5,7 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 
+
 public class ModCreativeInventorySorting {
 
     public static void init() {

@@ -9,7 +9,6 @@ import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModCreativeInventorySorting;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 import eu.pintergabor.ironpipes.registry.ModStats;
-import eu.pintergabor.ironpipes.registry.PipeMovementRestrictions;
 import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
 
@@ -30,7 +29,6 @@ public class Mod implements ModInitializer {
         ModStats.init();
         RegisterPipeNbtMethods.init();
         CopperPipeDispenseBehaviors.init();
-        PipeMovementRestrictions.init();
         LeakingPipeDripBehaviors.init();
         ModCreativeInventorySorting.init();
         ServerLifecycleEvents.SERVER_STOPPED.register(

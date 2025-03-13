@@ -61,9 +61,9 @@ public class CopperFittingEntity extends BaseBlockEntity {
         }
     }
 
-    private boolean moveIn(World world, @NotNull BlockPos blockPos, Random randomSource) {
+    private boolean moveIn(World world, @NotNull BlockPos blockPos, Random random) {
         boolean result = false;
-        for (Direction direction : Util.copyShuffled(Direction.values(), randomSource)) {
+        for (Direction direction : Util.copyShuffled(Direction.values(), random)) {
             Direction opposite = direction.getOpposite();
             BlockPos offsetOppPos = blockPos.offset(opposite);
             Storage<ItemVariant> inventory = CopperPipeEntity.getStorageAt(world, offsetOppPos, direction);
@@ -150,13 +150,13 @@ public class CopperFittingEntity extends BaseBlockEntity {
     @Override
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.readNbt(nbtCompound, lookupProvider);
-        this.transferCooldown = nbtCompound.getInt("transferCooldown");
+        transferCooldown = nbtCompound.getInt("transferCooldown");
     }
 
     @Override
     protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.writeNbt(nbtCompound, lookupProvider);
-        nbtCompound.putInt("transferCooldown", this.transferCooldown);
+        nbtCompound.putInt("transferCooldown", transferCooldown);
     }
 
 }

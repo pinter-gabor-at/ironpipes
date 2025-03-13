@@ -40,8 +40,6 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
@@ -139,10 +137,7 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
     }
 
     /**
-     * The output
-     * @param pos
-     * @param facing
-     * @return
+     * The item output location is just in front of the pipe.
      */
     public static Vec3d getOutputLocation(@NotNull BlockPos pos, @NotNull Direction facing) {
         return new Vec3d(
@@ -180,15 +175,13 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
         Direction direction,
         BlockPos neighborPos,
         BlockState neighborState,
-        Random randomSource
-    ) {
+        Random random) {
         if (blockState.get(WATERLOGGED)) {
             scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         // The pipe is electrified if it is connected to a lightning rod, and lightnings strikes the lightning rod.
         boolean electricity = blockState.get(HAS_ELECTRICITY) ||
-            ((neighborState.getBlock() instanceof LightningRodBlock) &&
-                neighborState.get(POWERED));
+            ((neighborState.getBlock() instanceof LightningRodBlock) && neighborState.get(POWERED));
         Direction facing = blockState.get(FACING);
         return blockState
             .with(FRONT_CONNECTED, needFrontExtension(world, pos, facing))
@@ -211,11 +204,17 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
         updateBlockEntityValues(world, blockPos, blockState);
     }
 
+    /**
+     * Create a block entity.
+     */
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CopperPipeEntity(pos, state);
     }
 
+    /**
+     * Create a ticker, which will be called at every tick both on the client and on the server.
+     */
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
@@ -275,30 +274,13 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
     @Override
     protected @NotNull ActionResult onUseWithItem(
         @NotNull ItemStack stack,
-        BlockState state,
-        World world,
-        BlockPos pos,
-        PlayerEntity player,
-        Hand hand,
-        BlockHitResult hitResult
-    ) {
+        BlockState state, World world, BlockPos pos,
+        PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         // Allow placing pipes next to pipes and fittings.
         if (stack.isIn(ModItemTags.PIPES_AND_FITTINGS)) {
             return ActionResult.PASS;
         }
         return ActionResult.PASS_TO_DEFAULT_BLOCK_ACTION;
-    }
-
-    @Override
-    @NotNull
-    public BlockState rotate(@NotNull BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
-    }
-
-    @Override
-    @NotNull
-    public BlockState mirror(@NotNull BlockState blockState, BlockMirror blockMirror) {
-        return blockState.rotate(blockMirror.getRotation(blockState.get(FACING)));
     }
 
     @Override

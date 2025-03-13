@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes.datagen.tag;
 
 import java.util.concurrent.CompletableFuture;
 
-import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
+import eu.pintergabor.ironpipes.registry.ModBlocks;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -26,34 +26,34 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
             .addOptionalTag(ModBlockTags.COPPER_FITTINGS);
         // Pipes.
         getOrCreateTagBuilder(ModBlockTags.COPPER_PIPES)
-            .add(SimpleCopperPipesBlocks.COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE);
+            .add(ModBlocks.COPPER_PIPE)
+            .add(ModBlocks.EXPOSED_COPPER_PIPE)
+            .add(ModBlocks.WEATHERED_COPPER_PIPE)
+            .add(ModBlocks.OXIDIZED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
         // Fittings.
         getOrCreateTagBuilder(ModBlockTags.COPPER_FITTINGS)
-            .add(SimpleCopperPipesBlocks.COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+            .add(ModBlocks.COPPER_FITTING)
+            .add(ModBlocks.EXPOSED_COPPER_FITTING)
+            .add(ModBlocks.WEATHERED_COPPER_FITTING)
+            .add(ModBlocks.OXIDIZED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
         // Waxed pipes and fittings.
         getOrCreateTagBuilder(ModBlockTags.WAXED)
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE)
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING)
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+            .add(ModBlocks.WAXED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE)
+            .add(ModBlocks.WAXED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_FITTING)
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
         // Silent pipes for the future.
         getOrCreateTagBuilder(ModBlockTags.SILENT_PIPES);
     }

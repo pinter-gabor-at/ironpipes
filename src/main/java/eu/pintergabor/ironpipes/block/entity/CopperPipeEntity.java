@@ -299,11 +299,11 @@ public class CopperPipeEntity extends BaseBlockEntity {
                     int shotLength = 4;
                     if (shootsControlled) { //If Dropper
                         shotLength = 10;
-                        playDispenseSound(serverWorld, blockPos);
+                        ModSoundEvents.playDispenseSound(serverWorld, blockPos);
                     } else if (shootsSpecial) { //If Dispenser, Use Pipe-Specific Launch Length
                         if (blockState.getBlock() instanceof CopperPipe pipe) {
                             shotLength = pipe.dispenseShotLength;
-                            playDispenseSound(serverWorld, blockPos);
+                            ModSoundEvents.playDispenseSound(serverWorld, blockPos);
                         } else {
                             shotLength = 12;
                         }

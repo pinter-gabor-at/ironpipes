@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.CopperPipe;
-import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
+import eu.pintergabor.ironpipes.registry.ModBlocks;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -72,25 +72,25 @@ public final class ModModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
         // Pipes.
-        createPipe(generator, SimpleCopperPipesBlocks.COPPER_PIPE, SimpleCopperPipesBlocks.COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE, SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE, SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.COPPER_PIPE);
+        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.EXPOSED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WEATHERED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.OXIDIZED_COPPER_PIPE);
         // Waxed pipes.
-        createPipe(generator, SimpleCopperPipesBlocks.COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE);
-        createPipe(generator, SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.WAXED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
         // Fittings.
-        createFitting(generator, SimpleCopperPipesBlocks.COPPER_FITTING, SimpleCopperPipesBlocks.COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING, SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING, SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING, SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.COPPER_FITTING);
+        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.EXPOSED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WEATHERED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING, ModBlocks.OXIDIZED_COPPER_FITTING);
         // Waxed fittings.
-        createFitting(generator, SimpleCopperPipesBlocks.COPPER_FITTING, SimpleCopperPipesBlocks.WAXED_COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING, SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING, SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING);
-        createFitting(generator, SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING, SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.WAXED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING, ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
     }
 
     @Override

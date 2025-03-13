@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes.datagen.tag;
 
 import java.util.concurrent.CompletableFuture;
 
-import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
+import eu.pintergabor.ironpipes.registry.ModBlocks;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 
 import net.minecraft.registry.RegistryWrapper;
@@ -21,24 +21,24 @@ public final class ModItemTagProvider extends FabricTagProvider.ItemTagProvider 
     protected void configure(RegistryWrapper.WrapperLookup provider) {
         // Pipes.
         this.getOrCreateTagBuilder(ModItemTags.COPPER_PIPES)
-            .add(SimpleCopperPipesBlocks.COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE.asItem());
+            .add(ModBlocks.COPPER_PIPE.asItem())
+            .add(ModBlocks.EXPOSED_COPPER_PIPE.asItem())
+            .add(ModBlocks.WEATHERED_COPPER_PIPE.asItem())
+            .add(ModBlocks.OXIDIZED_COPPER_PIPE.asItem())
+            .add(ModBlocks.WAXED_COPPER_PIPE.asItem())
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_PIPE.asItem())
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_PIPE.asItem())
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE.asItem());
         // Fittings.
         this.getOrCreateTagBuilder(ModItemTags.COPPER_FITTINGS)
-            .add(SimpleCopperPipesBlocks.COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING.asItem())
-            .add(SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING.asItem());
+            .add(ModBlocks.COPPER_FITTING.asItem())
+            .add(ModBlocks.EXPOSED_COPPER_FITTING.asItem())
+            .add(ModBlocks.WEATHERED_COPPER_FITTING.asItem())
+            .add(ModBlocks.OXIDIZED_COPPER_FITTING.asItem())
+            .add(ModBlocks.WAXED_COPPER_FITTING.asItem())
+            .add(ModBlocks.WAXED_EXPOSED_COPPER_FITTING.asItem())
+            .add(ModBlocks.WAXED_WEATHERED_COPPER_FITTING.asItem())
+            .add(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING.asItem());
         // All pipes and fittings.
         this.getOrCreateTagBuilder(ModItemTags.PIPES_AND_FITTINGS)
             .addOptionalTag(ModItemTags.COPPER_PIPES)

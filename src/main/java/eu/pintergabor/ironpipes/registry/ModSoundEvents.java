@@ -1,12 +1,16 @@
 package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
+import eu.pintergabor.ironpipes.config.ModConfig;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 
 public class ModSoundEvents {
@@ -22,5 +26,17 @@ public class ModSoundEvents {
     }
 
     public static void init() {
+        // Everything is done by static initializers.
+    }
+
+    /**
+     * Play dispensing sound.
+     */
+    public static void playDispenseSound(ServerWorld world, BlockPos soundPos) {
+        if (ModConfig.get().dispenseSounds) {
+            world.playSound(
+                null, soundPos, LAUNCH,
+                SoundCategory.BLOCKS, 0.2f, (world.random.nextFloat() * 0.25f) + 0.8f);
+        }
     }
 }

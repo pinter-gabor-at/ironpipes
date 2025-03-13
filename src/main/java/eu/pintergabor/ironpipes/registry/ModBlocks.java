@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 
-public final class SimpleCopperPipesBlocks {
+public final class ModBlocks {
     public static final Block COPPER_PIPE = register("copper_pipe",
         properties -> new CopperPipe(Oxidizable.OxidationLevel.UNAFFECTED, properties, 2, 20),
         AbstractBlock.Settings.create()

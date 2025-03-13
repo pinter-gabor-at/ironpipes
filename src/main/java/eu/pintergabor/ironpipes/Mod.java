@@ -10,7 +10,7 @@ import eu.pintergabor.ironpipes.registry.ModCreativeInventorySorting;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
-import eu.pintergabor.ironpipes.registry.SimpleCopperPipesBlocks;
+import eu.pintergabor.ironpipes.registry.ModBlocks;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -23,7 +23,7 @@ public class Mod implements ModInitializer {
     public void onInitialize() {
         ModBlockStateProperties.init();
         ModConfig.init();
-        SimpleCopperPipesBlocks.init();
+        ModBlocks.init();
         ModBlockEntities.init();
         ModSoundEvents.init();
         ModStats.init();

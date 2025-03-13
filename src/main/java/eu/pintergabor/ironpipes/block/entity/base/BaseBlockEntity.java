@@ -8,11 +8,8 @@ import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
-import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
-
-import net.minecraft.sound.SoundCategory;
 
 import net.minecraft.util.math.random.Random;
 
@@ -112,17 +109,6 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Play dispensing sound.
-     */
-    protected static void playDispenseSound(ServerWorld world, BlockPos soundPos) {
-        if (ModConfig.get().dispenseSounds) {
-            world.playSound(
-                null, soundPos, ModSoundEvents.LAUNCH,
-                SoundCategory.BLOCKS, 0.2f, (world.random.nextFloat() * 0.25f) + 0.8f);
         }
     }
 

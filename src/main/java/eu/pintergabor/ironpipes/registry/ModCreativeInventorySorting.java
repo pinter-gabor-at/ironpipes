@@ -14,35 +14,35 @@ public class ModCreativeInventorySorting {
             entries -> {
                 // Add normal copper pipes and fittings after similar copper bulbs.
                 entries.addAfter(Items.COPPER_BULB,
-                    SimpleCopperPipesBlocks.COPPER_PIPE, SimpleCopperPipesBlocks.COPPER_FITTING);
+                    ModBlocks.COPPER_PIPE, ModBlocks.COPPER_FITTING);
                 entries.addAfter(Items.EXPOSED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.EXPOSED_COPPER_FITTING);
+                    ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.EXPOSED_COPPER_FITTING);
                 entries.addAfter(Items.WEATHERED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WEATHERED_COPPER_PIPE, SimpleCopperPipesBlocks.WEATHERED_COPPER_FITTING);
+                    ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WEATHERED_COPPER_FITTING);
                 entries.addAfter(Items.OXIDIZED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.OXIDIZED_COPPER_PIPE, SimpleCopperPipesBlocks.OXIDIZED_COPPER_FITTING);
+                    ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.OXIDIZED_COPPER_FITTING);
                 // Add waxed copper pipes and fittings after similar waxed copper bulbs.
                 entries.addAfter(Items.WAXED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_COPPER_FITTING);
+                    ModBlocks.WAXED_COPPER_PIPE, ModBlocks.WAXED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_EXPOSED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING);
+                    ModBlocks.WAXED_EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_WEATHERED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING);
+                    ModBlocks.WAXED_WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+                    ModBlocks.WAXED_OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
             });
         // Creative tabs, redstone item group.
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(
             entries -> {
                 // Add waxed copper pipes and fittings after similar waxed copper bulbs.
                 entries.addAfter(Items.WAXED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_COPPER_FITTING);
+                    ModBlocks.WAXED_COPPER_PIPE, ModBlocks.WAXED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_EXPOSED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_EXPOSED_COPPER_FITTING);
+                    ModBlocks.WAXED_EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_WEATHERED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_WEATHERED_COPPER_FITTING);
+                    ModBlocks.WAXED_WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
                 entries.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB,
-                    SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_PIPE, SimpleCopperPipesBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+                    ModBlocks.WAXED_OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
             });
     }
 }

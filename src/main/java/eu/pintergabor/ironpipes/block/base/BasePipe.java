@@ -1,10 +1,6 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import eu.pintergabor.ironpipes.block.CopperPipe;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
-
-import net.minecraft.world.World;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -14,12 +10,15 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 
 public abstract class BasePipe extends BaseBlock {
@@ -332,5 +331,25 @@ public abstract class BasePipe extends BaseBlock {
             case NORTH -> -0.05;
             case SOUTH -> 1.05;
         };
+    }
+
+    /**
+     * @return {@code state} rotated by {@code rotation}
+     * @see AbstractBlockState#rotate
+     */
+    @Override
+    @NotNull
+    public BlockState rotate(@NotNull BlockState state, BlockRotation rotation) {
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    }
+
+    /**
+     * @return {@code state} mirrored by {@code mirror}
+     * @see AbstractBlockState#mirror
+     */
+    @Override
+    @NotNull
+    public BlockState mirror(@NotNull BlockState state, BlockMirror mirror) {
+        return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 }

@@ -194,6 +194,11 @@ public class CopperPipeEntity extends BaseBlockEntity {
         }
     }
 
+    /**
+     * Pull item(s) from the inventory at the back of the pipe.
+     *
+     * @return 0=failed, 2=pulled from another pipe, 3=pulled from an inventory
+     */
     private int moveIn(World world, @NotNull BlockPos pipePos, BlockState pipeState, @NotNull Direction facing) {
         int result = 0;
         Direction opposite = facing.getOpposite();
@@ -228,18 +233,26 @@ public class CopperPipeEntity extends BaseBlockEntity {
                     }
                     // Close transaction.
                     transaction.close();
+                    // One type of item at a time.
+                    if (result != 0) break;
                 }
             }
         }
         return result;
     }
 
+    /**
+     * Push item(s) to the inventory in front of the pipe.
+     *
+     * @return false=failed, true=success
+     */
     private boolean moveOut(World world, @NotNull BlockPos blockPos, Direction facing) {
         boolean result = false;
         BlockPos offsetPos = blockPos.offset(facing);
         Storage<ItemVariant> inventory = getStorageAt(world, offsetPos, facing.getOpposite());
         Storage<ItemVariant> pipeInventory = getStorageAt(world, blockPos, facing);
-        if (inventory != null && pipeInventory != null && canTransfer(world, offsetPos, true, this, inventory, pipeInventory)) {
+        if (inventory != null && pipeInventory != null &&
+            canTransfer(world, offsetPos, true, this, inventory, pipeInventory)) {
             boolean canMove = true;
             BlockState state = world.getBlockState(offsetPos);
             if (state.getBlock() instanceof CopperPipe) {
@@ -263,6 +276,8 @@ public class CopperPipeEntity extends BaseBlockEntity {
                         }
                         // Close the transaction.
                         transaction.close();
+                        // One type of item at a time.
+                        if (result) break;
                     }
                 }
             }

@@ -13,13 +13,13 @@ import net.minecraft.util.math.Direction;
 /**
  * A fluid pipe can carry water or lava.
  */
-public abstract class FluidPipe extends BasePipe implements Waterloggable {
+public abstract class BaseFluidPipe extends BasePipe implements Waterloggable {
     public static final BooleanProperty WATERLOGGED =
         Properties.WATERLOGGED;
     public static final EnumProperty<PipeFluid> FLUID =
         ModBlockStateProperties.FLUID;
 
-    protected FluidPipe(Settings settings) {
+    protected BaseFluidPipe(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
             .with(FACING, Direction.DOWN)

@@ -15,29 +15,9 @@ import net.minecraft.world.World;
 
 
 public abstract class BaseBlock extends BlockWithEntity {
-//    public static final BooleanProperty POWERED =
-//        Properties.POWERED;
 
     protected BaseBlock(Settings settings) {
         super(settings);
-//        this.setDefaultState(this.getStateManager().getDefaultState()
-//            .with(POWERED, false));
-    }
-
-    /**
-     * Check if the pipe is receiving redstone power from any direction.
-     *
-     * @param world    The world
-     * @param blockPos Position of this pipe
-     * @return true if the pipe is receiving redstone power.
-     */
-    public static boolean isReceivingRedstonePower(World world, BlockPos blockPos) {
-        for (Direction direction : Direction.values()) {
-            if (world.getEmittedRedstonePower(blockPos.offset(direction), direction) > 0) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -66,23 +46,4 @@ public abstract class BaseBlock extends BlockWithEntity {
         return BlockRenderType.MODEL;
     }
 
-    /**
-     * Pipes and fitting have comparator output.
-     * <p>
-     * See {@link #getComparatorOutput(BlockState, World, BlockPos)}
-     *
-     * @return true
-     */
-    @Override
-    public boolean hasComparatorOutput(BlockState blockState) {
-        return true;
-    }
-
-    /**
-     * Calculate the comparator output the same way as for other blocks with inventory.
-     */
-    @Override
-    public int getComparatorOutput(BlockState blockState, @NotNull World world, BlockPos blockPos) {
-        return ScreenHandler.calculateComparatorOutput(world.getBlockEntity(blockPos));
-    }
 }

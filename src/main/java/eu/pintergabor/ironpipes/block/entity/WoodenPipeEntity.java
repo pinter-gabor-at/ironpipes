@@ -1,5 +1,6 @@
 package eu.pintergabor.ironpipes.block.entity;
 
+import eu.pintergabor.ironpipes.block.entity.base.BasePipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
@@ -16,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 
-public class WoodenPipeEntity extends BlockEntity {
+public class WoodenPipeEntity extends BaseItemPipeEntity {
     public int waterCooldown;
     public boolean canWater;
     public boolean canLava;

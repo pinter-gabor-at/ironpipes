@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import eu.pintergabor.ironpipes.block.base.FluidPipe;
+import eu.pintergabor.ironpipes.block.base.BaseFluidPipe;
 import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
@@ -47,7 +47,7 @@ import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
 
-public class WoodenPipe extends FluidPipe {
+public class WoodenPipe extends BaseFluidPipe {
     public static final MapCodec<WoodenPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
             createSettingsCodec()

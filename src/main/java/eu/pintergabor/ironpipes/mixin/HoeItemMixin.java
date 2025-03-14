@@ -1,7 +1,7 @@
 package eu.pintergabor.ironpipes.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import eu.pintergabor.ironpipes.block.CopperPipe;
+import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 
 import net.minecraft.advancement.criterion.Criteria;

@@ -3,10 +3,10 @@ package eu.pintergabor.ironpipes.registry;
 import java.util.Map;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.block.entity.base.BaseBlockEntity;
-import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
-import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
-import eu.pintergabor.ironpipes.block.entity.nbt.MoveablePipeDataHandler;
+import eu.pintergabor.ironpipes.blockold.entity.base.BaseBlockEntity;
+import eu.pintergabor.ironpipes.blockold.entity.CopperFittingEntity;
+import eu.pintergabor.ironpipes.blockold.entity.CopperPipeEntity;
+import eu.pintergabor.ironpipes.blockold.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.Nullable;

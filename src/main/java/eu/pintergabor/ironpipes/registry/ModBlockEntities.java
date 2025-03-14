@@ -1,9 +1,9 @@
 package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.block.entity.CopperFittingEntity;
-import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
-import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
+import eu.pintergabor.ironpipes.blockold.entity.CopperFittingEntity;
+import eu.pintergabor.ironpipes.blockold.entity.CopperPipeEntity;
+import eu.pintergabor.ironpipes.blockold.entity.WoodenPipeEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;

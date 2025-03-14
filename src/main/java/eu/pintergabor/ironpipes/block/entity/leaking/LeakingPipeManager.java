@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes.block.entity.leaking;
 
 import java.util.ArrayList;
 
-import eu.pintergabor.ironpipes.block.CopperPipe;
+import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 

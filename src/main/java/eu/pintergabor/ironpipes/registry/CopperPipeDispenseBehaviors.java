@@ -2,7 +2,7 @@ package eu.pintergabor.ironpipes.registry;
 
 import java.util.Map;
 
-import eu.pintergabor.ironpipes.block.entity.CopperPipeEntity;
+import eu.pintergabor.ironpipes.blockold.entity.CopperPipeEntity;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

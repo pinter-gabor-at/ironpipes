@@ -3,7 +3,7 @@ package eu.pintergabor.ironpipes.datagen.model;
 import java.util.Optional;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.block.CopperPipe;
+import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.registry.ModBlocks;
 import org.jetbrains.annotations.NotNull;
 

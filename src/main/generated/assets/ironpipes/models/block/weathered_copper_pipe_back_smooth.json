@@ -1,0 +1,6 @@
+{
+  "parent": "ironpipes:block/template_pipe_back_smooth",
+  "textures": {
+    "side": "ironpipes:block/weathered_copper_pipe"
+  }
+}

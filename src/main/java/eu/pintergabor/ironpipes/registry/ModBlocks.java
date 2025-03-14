@@ -3,9 +3,9 @@ package eu.pintergabor.ironpipes.registry;
 import java.util.function.Function;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.block.CopperFitting;
-import eu.pintergabor.ironpipes.block.CopperPipe;
-import eu.pintergabor.ironpipes.block.WoodenPipe;
+import eu.pintergabor.ironpipes.blockold.CopperFitting;
+import eu.pintergabor.ironpipes.blockold.CopperPipe;
+import eu.pintergabor.ironpipes.blockold.WoodenPipe;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;

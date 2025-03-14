@@ -5,7 +5,7 @@ import java.util.function.Function;
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.blockold.CopperFitting;
 import eu.pintergabor.ironpipes.blockold.CopperPipe;
-import eu.pintergabor.ironpipes.blockold.WoodenPipe;
+import eu.pintergabor.ironpipes.block.WoodenPipe;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;

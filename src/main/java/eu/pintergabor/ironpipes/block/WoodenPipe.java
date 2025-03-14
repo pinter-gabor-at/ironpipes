@@ -1,10 +1,9 @@
-package eu.pintergabor.ironpipes.blockold;
+package eu.pintergabor.ironpipes.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import eu.pintergabor.ironpipes.blockold.base.FluidPipe;
-import eu.pintergabor.ironpipes.blockold.entity.CopperPipeEntity;
-import eu.pintergabor.ironpipes.blockold.entity.WoodenPipeEntity;
+import eu.pintergabor.ironpipes.block.base.BaseFluidPipe;
+import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
@@ -14,6 +13,7 @@ import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -47,13 +47,13 @@ import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 
 
-public class WoodenPipe extends FluidPipe {
+public class WoodenPipe extends BaseFluidPipe {
     public static final MapCodec<WoodenPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
             createSettingsCodec()
         ).apply(instance, WoodenPipe::new));
 
-    public WoodenPipe(Settings settings) {
+    public WoodenPipe(AbstractBlock.Settings settings) {
         super(settings);
     }
 
@@ -76,7 +76,7 @@ public class WoodenPipe extends FluidPipe {
             BlockState backState = world.getBlockState(pos.offset(direction.getOpposite()));
             Block backBlock = backState.getBlock();
             // Always true.
-            if (world.getBlockEntity(pos) instanceof CopperPipeEntity pipeEntity) {
+            if (world.getBlockEntity(pos) instanceof WoodenPipeEntity pipeEntity) {
                 // The pipe can dispense if there is air or water in front of it.
                 pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
                 pipeEntity.canWater = ModConfig.get().carryWater &&

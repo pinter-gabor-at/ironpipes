@@ -1,5 +1,6 @@
-package eu.pintergabor.ironpipes.blockold.entity;
+package eu.pintergabor.ironpipes.block.entity;
 
+import eu.pintergabor.ironpipes.block.entity.base.BaseFluidPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
@@ -7,7 +8,6 @@ import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Properties;
@@ -16,14 +16,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 
-public class WoodenPipeEntity extends BlockEntity {
-    public int waterCooldown;
-    public boolean canWater;
-    public boolean canLava;
+public class WoodenPipeEntity extends BaseFluidPipeEntity {
 
     public WoodenPipeEntity(BlockPos blockPos, BlockState blockState) {
         super(ModBlockEntities.WOODEN_PIPE_ENTITY, blockPos, blockState);
-        waterCooldown = -1;
     }
 
     public void serverTick(@NotNull World world, BlockPos blockPos, BlockState blockState) {

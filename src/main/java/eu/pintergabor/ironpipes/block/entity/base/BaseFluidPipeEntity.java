@@ -11,8 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class BaseFluidPipeEntity extends BasePipeEntity {
     public int waterCooldown;
-    public boolean canWater;
-    public boolean canLava;
+    public boolean canDispense;
+    public boolean hasWater;
+    public boolean hasLava;
 
     public BaseFluidPipeEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -28,14 +29,14 @@ public class BaseFluidPipeEntity extends BasePipeEntity {
     @Override
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.readNbt(nbtCompound, lookupProvider);
-        canWater = nbtCompound.getBoolean("canWater");
-        canLava = nbtCompound.getBoolean("canLava");
+        hasWater = nbtCompound.getBoolean("hasWater");
+        hasLava = nbtCompound.getBoolean("hasLava");
     }
 
     @Override
     protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.writeNbt(nbtCompound, lookupProvider);
-        nbtCompound.putBoolean("canWater", canWater);
-        nbtCompound.putBoolean("canLava", canLava);
+        nbtCompound.putBoolean("hasWater", hasWater);
+        nbtCompound.putBoolean("hasLava", hasLava);
     }
 }

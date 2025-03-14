@@ -26,7 +26,7 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
         if (!world.isClient()) {
 //            boolean validWater = isValidFluidNBT(waterNbt) && ModConfig.get().carryWater;
 //            boolean validLava = isValidFluidNBT(lavaNbt) && ModConfig.get().carryLava;
-//            if (this.canWater && this.canLava) {
+//            if (this.hasWater && this.hasLava) {
 //                validWater = false;
 //                validLava = false;
 //            }
@@ -47,15 +47,15 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
     public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.readNbt(nbtCompound, lookupProvider);
         waterCooldown = nbtCompound.getInt("waterCooldown");
-        canWater = nbtCompound.getBoolean("canWater");
-        canLava = nbtCompound.getBoolean("canLava");
+        hasWater = nbtCompound.getBoolean("hasWater");
+        hasLava = nbtCompound.getBoolean("hasLava");
     }
 
     @Override
     protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
         super.writeNbt(nbtCompound, lookupProvider);
         nbtCompound.putInt("waterCooldown", waterCooldown);
-        nbtCompound.putBoolean("canWater", canWater);
-        nbtCompound.putBoolean("canLava", canLava);
+        nbtCompound.putBoolean("hasWater", hasWater);
+        nbtCompound.putBoolean("hasLava", hasLava);
     }
 }

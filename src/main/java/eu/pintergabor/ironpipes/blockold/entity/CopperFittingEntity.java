@@ -143,7 +143,7 @@ public class CopperFittingEntity extends BaseBlockEntity {
 //    @Override
 //    public void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
 //        if (state.getBlock() instanceof CopperFitting) {
-//            this.canWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
+//            this.hasWater = state.get(Properties.WATERLOGGED) && SimpleCopperPipesConfig.get().carryWater;
 //        }
 //    }
 

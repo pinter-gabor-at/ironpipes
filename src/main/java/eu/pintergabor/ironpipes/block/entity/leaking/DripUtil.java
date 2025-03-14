@@ -24,7 +24,7 @@ public class DripUtil {
      *
      * @return random drip point X.
      */
-    protected static double getDripX(@NotNull Direction direction, Random random) {
+    public static double getDripX(@NotNull Direction direction, Random random) {
         return switch (direction) {
             case DOWN, SOUTH, NORTH -> 0.5 + getDripRnd(random);
             case UP -> 0.5;
@@ -38,7 +38,7 @@ public class DripUtil {
      *
      * @return random drip point Y.
      */
-    protected static double getDripY(@NotNull Direction direction, Random random) {
+    public static double getDripY(@NotNull Direction direction, Random random) {
         return switch (direction) {
             case DOWN -> -0.05;
             case UP -> 1.05;
@@ -51,7 +51,7 @@ public class DripUtil {
      *
      * @return random drip point Z.
      */
-    protected static double getDripZ(@NotNull Direction direction, Random random) {
+    public static double getDripZ(@NotNull Direction direction, Random random) {
         return switch (direction) {
             case DOWN, EAST, WEST -> 0.5 + getDripRnd(random);
             case UP -> 0.5;

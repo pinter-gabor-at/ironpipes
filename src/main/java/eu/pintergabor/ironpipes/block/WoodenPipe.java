@@ -1,5 +1,7 @@
 package eu.pintergabor.ironpipes.block;
 
+import static eu.pintergabor.ironpipes.block.entity.leaking.DripUtil.*;
+
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import eu.pintergabor.ironpipes.block.base.BaseFluidPipe;
@@ -8,7 +10,6 @@ import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,6 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Oxidizable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -30,12 +30,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -60,7 +58,7 @@ public class WoodenPipe extends BaseFluidPipe {
     /**
      * Update the associated block entity parameters and behaviour.
      * <p>
-     * Called when the state of this pipe block, or the state of its neighbours change
+     * Called when the state of this pipe block, or the state of its neighbours change.
      *
      * @param world This world
      * @param pos   Pipe position
@@ -79,14 +77,14 @@ public class WoodenPipe extends BaseFluidPipe {
             if (world.getBlockEntity(pos) instanceof WoodenPipeEntity pipeEntity) {
                 // The pipe can dispense if there is air or water in front of it.
                 pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
-                pipeEntity.canWater = ModConfig.get().carryWater &&
+                pipeEntity.hasWater = ModConfig.get().carryWater &&
                     ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
                         (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
-                pipeEntity.canLava = ModConfig.get().carryLava &&
+                pipeEntity.hasLava = ModConfig.get().carryLava &&
                     (backBlock == Blocks.LAVA);
-                if (pipeEntity.canWater && pipeEntity.canLava) {
-                    pipeEntity.canWater = false;
-                    pipeEntity.canLava = false;
+                if (pipeEntity.hasWater && pipeEntity.hasLava) {
+                    pipeEntity.hasWater = false;
+                    pipeEntity.hasLava = false;
                 }
             }
         }
@@ -188,25 +186,6 @@ public class WoodenPipe extends BaseFluidPipe {
     }
 
     /**
-     * Use empty hand on a pipe.
-     * <p>
-     * Open gui.
-     */
-    @Override
-    protected @NotNull ActionResult onUse(
-        BlockState state, @NotNull World world, BlockPos pos,
-        PlayerEntity player, BlockHitResult hitResult) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof CopperPipeEntity copperPipeEntity) {
-            player.openHandledScreen(copperPipeEntity);
-            player.incrementStat(Stats.CUSTOM.getOrCreateStat(
-                ModStats.INSPECT_PIPE));
-            return ActionResult.SUCCESS;
-        }
-        return ActionResult.PASS;
-    }
-
-    /**
      * Use item on a pipe.
      * <p>
      * If it is another piece of pipe or fitting then place it,
@@ -235,7 +214,7 @@ public class WoodenPipe extends BaseFluidPipe {
         boolean isLava = blockState.get(FLUID) == PipeFluid.LAVA;
         boolean isWater = blockState.get(FLUID) == PipeFluid.WATER;
         // Water can drip from any pipe containing water.
-        // Lava can drip from any pipe containing lava, except thos that face upwards.
+        // Lava can drip from any pipe containing lava, except those that face upwards.
         if (isWater || (isLava && direction != Direction.UP)) {
             // Adjust probability.
             if (random.nextFloat() <= (isLava ? 0.05859375F : 0.17578125F) * 2) {
@@ -270,8 +249,8 @@ public class WoodenPipe extends BaseFluidPipe {
 
     @Override
     public boolean hasRandomTicks(@NotNull BlockState blockState) {
-        return Oxidizable.getIncreasedOxidationBlock(blockState.getBlock()).isPresent() ||
-            blockState.get(FLUID) == PipeFluid.WATER || blockState.get(FLUID) == PipeFluid.LAVA;
+        return blockState.get(FLUID) == PipeFluid.WATER ||
+            blockState.get(FLUID) == PipeFluid.LAVA;
     }
 
     @Override
@@ -336,11 +315,6 @@ public class WoodenPipe extends BaseFluidPipe {
             updateBlockEntityValues(world, pos, newState);
         } else {
             // Remove block and block entity.
-            if (world.getBlockEntity(pos) instanceof CopperPipeEntity copperPipeEntity) {
-                // Drop inventory.
-                ItemScatterer.spawn(world, pos, copperPipeEntity);
-                world.updateComparators(pos, this);
-            }
             world.removeBlockEntity(pos);
         }
     }

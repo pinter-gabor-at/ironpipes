@@ -163,15 +163,15 @@ public class CopperPipeEntity extends BaseBlockEntity {
 //                oppBlock instanceof CopperPipe ||
 //                    oppBlock instanceof CopperFitting ||
 //                    oppState.isSolidBlock(level, pos));
-//            this.canWater = (oppBlock == Blocks.WATER || state.get(Properties.WATERLOGGED) ||
+//            this.hasWater = (oppBlock == Blocks.WATER || state.get(Properties.WATERLOGGED) ||
 //                (oppState.contains(Properties.WATERLOGGED) ? oppState.get(Properties.WATERLOGGED) : false)) &&
 //                SimpleCopperPipesConfig.get().carryWater;
-//            this.canLava =
+//            this.hasLava =
 //                oppBlock == Blocks.LAVA &&
 //                    SimpleCopperPipesConfig.get().carryLava;
-//            if (this.canWater && this.canLava) {
-//                this.canWater = false;
-//                this.canLava = false;
+//            if (this.hasWater && this.hasLava) {
+//                this.hasWater = false;
+//                this.hasLava = false;
 //            }
 //        }
 //    }

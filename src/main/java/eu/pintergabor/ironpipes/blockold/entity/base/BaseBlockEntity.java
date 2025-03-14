@@ -236,8 +236,8 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         }
         waterCooldown = nbtCompound.getInt("waterCooldown");
         electricityCooldown = nbtCompound.getInt("electricityCooldown");
-        canWater = nbtCompound.getBoolean("canWater");
-        canLava = nbtCompound.getBoolean("canLava");
+        canWater = nbtCompound.getBoolean("hasWater");
+        canLava = nbtCompound.getBoolean("hasLava");
         moveablePipeDataHandler.readNbt(nbtCompound);
     }
 
@@ -249,8 +249,8 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
         }
         nbtCompound.putInt("waterCooldown", waterCooldown);
         nbtCompound.putInt("electricityCooldown", electricityCooldown);
-        nbtCompound.putBoolean("canWater", canWater);
-        nbtCompound.putBoolean("canLava", canLava);
+        nbtCompound.putBoolean("hasWater", canWater);
+        nbtCompound.putBoolean("hasLava", canLava);
         moveablePipeDataHandler.writeNbt(nbtCompound);
     }
 

@@ -5,7 +5,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 
 
-public class BasePipeEntity extends BaseBlockEntity {
+public abstract class BasePipeEntity extends BaseBlockEntity {
 
     public BasePipeEntity(
         BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {

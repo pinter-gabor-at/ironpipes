@@ -8,7 +8,6 @@ import eu.pintergabor.ironpipes.block.base.BaseFluidPipe;
 import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,7 +29,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -65,29 +62,29 @@ public class WoodenPipe extends BaseFluidPipe {
      * @param state New state
      */
     private static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
-        if (state.getBlock() instanceof WoodenPipe) {
-            Direction direction = state.get(Properties.FACING);
-            // The state of the block in front of the pipe.
-            BlockState frontState = world.getBlockState(pos.offset(direction));
-            Block frontBlock = frontState.getBlock();
-            // The state of the block behind the pipe.
-            BlockState backState = world.getBlockState(pos.offset(direction.getOpposite()));
-            Block backBlock = backState.getBlock();
-            // Always true.
-            if (world.getBlockEntity(pos) instanceof WoodenPipeEntity pipeEntity) {
-                // The pipe can dispense if there is air or water in front of it.
-                pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
-                pipeEntity.hasWater = ModConfig.get().carryWater &&
-                    ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
-                        (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
-                pipeEntity.hasLava = ModConfig.get().carryLava &&
-                    (backBlock == Blocks.LAVA);
-                if (pipeEntity.hasWater && pipeEntity.hasLava) {
-                    pipeEntity.hasWater = false;
-                    pipeEntity.hasLava = false;
-                }
-            }
-        }
+//        if (state.getBlock() instanceof WoodenPipe) {
+//            Direction direction = state.get(Properties.FACING);
+//            // The state of the block in front of the pipe.
+//            BlockState frontState = world.getBlockState(pos.offset(direction));
+//            Block frontBlock = frontState.getBlock();
+//            // The state of the block behind the pipe.
+//            BlockState backState = world.getBlockState(pos.offset(direction.getOpposite()));
+//            Block backBlock = backState.getBlock();
+//            // Always true.
+//            if (world.getBlockEntity(pos) instanceof WoodenPipeEntity pipeEntity) {
+//                // The pipe can dispense if there is air or water in front of it.
+//                pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
+//                pipeEntity.hasWater = ModConfig.get().carryWater &&
+//                    ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
+//                        (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
+//                pipeEntity.hasLava = ModConfig.get().carryLava &&
+//                    (backBlock == Blocks.LAVA);
+//                if (pipeEntity.hasWater && pipeEntity.hasLava) {
+//                    pipeEntity.hasWater = false;
+//                    pipeEntity.hasLava = false;
+//                }
+//            }
+//        }
     }
 
     /**
@@ -161,9 +158,7 @@ public class WoodenPipe extends BaseFluidPipe {
         if (!world.isClient()) {
             return validateTicker(
                 blockEntityType, ModBlockEntities.WOODEN_PIPE_ENTITY,
-                (world1, pos1, state1, pipeEntity) ->
-                    pipeEntity.serverTick(world1, pos1, state1)
-            );
+                WoodenPipeEntity::serverTick);
         }
         return null;
     }

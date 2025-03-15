@@ -20,7 +20,7 @@ public final class ModBlockEntities {
     public static final BlockEntityType<WoodenPipeEntity> WOODEN_PIPE_ENTITY = register(
         "wooden_pipe",
         WoodenPipeEntity::new,
-        ModBlocks.OAK_PIPE);
+        ModBlocks.WOODEN_PIPES);
     // Copper pipes.
     public static final BlockEntityType<CopperPipeEntity> COPPER_PIPE_ENTITY = register(
         "copper_pipe",

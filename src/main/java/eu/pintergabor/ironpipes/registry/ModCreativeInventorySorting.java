@@ -1,5 +1,7 @@
 package eu.pintergabor.ironpipes.registry;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
 
@@ -12,9 +14,9 @@ public class ModCreativeInventorySorting {
         // Creative tabs, functional item group.
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(
             entries -> {
-                // Add wooden pipes and fittings after buckets
-                entries.addAfter(Items.WATER_BUCKET,
-                    ModBlocks.OAK_PIPE);
+                // Add wooden pipes and fittings after the cauldron.
+                entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.WOODEN_PIPES);
                 // Add normal copper pipes and fittings after similar copper bulbs.
                 entries.addAfter(Items.COPPER_BULB,
                     ModBlocks.COPPER_PIPE, ModBlocks.COPPER_FITTING);

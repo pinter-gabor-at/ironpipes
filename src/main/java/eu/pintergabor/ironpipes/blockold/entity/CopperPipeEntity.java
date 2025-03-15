@@ -2,17 +2,16 @@ package eu.pintergabor.ironpipes.blockold.entity;
 
 import java.util.ArrayList;
 
+import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
+import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.blockold.CopperFitting;
 import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.blockold.entity.base.BaseBlockEntity;
-import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.blockold.entity.nbt.MoveablePipeDataHandler;
-import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
-import eu.pintergabor.ironpipes.tag.ModBlockTags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -218,15 +217,11 @@ public class CopperPipeEntity extends BaseBlockEntity {
                         if (0 < inserted) {
                             // Then apply changes.
                             transaction.commit();
-                            if (pipeState.isIn(ModBlockTags.SILENT_PIPES)) {
+                            Block block = world.getBlockState(sourcePos).getBlock();
+                            if (block instanceof CopperPipe || block instanceof CopperFitting) {
                                 result = 2;
                             } else {
-                                Block block = world.getBlockState(sourcePos).getBlock();
-                                if (block instanceof CopperPipe || block instanceof CopperFitting) {
-                                    result = 2;
-                                } else {
-                                    result = 3;
-                                }
+                                result = 3;
                             }
                         }
                     }
@@ -307,11 +302,10 @@ public class CopperPipeEntity extends BaseBlockEntity {
                             shotLength = 12;
                         }
                     }
-                    boolean silent = blockState.isIn(ModBlockTags.SILENT_PIPES);
                     if (serverWorld.getBlockState(blockPos.offset(directionOpp)).getBlock() instanceof CopperFitting) {
-                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, true, silent);
+                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, true);
                     } else {
-                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, false, silent);
+                        itemStack2 = canonShoot(serverWorld, blockPos, itemStack, blockState, shotLength, false);
                         serverWorld.syncWorldEvent(WorldEvents.CRAFTER_SHOOTS, blockPos, direction.getId());
                     }
                     setStack(slot, itemStack2);
@@ -324,7 +318,7 @@ public class CopperPipeEntity extends BaseBlockEntity {
 
     private ItemStack canonShoot(
         ServerWorld serverWorld, @NotNull BlockPos pos, ItemStack itemStack, @NotNull
-        BlockState state, int shotLength, boolean fitting, boolean silent) {
+        BlockState state, int shotLength, boolean fitting) {
         Direction direction = state.get(Properties.FACING);
         Vec3d vec3 = CopperPipe.getOutputLocation(pos, direction);
         ItemStack itemStack2 = itemStack;
@@ -332,13 +326,11 @@ public class CopperPipeEntity extends BaseBlockEntity {
             itemStack2 = itemStack.split(1);
             serverWorld.syncWorldEvent(WorldEvents.DISPENSER_ACTIVATED, pos, direction.getId());
             spawnItem(serverWorld, itemStack2, shotLength, direction, vec3, direction);
-            if (!silent) {
-                serverWorld.emitGameEvent(null, GameEvent.ENTITY_PLACE, pos);
-                if (ModConfig.get().dispenseSounds) {
-                    serverWorld.playSound(
-                        null, pos, ModSoundEvents.ITEM_OUT,
-                        SoundCategory.BLOCKS, 0.2F, (serverWorld.random.nextFloat() * 0.25F) + 0.8F);
-                }
+            serverWorld.emitGameEvent(null, GameEvent.ENTITY_PLACE, pos);
+            if (ModConfig.get().dispenseSounds) {
+                serverWorld.playSound(
+                    null, pos, ModSoundEvents.ITEM_OUT,
+                    SoundCategory.BLOCKS, 0.2F, (serverWorld.random.nextFloat() * 0.25F) + 0.8F);
             }
         }
         return itemStack;

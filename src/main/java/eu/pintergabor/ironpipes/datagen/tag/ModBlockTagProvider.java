@@ -62,7 +62,5 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
             .add(ModBlocks.WAXED_EXPOSED_COPPER_FITTING)
             .add(ModBlocks.WAXED_WEATHERED_COPPER_FITTING)
             .add(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
-        // Silent pipes for the future.
-        getOrCreateTagBuilder(ModBlockTags.SILENT_PIPES);
     }
 }

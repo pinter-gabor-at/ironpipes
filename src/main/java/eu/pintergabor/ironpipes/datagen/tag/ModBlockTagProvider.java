@@ -31,7 +31,7 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
             .addOptionalTag(ModBlockTags.COPPER_FITTINGS);
         // Wooden pipes.
         getOrCreateTagBuilder(ModBlockTags.WOODEN_PIPES)
-            .add(ModBlocks.OAK_PIPE);
+            .add(ModBlocks.WOODEN_PIPES);
         // Copper pipes.
         getOrCreateTagBuilder(ModBlockTags.COPPER_PIPES)
             .add(ModBlocks.COPPER_PIPE)

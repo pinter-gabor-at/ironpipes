@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "redstone",
+  "category": "misc",
   "key": {
     "#": "minecraft:copper_ingot"
   },
@@ -10,7 +10,7 @@
     "###"
   ],
   "result": {
-    "count": 3,
+    "count": 6,
     "id": "ironpipes:copper_pipe"
   }
 }

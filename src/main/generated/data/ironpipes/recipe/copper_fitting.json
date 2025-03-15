@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": "minecraft:copper_ingot"
+    "#": "ironpipes:copper_pipe"
   },
   "pattern": [
     "###",
@@ -10,7 +10,7 @@
     "###"
   ],
   "result": {
-    "count": 4,
+    "count": 8,
     "id": "ironpipes:copper_fitting"
   }
 }

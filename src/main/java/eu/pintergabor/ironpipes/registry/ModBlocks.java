@@ -3,9 +3,9 @@ package eu.pintergabor.ironpipes.registry;
 import java.util.function.Function;
 
 import eu.pintergabor.ironpipes.Global;
+import eu.pintergabor.ironpipes.block.WoodenPipe;
 import eu.pintergabor.ironpipes.blockold.CopperFitting;
 import eu.pintergabor.ironpipes.blockold.CopperPipe;
-import eu.pintergabor.ironpipes.block.WoodenPipe;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -23,14 +23,38 @@ import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 
 public final class ModBlocks {
     // Wooden pipes
-    public static final Block OAK_PIPE = register("oak_pipe",
-        WoodenPipe::new,
-        //properties -> new CopperPipe(Oxidizable.OxidationLevel.UNAFFECTED, properties, 2, 20),
-        AbstractBlock.Settings.create()
-            .requiresTool()
-            .strength(0.5F, 1F)
-            .sounds(BlockSoundGroup.WOOD)
-    );
+    public static final WoodenPipe OAK_PIPE =
+        registerWoodenPipe("oak_pipe", MapColor.OAK_TAN);
+    public static final WoodenPipe SPRUCE_PIPE =
+        registerWoodenPipe("spruce_pipe", MapColor.SPRUCE_BROWN);
+    public static final WoodenPipe BIRCH_PIPE =
+        registerWoodenPipe("birch_pipe", MapColor.PALE_YELLOW);
+    public static final WoodenPipe JUNGLE_PIPE =
+        registerWoodenPipe("jungle_pipe", MapColor.DIRT_BROWN);
+    public static final WoodenPipe ACACIA_PIPE =
+        registerWoodenPipe("acacia_pipe", MapColor.ORANGE);
+    public static final WoodenPipe CHERRY_PIPE =
+        registerWoodenPipe("cherry_pipe", MapColor.TERRACOTTA_WHITE);
+    public static final WoodenPipe DARK_OAK_PIPE =
+        registerWoodenPipe("dark_oak_pipe", MapColor.BROWN);
+    public static final WoodenPipe PALE_OAK_PIPE =
+        registerWoodenPipe("pale_oak_pipe", MapColor.OFF_WHITE);
+    public static final WoodenPipe MANGROVE_PIPE =
+        registerWoodenPipe("mangrove_pipe", MapColor.RED);
+    public static final WoodenPipe BAMBOO_PIPE =
+        registerWoodenPipe("bamboo_pipe", MapColor.YELLOW);
+    public static final WoodenPipe[] WOODEN_PIPES = {
+        OAK_PIPE,
+        SPRUCE_PIPE,
+        BIRCH_PIPE,
+        JUNGLE_PIPE,
+        ACACIA_PIPE,
+        CHERRY_PIPE,
+        DARK_OAK_PIPE,
+        PALE_OAK_PIPE,
+        MANGROVE_PIPE,
+        BAMBOO_PIPE,
+    };
     // Copper pipes
     public static final Block COPPER_PIPE = register("copper_pipe",
         properties -> new CopperPipe(Oxidizable.OxidationLevel.UNAFFECTED, properties, 2, 20),
@@ -164,6 +188,43 @@ public final class ModBlocks {
             .sounds(BlockSoundGroup.COPPER)
     );
 
+    private static <T extends Block> T doRegister(Identifier id, T block) {
+        if (Registries.BLOCK.getEntry(id).isEmpty()) {
+            return Registry.register(Registries.BLOCK, id, block);
+        }
+        throw new IllegalArgumentException("Block with id " + id + " is already in the block registry.");
+    }
+
+    private static <T extends Block> T makeBlock(
+        Function<AbstractBlock.Settings, T> function, AbstractBlock.Settings properties, Identifier id) {
+        return function.apply(properties.registryKey(RegistryKey.of(Registries.BLOCK.getKey(), id)));
+    }
+
+    private static <T extends Block> T registerWithoutItem(
+        String path, Function<AbstractBlock.Settings, T> block, AbstractBlock.Settings properties) {
+        Identifier id = Global.modId(path);
+        return doRegister(id, makeBlock(block, properties, id));
+    }
+
+    private static <T extends Block> T register(
+        String path, Function<AbstractBlock.Settings, T> block, AbstractBlock.Settings properties) {
+        T registered = registerWithoutItem(path, block, properties);
+        Items.register(registered);
+        return registered;
+    }
+
+    private static WoodenPipe registerWoodenPipe(String path, MapColor mapColor) {
+        return register(path,
+            WoodenPipe::new,
+            AbstractBlock.Settings.create()
+                .mapColor(mapColor)
+                .requiresTool()
+                .strength(1.0F)
+                .sounds(BlockSoundGroup.WOOD)
+                .burnable()
+        );
+    }
+
     public static void init() {
         OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_PIPE, EXPOSED_COPPER_PIPE);
         OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_PIPE, WEATHERED_COPPER_PIPE);
@@ -182,27 +243,5 @@ public final class ModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_FITTING, WAXED_EXPOSED_COPPER_FITTING);
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_FITTING, WAXED_WEATHERED_COPPER_FITTING);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_FITTING, WAXED_OXIDIZED_COPPER_FITTING);
-    }
-
-    private static <T extends Block> T registerWithoutItem(String path, Function<AbstractBlock.Settings, T> block, AbstractBlock.Settings properties) {
-        Identifier id = Global.modId(path);
-        return doRegister(id, makeBlock(block, properties, id));
-    }
-
-    private static <T extends Block> T register(String path, Function<AbstractBlock.Settings, T> block, AbstractBlock.Settings properties) {
-        T registered = registerWithoutItem(path, block, properties);
-        Items.register(registered);
-        return registered;
-    }
-
-    private static <T extends Block> T doRegister(Identifier id, T block) {
-        if (Registries.BLOCK.getEntry(id).isEmpty()) {
-            return Registry.register(Registries.BLOCK, id, block);
-        }
-        throw new IllegalArgumentException("Block with id " + id + " is already in the block registry.");
-    }
-
-    private static <T extends Block> T makeBlock(Function<AbstractBlock.Settings, T> function, AbstractBlock.Settings properties, Identifier id) {
-        return function.apply(properties.registryKey(RegistryKey.of(Registries.BLOCK.getKey(), id)));
     }
 }

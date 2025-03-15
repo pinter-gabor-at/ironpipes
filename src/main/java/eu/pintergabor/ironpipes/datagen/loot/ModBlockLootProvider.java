@@ -4,6 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import eu.pintergabor.ironpipes.registry.ModBlocks;
 
+import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryWrapper;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -18,10 +19,22 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
         super(dataOutput, registryLookup);
     }
 
+    /**
+     * Generate drops for an array of simple blocks.
+     */
+    private void generateSimpleDrops(Block[] blocks){
+        for (Block b: blocks){
+            drops(b);
+        }
+    }
+
+    /**
+     * Generate all drops.
+     */
     @Override
     public void generate() {
         // Wooden pipes.
-        drops(ModBlocks.OAK_PIPE);
+        generateSimpleDrops(ModBlocks.WOODEN_PIPES);
         // Copper pipes.
         drops(ModBlocks.COPPER_PIPE);
         drops(ModBlocks.EXPOSED_COPPER_PIPE);

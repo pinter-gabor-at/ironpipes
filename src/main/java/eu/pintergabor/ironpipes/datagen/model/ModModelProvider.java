@@ -69,40 +69,10 @@ public final class ModModelProvider extends FabricModelProvider {
         super(output);
     }
 
-    @Override
-    public void generateBlockStateModels(BlockStateModelGenerator generator) {
-        // Wooden pipes.
-        createPipe(generator, ModBlocks.OAK_PIPE);
-        // Copper pipes.
-        createPipe(generator, ModBlocks.COPPER_PIPE);
-        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE);
-        // Waxed copper pipes.
-        createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.WAXED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
-        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
-        // Copper fittings.
-        createFitting(generator, ModBlocks.COPPER_FITTING);
-        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING);
-        // Waxed copper fittings.
-        createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.WAXED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
-        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING, ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
-    }
-
-    @Override
-    public void generateItemModels(@NotNull ItemModelGenerator generator) {
-    }
-
     /**
      * Create models for one derived type of pipe.
      */
-    public static void createPipe(
+    private static void createPipe(
         @NotNull BlockStateModelGenerator generators,
         Block pipeBlock, Block outputPipeBlock) {
         Identifier model = ModelIds.getBlockModelId(pipeBlock);
@@ -142,7 +112,7 @@ public final class ModModelProvider extends FabricModelProvider {
     /**
      * Create models for one base type of pipe.
      */
-    public static void createPipe(
+    private static void createPipe(
         @NotNull BlockStateModelGenerator generators, Block pipeBlock) {
         // Create base type.
         TextureMap pipeTextureMapping = new TextureMap();
@@ -161,7 +131,7 @@ public final class ModModelProvider extends FabricModelProvider {
     /**
      * Create models for one derived type of fitting.
      */
-    public static void createFitting(
+    private static void createFitting(
         @NotNull BlockStateModelGenerator generators, Block fittingBlock, Block outputFittingBlock) {
         Identifier model = ModelIds.getBlockModelId(fittingBlock);
         generators.registerParentedItemModel(outputFittingBlock, model);
@@ -172,7 +142,7 @@ public final class ModModelProvider extends FabricModelProvider {
     /**
      * Create models for one base type of fitting.
      */
-    public static void createFitting(
+    private static void createFitting(
         @NotNull BlockStateModelGenerator generators, Block fittingBlock) {
         // Create base type.
         TextureMap fittingTextureMapping = new TextureMap();
@@ -180,5 +150,47 @@ public final class ModModelProvider extends FabricModelProvider {
         FITTING_MODEL.upload(fittingBlock, fittingTextureMapping, generators.modelCollector);
         // Create derived types.
         createFitting(generators, fittingBlock, fittingBlock);
+    }
+
+    private static void generateWoodenPipes(BlockStateModelGenerator generator) {
+        for (Block b: ModBlocks.WOODEN_PIPES){
+            createPipe(generator, b);
+        }
+    }
+    
+    /**
+     * Generate block models.
+     */
+    @Override
+    public void generateBlockStateModels(BlockStateModelGenerator generator) {
+        // Wooden pipes.
+        generateWoodenPipes(generator);
+        // Copper pipes.
+        createPipe(generator, ModBlocks.COPPER_PIPE);
+        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE);
+        // Waxed copper pipes.
+        createPipe(generator, ModBlocks.COPPER_PIPE, ModBlocks.WAXED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE, ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.WEATHERED_COPPER_PIPE, ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
+        createPipe(generator, ModBlocks.OXIDIZED_COPPER_PIPE, ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
+        // Copper fittings.
+        createFitting(generator, ModBlocks.COPPER_FITTING);
+        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING);
+        // Waxed copper fittings.
+        createFitting(generator, ModBlocks.COPPER_FITTING, ModBlocks.WAXED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.EXPOSED_COPPER_FITTING, ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.WEATHERED_COPPER_FITTING, ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
+        createFitting(generator, ModBlocks.OXIDIZED_COPPER_FITTING, ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+    }
+
+    /**
+     * There are no item models to create.
+     */
+    @Override
+    public void generateItemModels(@NotNull ItemModelGenerator generator) {
     }
 }

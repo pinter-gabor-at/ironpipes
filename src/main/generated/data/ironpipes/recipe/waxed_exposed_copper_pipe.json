@@ -1,6 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "redstone",
+  "category": "misc",
   "ingredients": [
     "ironpipes:exposed_copper_pipe",
     "minecraft:honeycomb"

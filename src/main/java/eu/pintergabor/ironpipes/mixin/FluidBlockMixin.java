@@ -24,7 +24,9 @@ public abstract class FluidBlockMixin {
     @Shadow
     protected FlowableFluid fluid;
 
-    // A fluid block is not drainable if it is the outflow of a pipe.
+    /**
+     * A fluid block is not drainable if it is the outflow of a pipe.
+     */
     @Inject(at = @At("HEAD"), method = "tryDrainFluid", cancellable = true)
     private void tryDrainFluid(
         PlayerEntity player,

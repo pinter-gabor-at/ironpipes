@@ -5,7 +5,6 @@ import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.StateManager;
@@ -20,7 +19,7 @@ import net.minecraft.world.WorldAccess;
 /**
  * A fluid pipe can carry water or lava.
  */
-public abstract class BaseFluidPipe extends BasePipe implements Waterloggable {
+public abstract class BaseFluidPipe extends BasePipe {
     public static final EnumProperty<PipeFluid> FLUID =
         ModBlockStateProperties.FLUID;
     public static final BooleanProperty OUTFLOW =
@@ -30,8 +29,7 @@ public abstract class BaseFluidPipe extends BasePipe implements Waterloggable {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
             .with(FLUID, PipeFluid.NONE)
-            .with(OUTFLOW, false)
-        );
+            .with(OUTFLOW, false));
     }
 
     @Override

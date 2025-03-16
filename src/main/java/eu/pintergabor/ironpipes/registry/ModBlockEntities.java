@@ -1,9 +1,10 @@
 package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
+import eu.pintergabor.ironpipes.block.entity.WoodenFittingEntity;
+import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.blockold.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.blockold.entity.CopperPipeEntity;
-import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -21,6 +22,11 @@ public final class ModBlockEntities {
         "wooden_pipe",
         WoodenPipeEntity::new,
         ModBlocks.WOODEN_PIPES);
+    // Wooden fittings.
+    public static final BlockEntityType<?> WOODEN_FITTING_ENTITY = register(
+        "wooden_fitting",
+        WoodenFittingEntity::new,
+        ModBlocks.WOODEN_FITTINGS);
     // Copper pipes.
     public static final BlockEntityType<CopperPipeEntity> COPPER_PIPE_ENTITY = register(
         "copper_pipe",

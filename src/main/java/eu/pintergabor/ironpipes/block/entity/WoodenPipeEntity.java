@@ -1,9 +1,10 @@
 package eu.pintergabor.ironpipes.block.entity;
 
+import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.base.BaseFluidPipeEntity;
+import eu.pintergabor.ironpipes.block.entity.base.FluidUtil;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.block.base.BaseBlock;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 
@@ -23,54 +24,6 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
     }
 
     /**
-     * Check if the block can be used as a water source.
-     *
-     * @param state {@link BlockState} (which includes reference to the {@link Block})
-     * @return true if it is a water source
-     */
-    private static boolean isWaterSource(BlockState state) {
-        Block block = state.getBlock();
-        // If it is a still or flowing water block.
-        boolean ret = (block == Blocks.WATER);
-        // If it is a full water cauldron.
-        ret = ret ||
-            (block == Blocks.WATER_CAULDRON &&
-                (state.get(Properties.LEVEL_3) == 3));
-        if (!ret) {
-            if (block instanceof BaseBlock) {
-                // If it is a pipe or fitting carrying water.
-                ret = state.contains(ModBlockStateProperties.FLUID) &&
-                    (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER);
-            } else {
-                // If it is a waterlogged block.
-                ret = state.contains(Properties.WATERLOGGED) &&
-                    (state.get(Properties.WATERLOGGED));
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * Check if the block can be used as a water source.
-     *
-     * @param state {@link BlockState} (which includes reference to the {@link Block})
-     * @return true if it is a water source
-     */
-    private static boolean isLavaSource(BlockState state) {
-        Block block = state.getBlock();
-        // If it is a still or flowing lava block.
-        boolean ret = (block == Blocks.LAVA);
-        // If it is a lava cauldron.
-        ret = ret || block == Blocks.LAVA_CAULDRON;
-        if (!ret && block instanceof BaseBlock) {
-            // If it is a pipe or fitting carrying lava.
-            ret = state.contains(ModBlockStateProperties.FLUID) &&
-                (state.get(ModBlockStateProperties.FLUID) == PipeFluid.LAVA);
-        }
-        return ret;
-    }
-
-    /**
      * Pull fluid from the block at the back of the pipe.
      *
      * @return true if state is changed.
@@ -82,12 +35,12 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
         Direction opposite = facing.getOpposite();
         BlockState backBlockState = world.getBlockState(pos.offset(opposite));
         PipeFluid pipeFluid = state.get(ModBlockStateProperties.FLUID);
-        if (isWaterSource(backBlockState)) {
+        if (FluidUtil.isWaterSource(backBlockState)) {
             if (pipeFluid != PipeFluid.WATER) {
                 pipeFluid = PipeFluid.WATER;
                 changed = true;
             }
-        } else if (isLavaSource(backBlockState)) {
+        } else if (FluidUtil.isLavaSource(backBlockState)) {
             if (pipeFluid != PipeFluid.LAVA) {
                 pipeFluid = PipeFluid.LAVA;
                 changed = true;
@@ -147,6 +100,7 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
 
     public static void serverTick(
         World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
+        Global.LOGGER.info("{}", world.getTime());
         // Pull fluid.
         pull(world, pos, state, entity);
         // Dispense fluid.
@@ -156,20 +110,4 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
             LeakingPipeManager.addPos(world, pos);
         }
     }
-
-//    @Override
-//    public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
-//        super.readNbt(nbtCompound, lookupProvider);
-//        waterCooldown = nbtCompound.getInt("waterCooldown");
-//        hasWater = nbtCompound.getBoolean("hasWater");
-//        hasLava = nbtCompound.getBoolean("hasLava");
-//    }
-//
-//    @Override
-//    protected void writeNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {
-//        super.writeNbt(nbtCompound, lookupProvider);
-//        nbtCompound.putInt("waterCooldown", waterCooldown);
-//        nbtCompound.putBoolean("hasWater", hasWater);
-//        nbtCompound.putBoolean("hasLava", hasLava);
-//    }
 }

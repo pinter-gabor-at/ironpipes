@@ -3,6 +3,7 @@ package eu.pintergabor.ironpipes.registry;
 import java.util.function.Function;
 
 import eu.pintergabor.ironpipes.Global;
+import eu.pintergabor.ironpipes.block.WoodenFitting;
 import eu.pintergabor.ironpipes.block.WoodenPipe;
 import eu.pintergabor.ironpipes.blockold.CopperFitting;
 import eu.pintergabor.ironpipes.blockold.CopperPipe;
@@ -23,9 +24,11 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 
+import org.jetbrains.annotations.NotNull;
+
 
 public final class ModBlocks {
-    // Wooden pipes
+    // Wooden pipes.
     public static final WoodenPipe OAK_PIPE =
         registerWoodenPipe("oak_pipe", MapColor.OAK_TAN);
     public static final WoodenPipe SPRUCE_PIPE =
@@ -58,7 +61,40 @@ public final class ModBlocks {
         MANGROVE_PIPE,
         BAMBOO_PIPE,
     };
-    // Copper pipes
+    // Wooden fittings.
+    public static final WoodenFitting OAK_FITTING =
+        registerWoodenFitting("oak_fitting", MapColor.OAK_TAN);
+    public static final WoodenFitting SPRUCE_FITTING =
+        registerWoodenFitting("spruce_fitting", MapColor.SPRUCE_BROWN);
+    public static final WoodenFitting BIRCH_FITTING =
+        registerWoodenFitting("birch_fitting", MapColor.PALE_YELLOW);
+    public static final WoodenFitting JUNGLE_FITTING =
+        registerWoodenFitting("jungle_fitting", MapColor.DIRT_BROWN);
+    public static final WoodenFitting ACACIA_FITTING =
+        registerWoodenFitting("acacia_fitting", MapColor.ORANGE);
+    public static final WoodenFitting CHERRY_FITTING =
+        registerWoodenFitting("cherry_fitting", MapColor.TERRACOTTA_WHITE);
+    public static final WoodenFitting DARK_OAK_FITTING =
+        registerWoodenFitting("dark_oak_fitting", MapColor.BROWN);
+    public static final WoodenFitting PALE_OAK_FITTING =
+        registerWoodenFitting("pale_oak_fitting", MapColor.OFF_WHITE);
+    public static final WoodenFitting MANGROVE_FITTING =
+        registerWoodenFitting("mangrove_fitting", MapColor.RED);
+    public static final WoodenFitting BAMBOO_FITTING =
+        registerWoodenFitting("bamboo_fitting", MapColor.YELLOW);
+    public static final WoodenFitting[] WOODEN_FITTINGS = {
+        OAK_FITTING,
+        SPRUCE_FITTING,
+        BIRCH_FITTING,
+        JUNGLE_FITTING,
+        ACACIA_FITTING,
+        CHERRY_FITTING,
+        DARK_OAK_FITTING,
+        PALE_OAK_FITTING,
+        MANGROVE_FITTING,
+        BAMBOO_FITTING,
+    };
+    // Copper pipes.
     public static final Block COPPER_PIPE = registerBlockAndItem("copper_pipe",
         properties -> new CopperPipe(Oxidizable.OxidationLevel.UNAFFECTED, properties, 2, 20),
         AbstractBlock.Settings.create()
@@ -240,6 +276,25 @@ public final class ModBlocks {
     private static WoodenPipe registerWoodenPipe(String path, MapColor mapColor) {
         return registerBlockAndItem(path,
             WoodenPipe::new,
+            AbstractBlock.Settings.create()
+                .mapColor(mapColor)
+                .requiresTool()
+                .strength(1.0F)
+                .sounds(BlockSoundGroup.WOOD)
+                .burnable()
+        );
+    }
+
+    /**
+     * Create and register a {@link WoodenFitting} and its corresponding {@link Item}
+     *
+     * @param path     The name of the block, without modid.
+     * @param mapColor How it will be rendered on generated maps.
+     * @return The registered block.
+     */
+    private static WoodenFitting registerWoodenFitting(String path, MapColor mapColor) {
+        return registerBlockAndItem(path,
+            WoodenFitting::new,
             AbstractBlock.Settings.create()
                 .mapColor(mapColor)
                 .requiresTool()

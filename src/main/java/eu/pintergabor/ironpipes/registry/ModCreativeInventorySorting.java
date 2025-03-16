@@ -16,6 +16,8 @@ public class ModCreativeInventorySorting {
             entries -> {
                 // Add wooden pipes and fittings after the cauldron.
                 entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.WOODEN_FITTINGS);
+                entries.addAfter(Blocks.CAULDRON,
                     ModBlocks.WOODEN_PIPES);
                 // Add normal copper pipes and fittings after similar copper bulbs.
                 entries.addAfter(Items.COPPER_BULB,

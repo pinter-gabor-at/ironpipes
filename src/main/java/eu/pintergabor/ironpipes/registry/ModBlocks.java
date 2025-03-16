@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.WoodenPipe;
+import eu.pintergabor.ironpipes.block.fluidblock.NoDrainFluidBlock;
 import eu.pintergabor.ironpipes.blockold.CopperFitting;
 import eu.pintergabor.ironpipes.blockold.CopperPipe;
 
@@ -12,6 +13,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Oxidizable;
+import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
@@ -25,6 +28,20 @@ import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 
 
 public final class ModBlocks {
+    // No drain fluid blocks
+    public static final Block NO_DRAIN_WATER = registerBlock(
+		"water",
+        settings -> new NoDrainFluidBlock(Fluids.WATER, settings),
+		AbstractBlock.Settings.create()
+            .mapColor(MapColor.WATER_BLUE)
+			.replaceable()
+			.noCollision()
+			.strength(100.0F)
+			.pistonBehavior(PistonBehavior.DESTROY)
+			.dropsNothing()
+			.liquid()
+			.sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)
+	);
     // Wooden pipes
     public static final WoodenPipe OAK_PIPE =
         registerWoodenPipe("oak_pipe", MapColor.OAK_TAN);

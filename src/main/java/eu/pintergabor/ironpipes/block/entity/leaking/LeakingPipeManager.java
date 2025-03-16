@@ -2,8 +2,8 @@ package eu.pintergabor.ironpipes.block.entity.leaking;
 
 import java.util.ArrayList;
 
-import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
+import eu.pintergabor.ironpipes.blockold.CopperPipe;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 
 import net.minecraft.block.BlockState;
@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+
 
 public class LeakingPipeManager {
     private static final ArrayList<LeakingPipePos> leakingPipePosesOne = new ArrayList<>();
@@ -73,9 +74,9 @@ public class LeakingPipeManager {
      * <p>
      * Y range is fixed [1..12].
      *
-     * @param view World
-     * @param pos    Target position
-     * @param range       X and Z range [-range..+range]
+     * @param view  World
+     * @param pos   Target position
+     * @param range X and Z range [-range..+range]
      * @return true if there is a leaking water pipe in range.
      */
     public static boolean isWaterPipeNearby(BlockView view, BlockPos pos, int range) {

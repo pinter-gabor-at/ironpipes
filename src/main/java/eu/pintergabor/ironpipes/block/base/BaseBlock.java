@@ -1,5 +1,14 @@
 package eu.pintergabor.ironpipes.block.base;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Waterloggable;
+
+import net.minecraft.state.StateManager;
+
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.Direction;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockRenderType;
@@ -14,10 +23,20 @@ import net.minecraft.entity.ai.pathing.NavigationType;
  * Pipes and fittings are rendered normally, they do not block light,
  * and entities cannot walk through them.
  */
-public abstract class BaseBlock extends BlockWithEntity {
+public abstract class BaseBlock extends BlockWithEntity implements Waterloggable {
+    public static final BooleanProperty WATERLOGGED =
+        Properties.WATERLOGGED;
 
     protected BaseBlock(Settings settings) {
         super(settings);
+        setDefaultState(getStateManager().getDefaultState()
+            .with(WATERLOGGED, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(WATERLOGGED);
     }
 
     /**

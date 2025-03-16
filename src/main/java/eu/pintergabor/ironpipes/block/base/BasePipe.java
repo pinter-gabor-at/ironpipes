@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.Waterloggable;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -26,7 +28,7 @@ import net.minecraft.world.World;
  * All pipes have the same shape, they can be rotated to any direction,
  * and there are special rules for connecting them.
  */
-public abstract class BasePipe extends BaseBlock {
+public abstract class BasePipe extends BaseBlock implements Waterloggable {
     // Properties.
     public static final EnumProperty<Direction> FACING =
         Properties.FACING;
@@ -121,6 +123,12 @@ public abstract class BasePipe extends BaseBlock {
         setDefaultState(getStateManager().getDefaultState()
             .with(FACING, Direction.DOWN)
             .with(SMOOTH, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(FACING, FRONT_CONNECTED, BACK_CONNECTED, SMOOTH);
     }
 
     /**

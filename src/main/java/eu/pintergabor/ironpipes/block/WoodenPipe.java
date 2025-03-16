@@ -199,11 +199,6 @@ public class WoodenPipe extends BaseFluidPipe {
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FRONT_CONNECTED, BACK_CONNECTED, SMOOTH, WATERLOGGED, FLUID);
-    }
-
-    @Override
     public void randomTick(@NotNull BlockState blockState, ServerWorld serverLevel, BlockPos blockPos, Random random) {
         Direction direction = blockState.get(FACING);
         boolean isLava = blockState.get(FLUID) == PipeFluid.LAVA;

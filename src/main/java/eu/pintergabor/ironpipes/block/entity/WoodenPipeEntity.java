@@ -3,7 +3,7 @@ package eu.pintergabor.ironpipes.block.entity;
 import eu.pintergabor.ironpipes.block.entity.base.BaseFluidPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.blockold.base.BaseBlock;
+import eu.pintergabor.ironpipes.block.base.BaseBlock;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 
@@ -22,28 +22,6 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
         super(ModBlockEntities.WOODEN_PIPE_ENTITY, blockPos, blockState);
     }
 
-//    public static void serverTick(@NotNull World world, BlockPos blockPos, BlockState blockState, WoodenPipeEntity entity) {
-//        if (!world.isClient()) {
-
-    /// /            boolean validWater = isValidFluidNBT(waterNbt) && ModConfig.get().carryWater;
-    /// /            boolean validLava = isValidFluidNBT(lavaNbt) && ModConfig.get().carryLava;
-    /// /            if (this.hasWater && this.hasLava) {
-    /// /                validWater = false;
-    /// /                validLava = false;
-    /// /            }
-    /// /            if (state.contains(ModBlockStateProperties.FLUID)) {
-    /// /                state = state.with(ModBlockStateProperties.FLUID,
-    /// /                    validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : PipeFluid.NONE);
-    /// /            }
-//            // TODO: Dispensing.
-//            // Dripping.
-//            if (blockState.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER &&
-//                blockState.get(Properties.FACING) != Direction.UP) {
-//                LeakingPipeManager.addPos(world, blockPos);
-//            }
-//        }
-//    }
-
     /**
      * Check if the block can be used as a water source.
      *
@@ -60,7 +38,7 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
                 (state.get(Properties.LEVEL_3) == 3));
         if (!ret) {
             if (block instanceof BaseBlock) {
-                // If it is a pipe of fitting carrying water.
+                // If it is a pipe or fitting carrying water.
                 ret = state.contains(ModBlockStateProperties.FLUID) &&
                     (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER);
             } else {
@@ -82,47 +60,102 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
         Block block = state.getBlock();
         // If it is a still or flowing lava block.
         boolean ret = (block == Blocks.LAVA);
-        // If it is a full lava cauldron.
-        ret = ret ||
-            (block == Blocks.LAVA_CAULDRON &&
-                (state.get(Properties.LEVEL_3) == 3));
+        // If it is a lava cauldron.
+        ret = ret || block == Blocks.LAVA_CAULDRON;
         if (!ret && block instanceof BaseBlock) {
-            // If it is a pipe of fitting carrying lava.
+            // If it is a pipe or fitting carrying lava.
             ret = state.contains(ModBlockStateProperties.FLUID) &&
                 (state.get(ModBlockStateProperties.FLUID) == PipeFluid.LAVA);
         }
         return ret;
     }
 
-    public static void serverTick(
-        World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
-        // Pull fluid.
+    /**
+     * Pull fluid from the block at the back of the pipe.
+     *
+     * @return true if state is changed.
+     */
+    @SuppressWarnings({"UnusedReturnValue", "unused"})
+    private static boolean pull(World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
+        boolean changed = false;
         Direction facing = state.get(Properties.FACING);
         Direction opposite = facing.getOpposite();
         BlockState backBlockState = world.getBlockState(pos.offset(opposite));
+        PipeFluid pipeFluid = state.get(ModBlockStateProperties.FLUID);
         if (isWaterSource(backBlockState)) {
-            state = state.with(ModBlockStateProperties.FLUID, PipeFluid.WATER);
+            if (pipeFluid != PipeFluid.WATER) {
+                pipeFluid = PipeFluid.WATER;
+                changed = true;
+            }
+        } else if (isLavaSource(backBlockState)) {
+            if (pipeFluid != PipeFluid.LAVA) {
+                pipeFluid = PipeFluid.LAVA;
+                changed = true;
+            }
         } else {
-            state = state.with(ModBlockStateProperties.FLUID, PipeFluid.NONE);
+            if (pipeFluid != PipeFluid.NONE) {
+                pipeFluid = PipeFluid.NONE;
+                changed = true;
+            }
         }
-        world.setBlockState(pos, state);
-        // Dispense fluid.
+        if (changed) {
+            world.setBlockState(pos, state.with(ModBlockStateProperties.FLUID, pipeFluid));
+        }
+        return changed;
+    }
+
+    @SuppressWarnings({"UnusedReturnValue", "unused"})
+    private static boolean dispense(World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
+        boolean changed = false;
+        boolean outflow = state.get(ModBlockStateProperties.OUTFLOW);
+        PipeFluid pipeFluid = state.get(ModBlockStateProperties.FLUID);
+        Direction facing = state.get(Properties.FACING);
         BlockState frontBlockState = world.getBlockState(pos.offset(facing));
-        if (frontBlockState.isAir()) {
-            BlockState water = Blocks.WATER.getDefaultState();
-            world.setBlockState(pos.offset(facing), water);
-            //world.scheduleFluidTick(pos.offset(facing), Fluids.WATER, Fluids.WATER.getTickRate(world));
-        } else if (frontBlockState.isOf(Blocks.WATER)) {
-            // world.setBlockState(pos.offset(facing), frontBlockState.with(Properties.LEVEL_15, 5));
+        Block frontBlock = frontBlockState.getBlock();
+        if (outflow) {
+            // If the block in front of the pipe does not match the dispensed fluid
+            // then stop dispensing.
+            if (!((frontBlock == Blocks.WATER && pipeFluid == PipeFluid.WATER) ||
+                (frontBlock == Blocks.LAVA && pipeFluid == PipeFluid.LAVA))) {
+                world.setBlockState(pos.offset(facing), Blocks.AIR.getDefaultState());
+                outflow = false;
+                changed = true;
+            }
+        } else {
+            // If there is an empty space in front of the pipe ...
+            if (frontBlockState.isAir()) {
+                // ... and there is water in the pipe then start dispensing water.
+                if (pipeFluid == PipeFluid.WATER) {
+                    world.setBlockState(pos.offset(facing), Blocks.WATER.getDefaultState());
+                    outflow = true;
+                    changed = true;
+                } else {
+                    // ... and there is lava in the pipe then start dispensing lava.
+                    if (pipeFluid == PipeFluid.LAVA) {
+                        world.setBlockState(pos.offset(facing), Blocks.LAVA.getDefaultState());
+                        outflow = true;
+                        changed = true;
+                    }
+                }
+            }
         }
+        if (changed) {
+            world.setBlockState(pos, state.with(ModBlockStateProperties.OUTFLOW, outflow));
+        }
+        return changed;
+    }
+
+    public static void serverTick(
+        World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
+        // Pull fluid.
+        pull(world, pos, state, entity);
+        // Dispense fluid.
+        dispense(world, pos, state, entity);
         // Dripping.
-        if (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER) {
+        if (state.get(ModBlockStateProperties.FLUID) != PipeFluid.NONE) {
             LeakingPipeManager.addPos(world, pos);
         }
     }
-
-//    public static <T extends BlockEntity> void serverTick(World world, BlockPos pos, BlockState state, T t) {
-//    }
 
 //    @Override
 //    public void readNbt(@NotNull NbtCompound nbtCompound, RegistryWrapper.WrapperLookup lookupProvider) {

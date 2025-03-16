@@ -60,7 +60,7 @@ public class LeakingPipeDripBehaviors {
                 world.setBlockState(pos, state.cycle(Properties.LEVEL_3));
             }
         }));
-        // Water dripping on dirt wil change it to mud.
+        // Water dripping on dirt will change it to mud.
         register(Blocks.DIRT, ((isLava, world, pos, state) -> {
             if (!isLava) {
                 world.setBlockState(pos, Blocks.MUD.getDefaultState());

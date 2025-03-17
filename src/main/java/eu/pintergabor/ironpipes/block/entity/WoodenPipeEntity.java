@@ -1,6 +1,8 @@
 package eu.pintergabor.ironpipes.block.entity;
 
-import eu.pintergabor.ironpipes.Global;
+import static eu.pintergabor.ironpipes.block.entity.base.TickUtil.TickPos;
+import static eu.pintergabor.ironpipes.block.entity.base.TickUtil.getTickPos;
+
 import eu.pintergabor.ironpipes.block.entity.base.BaseFluidPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.base.FluidUtil;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
@@ -100,13 +102,17 @@ public class WoodenPipeEntity extends BaseFluidPipeEntity {
 
     public static void serverTick(
         World world, BlockPos pos, BlockState state, WoodenPipeEntity entity) {
-        Global.LOGGER.info("{}", world.getTime());
-        // Pull fluid.
-        pull(world, pos, state, entity);
-        // Dispense fluid.
-        dispense(world, pos, state, entity);
-        // Dripping.
-        if (state.get(ModBlockStateProperties.FLUID) != PipeFluid.NONE) {
+        TickPos tickPos = getTickPos(world, 10);
+        if (tickPos == TickPos.START) {
+            // Pull fluid.
+            pull(world, pos, state, entity);
+        }
+        if (tickPos == TickPos.MIDDLE) {
+            // Dispense fluid.
+            dispense(world, pos, state, entity);
+        }
+        // Watering plants and other water sensitive blocks and entities.
+        if (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER) {
             LeakingPipeManager.addPos(world, pos);
         }
     }

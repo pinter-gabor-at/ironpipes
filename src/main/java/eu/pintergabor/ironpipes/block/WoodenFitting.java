@@ -6,20 +6,23 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import eu.pintergabor.ironpipes.block.base.BaseFluidFitting;
 import eu.pintergabor.ironpipes.block.entity.WoodenFittingEntity;
+import eu.pintergabor.ironpipes.block.entity.WoodenPipeEntity;
 import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
+import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
@@ -32,9 +35,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.block.WireOrientation;
-import net.minecraft.world.tick.ScheduledTickView;
+
+import org.jetbrains.annotations.Nullable;
 
 
 public class WoodenFitting extends BaseFluidFitting {
@@ -48,55 +50,6 @@ public class WoodenFitting extends BaseFluidFitting {
     }
 
     /**
-     * Determine the initial state of the pipe based on its surroundings.
-     *
-     * @return the initial state of the block
-     */
-    @NotNull
-    @Override
-    public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
-        BlockState state = super.getPlacementState(context);
-        BlockPos pos = context.getBlockPos();
-        return state
-            .with(WATERLOGGED, context.getWorld().getFluidState(pos).getFluid() == Fluids.WATER);
-    }
-
-    /**
-     * Handle state changes when the neighboring block's state changes.
-     *
-     * @return the state of the pipe after a neighboring block's state changes.
-     */
-    @Override
-    protected @NotNull BlockState getStateForNeighborUpdate(
-        @NotNull BlockState blockState,
-        WorldView world,
-        ScheduledTickView scheduledTickAccess,
-        BlockPos pos,
-        Direction direction,
-        BlockPos neighborPos,
-        BlockState neighborState,
-        Random random) {
-        if (blockState.get(WATERLOGGED)) {
-            scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-        return blockState;
-    }
-
-    /**
-     * Handle side effects when the neighboring block's state changes.
-     */
-    @Override
-    protected void neighborUpdate(
-        @NotNull BlockState blockState, @NotNull World world,
-        BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
-//        boolean powered = isReceivingRedstonePower(world, blockPos);
-//        if (powered != blockState.get(POWERED)) {
-//            world.setBlockState(blockPos, blockState.with(POWERED, powered));
-//        }
-//        updateBlockEntityValues(world, blockPos, blockState);
-    }
-
-    /**
      * Create a block entity.
      */
     @Override
@@ -104,20 +57,19 @@ public class WoodenFitting extends BaseFluidFitting {
         return new WoodenFittingEntity(pos, state);
     }
 
+    /**
+     * Create a ticker, which will be called at every tick both on the client and on the server.
+     */
+    @Nullable
     @Override
-    public void onPlaced(
-        World world, BlockPos blockPos, BlockState blockState,
-        LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
-    }
-
-    @Override
-    @NotNull
-    public FluidState getFluidState(@NotNull BlockState blockState) {
-        if (blockState.get(WATERLOGGED)) {
-            return Fluids.WATER.getStill(false);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        @NotNull World world, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (!world.isClient()) {
+            return validateTicker(
+                blockEntityType, ModBlockEntities.WOODEN_FITTING_ENTITY,
+                WoodenFittingEntity::serverTick);
         }
-        return super.getFluidState(blockState);
+        return null;
     }
 
     /**

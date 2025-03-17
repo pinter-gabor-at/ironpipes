@@ -34,6 +34,6 @@ public class Mod implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPED.register(
             server -> LeakingPipeManager.clearAll());
         ServerTickEvents.START_SERVER_TICK.register(
-            listener -> LeakingPipeManager.clearAndSwitch());
+            listener -> LeakingPipeManager.switchAndClear());
     }
 }

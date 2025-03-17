@@ -1,6 +1,11 @@
 package eu.pintergabor.ironpipes.block.base;
 
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.tick.ScheduledTickView;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -288,17 +293,44 @@ public abstract class BasePipe extends BaseBlock implements Waterloggable {
      *
      * @return the initial state of the block
      */
-    @NotNull
     @Override
     public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
-        Direction direction = context.getSide();
-        BlockPos pos = context.getBlockPos();
-        World world = context.getWorld();
-        return getDefaultState()
-            .with(FACING, direction)
-            .with(FRONT_CONNECTED, needFrontExtension(world, pos, direction))
-            .with(BACK_CONNECTED, needBackExtension(world, pos, direction))
-            .with(SMOOTH, isSmooth(world, pos, direction));
+        BlockState state = super.getPlacementState(context);
+        if (state != null) {
+            Direction direction = context.getSide();
+            BlockPos pos = context.getBlockPos();
+            World world = context.getWorld();
+            return state
+                .with(FACING, direction)
+                .with(FRONT_CONNECTED, needFrontExtension(world, pos, direction))
+                .with(BACK_CONNECTED, needBackExtension(world, pos, direction))
+                .with(SMOOTH, isSmooth(world, pos, direction));
+        }
+        return null;
+    }
+
+    /**
+     * Handle state changes when the neighboring block's state changes.
+     *
+     * @return the state of the pipe after a neighboring block's state changes.
+     */
+    @Override
+    protected @NotNull BlockState getStateForNeighborUpdate(
+        @NotNull BlockState state,
+        WorldView world,
+        ScheduledTickView tickView,
+        BlockPos pos,
+        Direction direction,
+        BlockPos neighborPos,
+        BlockState neighborState,
+        Random random) {
+        state = super.getStateForNeighborUpdate(
+            state, world, tickView, pos, direction, neighborPos, neighborState, random);
+        Direction facing = state.get(FACING);
+        return state
+            .with(FRONT_CONNECTED, needFrontExtension(world, pos, facing))
+            .with(BACK_CONNECTED, needBackExtension(world, pos, facing))
+            .with(SMOOTH, isSmooth(world, pos, facing));
     }
 
     /**

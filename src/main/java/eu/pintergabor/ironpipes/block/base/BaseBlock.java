@@ -1,5 +1,14 @@
 package eu.pintergabor.ironpipes.block.base;
 
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.WorldView;
+import net.minecraft.world.tick.ScheduledTickView;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -36,6 +45,43 @@ public abstract class BaseBlock extends BlockWithEntity implements Waterloggable
     }
 
     /**
+     * Determine the initial state of the pipe based on its surroundings.
+     *
+     * @return the initial state of the block
+     */
+    @Override
+    public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
+        BlockState state = super.getPlacementState(context);
+        if (state != null) {
+            BlockPos pos = context.getBlockPos();
+            return state
+                .with(WATERLOGGED, context.getWorld().getFluidState(pos).getFluid() == Fluids.WATER);
+        }
+        return null;
+    }
+
+    /**
+     * Handle state changes when the neighboring block's state changes.
+     *
+     * @return the state of the pipe after a neighboring block's state changes.
+     */
+    @Override
+    protected @NotNull BlockState getStateForNeighborUpdate(
+        @NotNull BlockState blockState,
+        WorldView world,
+        ScheduledTickView scheduledTickAccess,
+        BlockPos pos,
+        Direction direction,
+        BlockPos neighborPos,
+        BlockState neighborState,
+        Random random) {
+        if (blockState.get(WATERLOGGED)) {
+            scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return blockState;
+    }
+
+    /**
      * Pipes and fittings do not block light.
      *
      * @return true
@@ -62,5 +108,14 @@ public abstract class BaseBlock extends BlockWithEntity implements Waterloggable
     @NotNull
     public BlockRenderType getRenderType(BlockState blockState) {
         return BlockRenderType.MODEL;
+    }
+
+    @Override
+    @NotNull
+    public FluidState getFluidState(@NotNull BlockState blockState) {
+        if (blockState.get(WATERLOGGED)) {
+            return Fluids.WATER.getStill(false);
+        }
+        return super.getFluidState(blockState);
     }
 }

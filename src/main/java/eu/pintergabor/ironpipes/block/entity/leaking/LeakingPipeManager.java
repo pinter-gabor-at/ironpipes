@@ -2,17 +2,10 @@ package eu.pintergabor.ironpipes.block.entity.leaking;
 
 import java.util.ArrayList;
 
-import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.blockold.CopperPipe;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
-
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.RaycastContext;
@@ -20,9 +13,9 @@ import net.minecraft.world.World;
 
 
 public class LeakingPipeManager {
-    private static final ArrayList<LeakingPipePos> leakingPipePosesOne = new ArrayList<>();
-    private static final ArrayList<LeakingPipePos> leakingPipePosesTwo = new ArrayList<>();
-    private static boolean isAlt;
+    private static final ArrayList<LeakingPipePos> leakingPipePositions0 = new ArrayList<>();
+    private static final ArrayList<LeakingPipePos> leakingPipePositions1 = new ArrayList<>();
+    private static boolean isActive1;
 
     /**
      * Check if there is a leaking water pipe within range.
@@ -34,15 +27,17 @@ public class LeakingPipeManager {
      * @return true if there is a leaking water pipe in range.
      */
     public static boolean isWaterPipeNearby(Entity entity, int range) {
-        @SuppressWarnings("unchecked")
-        ArrayList<LeakingPipePos> copiedList = (ArrayList<LeakingPipePos>) getPoses().clone();
+        ArrayList<LeakingPipePos> activeList = getActiveList();
+//        @SuppressWarnings("unchecked")
+//        ArrayList<LeakingPipePos> copiedList = (ArrayList<LeakingPipePos>) getActiveList().clone();
         // Target coordinates.
         int x = entity.getBlockX();
         int y = entity.getBlockY();
         int z = entity.getBlockZ();
         Vec3d entityPos = entity.getPos();
-        Identifier dimension = entity.getWorld().getRegistryKey().getValue();
-        for (LeakingPipePos leakingPos : copiedList) {
+        World world = entity.getWorld();
+        Identifier dimension = getDimension(world);
+        for (LeakingPipePos leakingPos : activeList) {
             if (leakingPos.dimension.equals(dimension)) {
                 BlockPos leakPos = leakingPos.pos;
                 double xDistance = leakPos.getX() - x;
@@ -54,7 +49,7 @@ public class LeakingPipeManager {
                         int leakY = leakPos.getY();
                         // If Y distance is within range of the leaking position.
                         if (leakY - 12 <= y && y < leakY) {
-                            BlockHitResult hitResult = entity.getWorld().raycast(
+                            BlockHitResult hitResult = world.raycast(
                                 new RaycastContext(entityPos,
                                     new Vec3d(leakPos.getX() + 0.5, leakPos.getY() + 0.5, leakPos.getZ() + 0.5),
                                     RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity));
@@ -74,33 +69,33 @@ public class LeakingPipeManager {
      * <p>
      * Y range is fixed [1..12].
      *
-     * @param view  World
+     * @param world World
      * @param pos   Target position
      * @param range X and Z range [-range..+range]
      * @return true if there is a leaking water pipe in range.
      */
-    public static boolean isWaterPipeNearby(BlockView view, BlockPos pos, int range) {
-        @SuppressWarnings("unchecked")
-        ArrayList<LeakingPipePos> copiedList = (ArrayList<LeakingPipePos>) getPoses().clone();
+    public static boolean isWaterPipeNearby(BlockView world, BlockPos pos, int range) {
+        ArrayList<LeakingPipePos> activeList = getActiveList();
+//        @SuppressWarnings("unchecked")
+//        ArrayList<LeakingPipePos> copiedList = (ArrayList<LeakingPipePos>) getActiveList().clone();
         // Target coordinates.
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        for (LeakingPipePos leakingPos : copiedList) {
-            int xDistance = leakingPos.pos.getX() - x;
-            // If X distance is within range of the leaking position.
-            if (-range <= xDistance && xDistance <= range) {
-                int zDistance = leakingPos.pos.getZ() - z;
-                // If Z distance is within range of the leaking position.
-                if (-range <= zDistance && zDistance <= range) {
-                    int leakY = leakingPos.pos.getY();
-                    // If Y distance is within range of the leaking position.
-                    if (leakY - 12 <= y && y < leakY) {
-                        // If it can leak water.
-                        BlockState state = view.getBlockState(leakingPos.pos);
-                        if (state.getBlock() instanceof CopperPipe) {
-                            return state.get(Properties.FACING) != Direction.UP &&
-                                state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER;
+        Identifier dimension = world instanceof World w ?
+            getDimension(w) : World.OVERWORLD.getValue();
+        for (LeakingPipePos leakingPos : activeList) {
+            if (leakingPos.dimension.equals(dimension)) {
+                int xDistance = leakingPos.pos.getX() - x;
+                // If X distance is within range of the leaking position.
+                if (-range <= xDistance && xDistance <= range) {
+                    int zDistance = leakingPos.pos.getZ() - z;
+                    // If Z distance is within range of the leaking position.
+                    if (-range <= zDistance && zDistance <= range) {
+                        int leakY = leakingPos.pos.getY();
+                        // If Y distance is within range of the leaking position.
+                        if (leakY - 12 <= y && y < leakY) {
+                            return true;
                         }
                     }
                 }
@@ -109,33 +104,51 @@ public class LeakingPipeManager {
         return false;
     }
 
-    public static ArrayList<LeakingPipePos> getPoses() {
-        return !isAlt ? leakingPipePosesOne : leakingPipePosesTwo;
+    public static ArrayList<LeakingPipePos> getActiveList() {
+        return !isActive1 ? leakingPipePositions0 : leakingPipePositions1;
     }
 
-    public static ArrayList<LeakingPipePos> getAltList() {
-        return isAlt ? leakingPipePosesOne : leakingPipePosesTwo;
+    public static ArrayList<LeakingPipePos> getInactiveList() {
+        return isActive1 ? leakingPipePositions0 : leakingPipePositions1;
     }
 
-    public static void clear() {
-        getPoses().clear();
-    }
-
+    /**
+     * Clear all position when the server stops.
+     */
     public static void clearAll() {
-        leakingPipePosesOne.clear();
-        leakingPipePosesTwo.clear();
+        leakingPipePositions0.clear();
+        leakingPipePositions1.clear();
     }
 
-    public static void clearAndSwitch() {
-        clear();
-        isAlt = !isAlt;
+    /**
+     * Called at the beginning of the server tick.
+     */
+    public static void switchAndClear() {
+        // Activate the other list.
+        isActive1 = !isActive1;
+        // Clear the inactive list.
+        getInactiveList().clear();
     }
 
-    public static void addPos(World level, BlockPos pos) {
-        getAltList().add(new LeakingPipePos(pos, level.getRegistryKey().getValue()));
+    /**
+     * Add position to the inactive leaking positions.
+     */
+    public static void addPos(World world, BlockPos pos) {
+        getInactiveList().add(new LeakingPipePos(getDimension(world), pos));
     }
 
-    public record LeakingPipePos(BlockPos pos, Identifier dimension) {
+    /**
+     * Get dimension.
+     *
+     * @return {@link World#OVERWORLD}.getValue(), {@link World#NETHER}.getValue() or {@link World#END}.getValue().
+     */
+    private static Identifier getDimension(World world) {
+        return world.getRegistryKey().getValue();
+    }
 
+    /**
+     * World dimension and position pairs.
+     */
+    public record LeakingPipePos(Identifier dimension, BlockPos pos) {
     }
 }

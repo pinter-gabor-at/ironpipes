@@ -14,21 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -37,9 +32,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.block.WireOrientation;
-import net.minecraft.world.tick.ScheduledTickView;
 
 
 public class WoodenPipe extends BaseFluidPipe {
@@ -50,94 +42,6 @@ public class WoodenPipe extends BaseFluidPipe {
 
     public WoodenPipe(AbstractBlock.Settings settings) {
         super(settings);
-    }
-
-    /**
-     * Update the associated block entity parameters and behaviour.
-     * <p>
-     * Called when the state of this pipe block, or the state of its neighbours change.
-     *
-     * @param world This world
-     * @param pos   Pipe position
-     * @param state New state
-     */
-    private static void updateBlockEntityValues(World world, BlockPos pos, @NotNull BlockState state) {
-//        if (state.getBlock() instanceof WoodenPipe) {
-//            Direction direction = state.get(Properties.FACING);
-//            // The state of the block in front of the pipe.
-//            BlockState frontState = world.getBlockState(pos.offset(direction));
-//            Block frontBlock = frontState.getBlock();
-//            // The state of the block behind the pipe.
-//            BlockState backState = world.getBlockState(pos.offset(direction.getOpposite()));
-//            Block backBlock = backState.getBlock();
-//            // Always true.
-//            if (world.getBlockEntity(pos) instanceof WoodenPipeEntity pipeEntity) {
-//                // The pipe can dispense if there is air or water in front of it.
-//                pipeEntity.canDispense = (frontState.isAir() || frontBlock == Blocks.WATER);
-//                pipeEntity.hasWater = ModConfig.get().carryWater &&
-//                    ((backBlock == Blocks.WATER) || state.get(Properties.WATERLOGGED) ||
-//                        (backState.contains(Properties.WATERLOGGED) && backState.get(Properties.WATERLOGGED)));
-//                pipeEntity.hasLava = ModConfig.get().carryLava &&
-//                    (backBlock == Blocks.LAVA);
-//                if (pipeEntity.hasWater && pipeEntity.hasLava) {
-//                    pipeEntity.hasWater = false;
-//                    pipeEntity.hasLava = false;
-//                }
-//            }
-//        }
-    }
-
-    /**
-     * Determine the initial state of the pipe based on its surroundings.
-     *
-     * @return the initial state of the block
-     */
-    @NotNull
-    @Override
-    public BlockState getPlacementState(@NotNull ItemPlacementContext context) {
-        BlockState state = super.getPlacementState(context);
-        BlockPos pos = context.getBlockPos();
-        return state
-            .with(WATERLOGGED, context.getWorld().getFluidState(pos).getFluid() == Fluids.WATER);
-    }
-
-    /**
-     * Handle state changes when the neighboring block's state changes.
-     *
-     * @return the state of the pipe after a neighboring block's state changes.
-     */
-    @Override
-    protected @NotNull BlockState getStateForNeighborUpdate(
-        @NotNull BlockState blockState,
-        WorldView world,
-        ScheduledTickView scheduledTickAccess,
-        BlockPos pos,
-        Direction direction,
-        BlockPos neighborPos,
-        BlockState neighborState,
-        Random random) {
-        if (blockState.get(WATERLOGGED)) {
-            scheduledTickAccess.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
-        Direction facing = blockState.get(FACING);
-        return blockState
-            .with(FRONT_CONNECTED, needFrontExtension(world, pos, facing))
-            .with(BACK_CONNECTED, needBackExtension(world, pos, facing))
-            .with(SMOOTH, isSmooth(world, pos, facing));
-    }
-
-    /**
-     * Handle side effects when the neighboring block's state changes.
-     */
-    @Override
-    protected void neighborUpdate(
-        @NotNull BlockState blockState, @NotNull World world,
-        BlockPos blockPos, Block block, @Nullable WireOrientation orientation, boolean notify) {
-//        boolean powered = isReceivingRedstonePower(world, blockPos);
-//        if (powered != blockState.get(POWERED)) {
-//            world.setBlockState(blockPos, blockState.with(POWERED, powered));
-//        }
-//        updateBlockEntityValues(world, blockPos, blockState);
     }
 
     /**
@@ -161,23 +65,6 @@ public class WoodenPipe extends BaseFluidPipe {
                 WoodenPipeEntity::serverTick);
         }
         return null;
-    }
-
-    @Override
-    public void onPlaced(
-        World world, BlockPos blockPos, BlockState blockState,
-        LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
-        updateBlockEntityValues(world, blockPos, blockState);
-    }
-
-    @Override
-    @NotNull
-    public FluidState getFluidState(@NotNull BlockState blockState) {
-        if (blockState.get(WATERLOGGED)) {
-            return Fluids.WATER.getStill(false);
-        }
-        return super.getFluidState(blockState);
     }
 
     /**
@@ -300,10 +187,7 @@ public class WoodenPipe extends BaseFluidPipe {
     @Override
     public void onStateReplaced(
         BlockState oldState, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (oldState.isOf(newState.getBlock())) {
-            // Update block entity with new values.
-            updateBlockEntityValues(world, pos, newState);
-        } else {
+        if (!oldState.isOf(newState.getBlock())) {
             // Remove block and block entity.
             world.removeBlockEntity(pos);
         }

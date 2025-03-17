@@ -23,7 +23,7 @@ public final class ModBlockEntities {
         WoodenPipeEntity::new,
         ModBlocks.WOODEN_PIPES);
     // Wooden fittings.
-    public static final BlockEntityType<?> WOODEN_FITTING_ENTITY = register(
+    public static final BlockEntityType<WoodenFittingEntity> WOODEN_FITTING_ENTITY = register(
         "wooden_fitting",
         WoodenFittingEntity::new,
         ModBlocks.WOODEN_FITTINGS);

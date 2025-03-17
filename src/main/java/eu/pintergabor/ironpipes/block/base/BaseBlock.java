@@ -1,20 +1,16 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Waterloggable;
-
-import net.minecraft.state.StateManager;
-
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.Direction;
-
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.Waterloggable;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
 
 
 /**

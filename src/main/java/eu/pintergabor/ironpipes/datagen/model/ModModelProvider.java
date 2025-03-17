@@ -157,7 +157,13 @@ public final class ModModelProvider extends FabricModelProvider {
             createPipe(generator, b);
         }
     }
-    
+
+    private static void generateWoodenFittings(BlockStateModelGenerator generator) {
+        for (Block b: ModBlocks.WOODEN_FITTINGS){
+            createFitting(generator, b);
+        }
+    }
+
     /**
      * Generate block models.
      */
@@ -165,6 +171,8 @@ public final class ModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
         // Wooden pipes.
         generateWoodenPipes(generator);
+        // Wooden fittings.
+        generateWoodenFittings(generator);
         // Copper pipes.
         createPipe(generator, ModBlocks.COPPER_PIPE);
         createPipe(generator, ModBlocks.EXPOSED_COPPER_PIPE);

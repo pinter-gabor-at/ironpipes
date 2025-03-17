@@ -24,14 +24,19 @@ public final class ModBlockTagProvider extends FabricTagProvider.BlockTagProvide
         // Remove pipes and fittings only with a pickaxe,
         // and wooden pipes with axe too.
         getOrCreateTagBuilder(BlockTags.AXE_MINEABLE)
-            .addOptionalTag(ModBlockTags.WOODEN_PIPES);
+            .addOptionalTag(ModBlockTags.WOODEN_PIPES)
+            .addOptionalTag(ModBlockTags.WOODEN_FITTINGS);
         getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
             .addOptionalTag(ModBlockTags.WOODEN_PIPES)
+            .addOptionalTag(ModBlockTags.WOODEN_FITTINGS)
             .addOptionalTag(ModBlockTags.COPPER_PIPES)
             .addOptionalTag(ModBlockTags.COPPER_FITTINGS);
         // Wooden pipes.
         getOrCreateTagBuilder(ModBlockTags.WOODEN_PIPES)
             .add(ModBlocks.WOODEN_PIPES);
+        // Wooden pipes.
+        getOrCreateTagBuilder(ModBlockTags.WOODEN_FITTINGS)
+            .add(ModBlocks.WOODEN_FITTINGS);
         // Copper pipes.
         getOrCreateTagBuilder(ModBlockTags.COPPER_PIPES)
             .add(ModBlocks.COPPER_PIPE)

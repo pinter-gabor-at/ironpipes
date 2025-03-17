@@ -3,6 +3,10 @@
     {
       "id": "#ironpipes:wooden_pipes",
       "required": false
+    },
+    {
+      "id": "#ironpipes:wooden_fittings",
+      "required": false
     }
   ]
 }

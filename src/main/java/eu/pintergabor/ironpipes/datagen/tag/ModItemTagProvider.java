@@ -5,7 +5,10 @@ import java.util.concurrent.CompletableFuture;
 import eu.pintergabor.ironpipes.registry.ModBlocks;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.TagKey;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -17,20 +20,22 @@ public final class ModItemTagProvider extends FabricTagProvider.ItemTagProvider 
         super(output, registries);
     }
 
+    /**
+     * Add an array of blocks as items to an item tag.
+     */
+    private void add(TagKey<Item> key, Block[] blocks) {
+        FabricTagProvider<Item>.FabricTagBuilder builder = getOrCreateTagBuilder(key);
+        for (Block b : blocks) {
+            builder.add(b.asItem());
+        }
+    }
+
     @Override
     protected void configure(RegistryWrapper.WrapperLookup provider) {
         // Wooden pipes.
-        getOrCreateTagBuilder(ModItemTags.WOODEN_PIPES)
-            .add(ModBlocks.OAK_PIPE.asItem())
-            .add(ModBlocks.SPRUCE_PIPE.asItem())
-            .add(ModBlocks.BIRCH_PIPE.asItem())
-            .add(ModBlocks.JUNGLE_PIPE.asItem())
-            .add(ModBlocks.ACACIA_PIPE.asItem())
-            .add(ModBlocks.CHERRY_PIPE.asItem())
-            .add(ModBlocks.DARK_OAK_PIPE.asItem())
-            .add(ModBlocks.PALE_OAK_PIPE.asItem())
-            .add(ModBlocks.MANGROVE_PIPE.asItem())
-            .add(ModBlocks.BAMBOO_PIPE.asItem());
+        add(ModItemTags.WOODEN_PIPES, ModBlocks.WOODEN_PIPES);
+        // Wooden fittings.
+        add(ModItemTags.WOODEN_FITTINGS, ModBlocks.WOODEN_FITTINGS);
         // Copper pipes.
         getOrCreateTagBuilder(ModItemTags.COPPER_PIPES)
             .add(ModBlocks.COPPER_PIPE.asItem())
@@ -54,6 +59,7 @@ public final class ModItemTagProvider extends FabricTagProvider.ItemTagProvider 
         // All pipes and fittings.
         getOrCreateTagBuilder(ModItemTags.PIPES_AND_FITTINGS)
             .addOptionalTag(ModItemTags.WOODEN_PIPES)
+            .addOptionalTag(ModItemTags.WOODEN_FITTINGS)
             .addOptionalTag(ModItemTags.COPPER_PIPES)
             .addOptionalTag(ModItemTags.COPPER_FITTINGS);
     }

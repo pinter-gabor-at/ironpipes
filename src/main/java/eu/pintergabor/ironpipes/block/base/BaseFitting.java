@@ -1,5 +1,7 @@
 package eu.pintergabor.ironpipes.block.base;
 
+import net.minecraft.state.StateManager;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
@@ -48,6 +50,12 @@ public abstract class BaseFitting extends BaseBlock {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
             .with(POWERED, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
+        builder.add(POWERED);
     }
 
     @Override

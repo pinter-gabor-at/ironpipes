@@ -5,6 +5,10 @@
       "required": false
     },
     {
+      "id": "#ironpipes:wooden_fittings",
+      "required": false
+    },
+    {
       "id": "#ironpipes:copper_pipes",
       "required": false
     },

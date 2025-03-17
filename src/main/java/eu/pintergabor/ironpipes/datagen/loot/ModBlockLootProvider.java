@@ -35,6 +35,8 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
     public void generate() {
         // Wooden pipes.
         generateSimpleDrops(ModBlocks.WOODEN_PIPES);
+        // Wooden fittings.
+        generateSimpleDrops(ModBlocks.WOODEN_FITTINGS);
         // Copper pipes.
         drops(ModBlocks.COPPER_PIPE);
         drops(ModBlocks.EXPOSED_COPPER_PIPE);

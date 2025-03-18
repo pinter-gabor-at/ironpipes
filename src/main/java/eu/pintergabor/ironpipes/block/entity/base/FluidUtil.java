@@ -1,6 +1,7 @@
 package eu.pintergabor.ironpipes.block.entity.base;
 
-import eu.pintergabor.ironpipes.block.base.BaseBlock;
+import eu.pintergabor.ironpipes.block.base.BaseFitting;
+import eu.pintergabor.ironpipes.block.base.BasePipe;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
 
@@ -11,32 +12,44 @@ import net.minecraft.state.property.Properties;
 
 
 public class FluidUtil {
+
     /**
      * Check if the block can be used as a water source.
      *
      * @param state {@link BlockState} (which includes reference to the {@link Block})
      * @return true if it is a water source
      */
+    @SuppressWarnings("RedundantIfStatement")
     public static boolean isWaterSource(BlockState state) {
         Block block = state.getBlock();
         // If it is a still or flowing water block.
-        boolean ret = (block == Blocks.WATER);
+        if (block == Blocks.WATER) {
+            return true;
+        }
         // If it is a full water cauldron.
-        ret = ret ||
-            (block == Blocks.WATER_CAULDRON &&
-                (state.get(Properties.LEVEL_3) == 3));
-        if (!ret) {
-            if (block instanceof BaseBlock) {
-                // If it is a pipe or fitting carrying water.
-                ret = state.contains(ModBlockStateProperties.FLUID) &&
-                    (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER);
-            } else {
-                // If it is a waterlogged block.
-                ret = state.contains(Properties.WATERLOGGED) &&
-                    (state.get(Properties.WATERLOGGED));
+        if (block == Blocks.WATER_CAULDRON &&
+            (state.get(Properties.LEVEL_3) == 3)) {
+            return true;
+        }
+        if (state.get(Properties.WATERLOGGED, false)) {
+            // If it is a waterlogged block.
+            return true;
+        }
+        if (block instanceof BasePipe) {
+            // If it is a pipe carrying water.
+            if (state.contains(ModBlockStateProperties.FLUID) &&
+                (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER)) {
+                return true;
             }
         }
-        return ret;
+        if (block instanceof BaseFitting) {
+            // If it is an unpowered fitting carrying water.
+            if (!state.get(Properties.POWERED, false) &&
+                state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.WATER) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -45,17 +58,30 @@ public class FluidUtil {
      * @param state {@link BlockState} (which includes reference to the {@link Block})
      * @return true if it is a water source
      */
+    @SuppressWarnings("RedundantIfStatement")
     public static boolean isLavaSource(BlockState state) {
         Block block = state.getBlock();
         // If it is a still or flowing lava block.
-        boolean ret = (block == Blocks.LAVA);
-        // If it is a lava cauldron.
-        ret = ret || block == Blocks.LAVA_CAULDRON;
-        if (!ret && block instanceof BaseBlock) {
-            // If it is a pipe or fitting carrying lava.
-            ret = state.contains(ModBlockStateProperties.FLUID) &&
-                (state.get(ModBlockStateProperties.FLUID) == PipeFluid.LAVA);
+        if (block == Blocks.LAVA) {
+            return true;
         }
-        return ret;
+        // If it is a lava cauldron.
+        if (block == Blocks.LAVA_CAULDRON) {
+            return true;
+        }
+        if (block instanceof BasePipe) {
+            // If it is a pipe carrying lava.
+            if (state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
+                return true;
+            }
+        }
+        if (block instanceof BaseFitting) {
+            // If it is an unpowered fitting carrying lava.
+            if (!state.get(Properties.POWERED, false) &&
+                state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
+                return true;
+            }
+        }
+        return false;
     }
 }

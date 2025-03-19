@@ -3,7 +3,7 @@ package eu.pintergabor.ironpipes.block.entity.base;
 import eu.pintergabor.ironpipes.block.base.BaseFitting;
 import eu.pintergabor.ironpipes.block.base.BasePipe;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -37,15 +37,15 @@ public class FluidUtil {
         }
         if (block instanceof BasePipe) {
             // If it is a pipe carrying water.
-            if (state.contains(ModBlockStateProperties.FLUID) &&
-                (state.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER)) {
+            if (state.contains(ModProperties.FLUID) &&
+                (state.get(ModProperties.FLUID) == PipeFluid.WATER)) {
                 return true;
             }
         }
         if (block instanceof BaseFitting) {
             // If it is an unpowered fitting carrying water.
             if (!state.get(Properties.POWERED, false) &&
-                state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.WATER) {
+                state.get(ModProperties.FLUID, PipeFluid.NONE) == PipeFluid.WATER) {
                 return true;
             }
         }
@@ -71,14 +71,14 @@ public class FluidUtil {
         }
         if (block instanceof BasePipe) {
             // If it is a pipe carrying lava.
-            if (state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
+            if (state.get(ModProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
                 return true;
             }
         }
         if (block instanceof BaseFitting) {
             // If it is an unpowered fitting carrying lava.
             if (!state.get(Properties.POWERED, false) &&
-                state.get(ModBlockStateProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
+                state.get(ModProperties.FLUID, PipeFluid.NONE) == PipeFluid.LAVA) {
                 return true;
             }
         }

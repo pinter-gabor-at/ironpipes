@@ -9,7 +9,7 @@ import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
@@ -61,9 +61,9 @@ public class CopperPipe extends BasePipe implements Waterloggable, Oxidizable {
     public static final BooleanProperty WATERLOGGED =
         Properties.WATERLOGGED;
     public static final EnumProperty<PipeFluid> FLUID =
-        ModBlockStateProperties.FLUID;
+        ModProperties.FLUID;
     public static final BooleanProperty HAS_ELECTRICITY =
-        ModBlockStateProperties.HAS_ELECTRICITY;
+        ModProperties.HAS_ELECTRICITY;
     public static final MapCodec<CopperPipe> CODEC =
         RecordCodecBuilder.mapCodec((instance) -> instance.group(
             OxidationLevel.CODEC.fieldOf("oxidation")

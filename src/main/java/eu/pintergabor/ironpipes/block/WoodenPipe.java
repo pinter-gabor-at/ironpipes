@@ -125,12 +125,6 @@ public class WoodenPipe extends BaseFluidPipe {
     }
 
     @Override
-    public boolean hasRandomTicks(@NotNull BlockState blockState) {
-        return blockState.get(FLUID) == PipeFluid.WATER ||
-            blockState.get(FLUID) == PipeFluid.LAVA;
-    }
-
-    @Override
     public void randomDisplayTick(
         @NotNull BlockState blockState, @NotNull World world, @NotNull BlockPos blockPos, Random random) {
         Direction direction = blockState.get(FACING);

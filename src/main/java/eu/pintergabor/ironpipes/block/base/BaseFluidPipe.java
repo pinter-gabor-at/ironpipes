@@ -1,7 +1,7 @@
 package eu.pintergabor.ironpipes.block.base;
 
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,15 +15,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
 
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * A fluid pipe can carry water or lava.
  */
 public abstract class BaseFluidPipe extends BasePipe {
     public static final EnumProperty<PipeFluid> FLUID =
-        ModBlockStateProperties.FLUID;
+        ModProperties.FLUID;
     public static final BooleanProperty OUTFLOW =
-        ModBlockStateProperties.OUTFLOW;
+        ModProperties.OUTFLOW;
 
     protected BaseFluidPipe(Settings settings) {
         super(settings);
@@ -36,6 +38,15 @@ public abstract class BaseFluidPipe extends BasePipe {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         super.appendProperties(builder);
         builder.add(FLUID, OUTFLOW);
+    }
+
+    /**
+     * Dripping particle generation uses RandomTick if the pipe contains water or lava.
+     */
+    @Override
+    public boolean hasRandomTicks(@NotNull BlockState blockState) {
+        PipeFluid fluid = blockState.get(FLUID, PipeFluid.NONE);
+        return fluid == PipeFluid.WATER || fluid == PipeFluid.LAVA;
     }
 
     /**
@@ -54,10 +65,10 @@ public abstract class BaseFluidPipe extends BasePipe {
             BlockState neighbourState = world.getBlockState(neighbourPos);
             Block neighbourBlock = neighbourState.getBlock();
             if (neighbourBlock instanceof BaseFluidPipe) {
-                boolean outflow = neighbourState.get(ModBlockStateProperties.OUTFLOW);
+                boolean outflow = neighbourState.get(ModProperties.OUTFLOW);
                 Direction facing = neighbourState.get(Properties.FACING);
                 if (outflow && facing == d.getOpposite()) {
-                    PipeFluid pipeFluid = neighbourState.get(ModBlockStateProperties.FLUID);
+                    PipeFluid pipeFluid = neighbourState.get(ModProperties.FLUID);
                     if (pipeFluid == PipeFluid.WATER && fluid == Fluids.WATER) {
                         return true;
                     }

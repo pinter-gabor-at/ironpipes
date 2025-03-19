@@ -1,6 +1,6 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.WorldView;
@@ -38,11 +38,11 @@ public abstract class BasePipe extends BaseBlock implements Waterloggable {
     public static final EnumProperty<Direction> FACING =
         Properties.FACING;
     public static final BooleanProperty FRONT_CONNECTED =
-        ModBlockStateProperties.FRONT_CONNECTED;
+        ModProperties.FRONT_CONNECTED;
     public static final BooleanProperty BACK_CONNECTED =
-        ModBlockStateProperties.BACK_CONNECTED;
+        ModProperties.BACK_CONNECTED;
     public static final BooleanProperty SMOOTH =
-        ModBlockStateProperties.SMOOTH;
+        ModProperties.SMOOTH;
     // Shapes.
     private static final VoxelShape UP_SHAPE =
         VoxelShapes.union(Block.createCuboidShape(4D, 0D, 4D, 12D, 14D, 12D),

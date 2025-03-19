@@ -1,13 +1,12 @@
 package eu.pintergabor.ironpipes.block.base;
 
-import net.minecraft.item.ItemPlacementContext;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -29,10 +28,10 @@ import net.minecraft.world.block.WireOrientation;
  */
 public abstract class BaseFitting extends BaseBlock {
     protected static final VoxelShape FITTING_SHAPE =
-        Block.createCuboidShape(2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
+        Block.createCuboidShape(
+            2.5D, 2.5D, 2.5D, 13.5D, 13.5D, 13.5D);
     public static final BooleanProperty POWERED =
         Properties.POWERED;
-
     protected BaseFitting(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState()
@@ -69,7 +68,7 @@ public abstract class BaseFitting extends BaseBlock {
      */
     public static boolean isReceivingRedstonePower(
         World world, BlockPos blockPos) {
-        for (Direction d : Direction.values()) {
+        for (Direction d : DIRECTIONS) {
             BlockPos neighbourPos = blockPos.offset(d);
             if (0 < world.getEmittedRedstonePower(neighbourPos, d)) {
                 return true;

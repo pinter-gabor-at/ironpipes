@@ -7,7 +7,7 @@ import java.util.Optional;
 import eu.pintergabor.ironpipes.blockold.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
 import eu.pintergabor.ironpipes.tag.ModBlockTags;
 
@@ -97,14 +97,14 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
             BlockPos pos = blockPos.offset(direction);
             if (world.isPosLoaded(pos)) {
                 BlockState state = world.getBlockState(pos);
-                if (state.contains(ModBlockStateProperties.HAS_ELECTRICITY)) {
+                if (state.contains(ModProperties.HAS_ELECTRICITY)) {
                     if (world.getBlockEntity(pos) instanceof BaseBlockEntity entity) {
                         int axis = state.contains(Properties.FACING) ?
                             state.get(Properties.FACING).getAxis().ordinal() : direction.getAxis().ordinal();
                         if (entity.electricityCooldown == -1) {
                             world.syncWorldEvent(WorldEvents.ELECTRICITY_SPARKS, pos, axis);
                             world.setBlockState(pos, state
-                                .with(ModBlockStateProperties.HAS_ELECTRICITY, true));
+                                .with(ModProperties.HAS_ELECTRICITY, true));
                         }
                     }
                 }
@@ -131,8 +131,8 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
                 validWater = false;
                 validLava = false;
             }
-            if (state.contains(ModBlockStateProperties.FLUID)) {
-                state = state.with(ModBlockStateProperties.FLUID,
+            if (state.contains(ModProperties.FLUID)) {
+                state = state.with(ModProperties.FLUID,
                     validWater ? PipeFluid.WATER : validLava ? PipeFluid.LAVA : PipeFluid.NONE);
             }
             this.tickMoveableNbt((ServerWorld) world, blockPos, blockState);
@@ -141,7 +141,7 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
             if (this.electricityCooldown >= 0) {
                 --this.electricityCooldown;
             }
-            if (this.electricityCooldown == -1 && state.get(ModBlockStateProperties.HAS_ELECTRICITY)) {
+            if (this.electricityCooldown == -1 && state.get(ModProperties.HAS_ELECTRICITY)) {
                 this.electricityCooldown = 80;
                 Block stateGetBlock = state.getBlock();
                 Optional<Block> previous = Oxidizable.getDecreasedOxidationBlock(stateGetBlock);
@@ -153,8 +153,8 @@ public class BaseBlockEntity extends LootableContainerBlockEntity implements Inv
                 sendElectricity(world, blockPos);
             }
             if (this.electricityCooldown == 0) {
-                if (state.contains(ModBlockStateProperties.HAS_ELECTRICITY)) {
-                    state = state.with(ModBlockStateProperties.HAS_ELECTRICITY, false);
+                if (state.contains(ModProperties.HAS_ELECTRICITY)) {
+                    state = state.with(ModProperties.HAS_ELECTRICITY, false);
                 }
             }
             if (state != blockState) {

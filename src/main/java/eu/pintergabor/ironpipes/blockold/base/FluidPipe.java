@@ -1,7 +1,7 @@
 package eu.pintergabor.ironpipes.blockold.base;
 
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 
 import net.minecraft.block.Waterloggable;
 import net.minecraft.state.property.BooleanProperty;
@@ -17,7 +17,7 @@ public abstract class FluidPipe extends BasePipe implements Waterloggable {
     public static final BooleanProperty WATERLOGGED =
         Properties.WATERLOGGED;
     public static final EnumProperty<PipeFluid> FLUID =
-        ModBlockStateProperties.FLUID;
+        ModProperties.FLUID;
 
     protected FluidPipe(Settings settings) {
         super(settings);

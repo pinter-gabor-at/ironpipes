@@ -31,6 +31,10 @@ import net.minecraft.state.property.Properties;
 public abstract class BaseBlock extends BlockWithEntity implements Waterloggable {
     public static final BooleanProperty WATERLOGGED =
         Properties.WATERLOGGED;
+    // All Directions in pull priority order.
+    public static final Direction[] DIRECTIONS = {
+        Direction.UP, Direction.NORTH, Direction.EAST,
+        Direction.SOUTH, Direction.WEST, Direction.DOWN};
 
     protected BaseBlock(Settings settings) {
         super(settings);

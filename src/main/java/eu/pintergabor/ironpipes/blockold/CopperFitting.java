@@ -8,7 +8,7 @@ import eu.pintergabor.ironpipes.blockold.entity.CopperFittingEntity;
 import eu.pintergabor.ironpipes.block.properties.PipeFluid;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 import org.jetbrains.annotations.NotNull;
@@ -61,8 +61,8 @@ public class CopperFitting extends BaseFitting implements Waterloggable, Oxidiza
             .forGetter((copperFitting) -> copperFitting.cooldown)
     ).apply(instance, CopperFitting::new));
     public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final EnumProperty<PipeFluid> FLUID = ModBlockStateProperties.FLUID;
-    public static final BooleanProperty HAS_ELECTRICITY = ModBlockStateProperties.HAS_ELECTRICITY;
+    public static final EnumProperty<PipeFluid> FLUID = ModProperties.FLUID;
+    public static final BooleanProperty HAS_ELECTRICITY = ModProperties.HAS_ELECTRICITY;
     public final int cooldown;
     private final OxidationLevel oxidation;
 

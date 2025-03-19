@@ -91,7 +91,7 @@ public class WoodenFitting extends BaseFluidFitting {
     }
 
     @Override
-    public void randomTick(@NotNull BlockState blockState, ServerWorld serverLevel, BlockPos blockPos, Random random) {
+    public void randomTick(@NotNull BlockState blockState, ServerWorld world, BlockPos pos, Random random) {
         boolean isLava = blockState.get(FLUID) == PipeFluid.LAVA;
         boolean isWater = blockState.get(FLUID) == PipeFluid.WATER;
         // Water can drip from any pipe containing water.
@@ -99,22 +99,22 @@ public class WoodenFitting extends BaseFluidFitting {
         if (isWater || isLava) {
             // Adjust probability.
             if (random.nextFloat() <= (isLava ? 0.05859375F : 0.17578125F) * 2) {
-                BlockPos.Mutable mutableBlockPos = blockPos.mutableCopy();
+                BlockPos.Mutable mutableBlockPos = pos.mutableCopy();
                 mutableBlockPos.move(Direction.DOWN);
                 // Search down to 12 blocks.
                 for (int i = 0; i < 12; i++) {
                     mutableBlockPos.move(Direction.DOWN);
-                    BlockState state = serverLevel.getBlockState(mutableBlockPos);
-                    if (serverLevel.getFluidState(mutableBlockPos).isEmpty()) {
+                    BlockState state = world.getBlockState(mutableBlockPos);
+                    if (world.getFluidState(mutableBlockPos).isEmpty()) {
                         // A block that reacts with the drip stops the drip.
                         LeakingPipeDripBehaviors.DripOn dripOn =
                             LeakingPipeDripBehaviors.getDrip(state.getBlock());
                         if (dripOn != null) {
-                            dripOn.dripOn(isLava, serverLevel, mutableBlockPos, state);
+                            dripOn.dripOn(isLava, world, mutableBlockPos, state);
                             break;
                         }
                         // A solid block stops the drip.
-                        if (state.getCollisionShape(serverLevel, mutableBlockPos) != VoxelShapes.empty()) {
+                        if (state.getCollisionShape(world, mutableBlockPos) != VoxelShapes.empty()) {
                             break;
                         }
                     } else {
@@ -124,12 +124,6 @@ public class WoodenFitting extends BaseFluidFitting {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean hasRandomTicks(@NotNull BlockState blockState) {
-        return blockState.get(FLUID) == PipeFluid.WATER ||
-            blockState.get(FLUID) == PipeFluid.LAVA;
     }
 
     @Override

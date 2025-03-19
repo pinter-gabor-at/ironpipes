@@ -10,7 +10,7 @@ import eu.pintergabor.ironpipes.blockold.entity.base.BaseBlockEntity;
 import eu.pintergabor.ironpipes.blockold.entity.nbt.MoveablePipeDataHandler;
 import eu.pintergabor.ironpipes.config.ModConfig;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModBlockStateProperties;
+import eu.pintergabor.ironpipes.registry.ModProperties;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -139,7 +139,7 @@ public class CopperPipeEntity extends BaseBlockEntity {
             } else {
                 pipeMove(world, blockPos, blockState);
             }
-            if (blockState.get(ModBlockStateProperties.FLUID) == PipeFluid.WATER &&
+            if (blockState.get(ModProperties.FLUID) == PipeFluid.WATER &&
                 blockState.get(Properties.FACING) != Direction.UP) {
                 LeakingPipeManager.addPos(world, blockPos);
             }

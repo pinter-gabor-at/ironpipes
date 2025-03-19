@@ -20,16 +20,16 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
     }
 
     /**
-     * Generate drops for an array of simple blocks.
+     * Generate addDrop for an array of simple blocks.
      */
     private void generateSimpleDrops(Block[] blocks){
         for (Block b: blocks){
-            drops(b);
+            addDrop(b);
         }
     }
 
     /**
-     * Generate all drops.
+     * Generate all addDrop.
      */
     @Override
     public void generate() {
@@ -38,24 +38,24 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
         // Wooden fittings.
         generateSimpleDrops(ModBlocks.WOODEN_FITTINGS);
         // Copper pipes.
-        drops(ModBlocks.COPPER_PIPE);
-        drops(ModBlocks.EXPOSED_COPPER_PIPE);
-        drops(ModBlocks.WEATHERED_COPPER_PIPE);
-        drops(ModBlocks.OXIDIZED_COPPER_PIPE);
+        addDrop(ModBlocks.COPPER_PIPE);
+        addDrop(ModBlocks.EXPOSED_COPPER_PIPE);
+        addDrop(ModBlocks.WEATHERED_COPPER_PIPE);
+        addDrop(ModBlocks.OXIDIZED_COPPER_PIPE);
         // Waxed copper pipes.
-        drops(ModBlocks.WAXED_COPPER_PIPE);
-        drops(ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
-        drops(ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
-        drops(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
+        addDrop(ModBlocks.WAXED_COPPER_PIPE);
+        addDrop(ModBlocks.WAXED_EXPOSED_COPPER_PIPE);
+        addDrop(ModBlocks.WAXED_WEATHERED_COPPER_PIPE);
+        addDrop(ModBlocks.WAXED_OXIDIZED_COPPER_PIPE);
         // Copper fittings.
-        drops(ModBlocks.COPPER_FITTING);
-        drops(ModBlocks.EXPOSED_COPPER_FITTING);
-        drops(ModBlocks.WEATHERED_COPPER_FITTING);
-        drops(ModBlocks.OXIDIZED_COPPER_FITTING);
+        addDrop(ModBlocks.COPPER_FITTING);
+        addDrop(ModBlocks.EXPOSED_COPPER_FITTING);
+        addDrop(ModBlocks.WEATHERED_COPPER_FITTING);
+        addDrop(ModBlocks.OXIDIZED_COPPER_FITTING);
         // Waxed copper fittings.
-        drops(ModBlocks.WAXED_COPPER_FITTING);
-        drops(ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
-        drops(ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
-        drops(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
+        addDrop(ModBlocks.WAXED_COPPER_FITTING);
+        addDrop(ModBlocks.WAXED_EXPOSED_COPPER_FITTING);
+        addDrop(ModBlocks.WAXED_WEATHERED_COPPER_FITTING);
+        addDrop(ModBlocks.WAXED_OXIDIZED_COPPER_FITTING);
     }
 }

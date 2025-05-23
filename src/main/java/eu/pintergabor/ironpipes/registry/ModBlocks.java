@@ -201,6 +201,15 @@ public final class ModBlocks {
                 .strength(1.5F, 3F)
                 .sound(SoundType.IRON)
         );
+    public static final IronPipe GOLD_PIPE =
+        ModBlocksRegister.registerBlockAndItem("gold_pipe",
+            props -> new IronPipe(props, 10),
+            BlockBehaviour.Properties.of()
+                .mapColor(MapColor.GOLD)
+                .requiresCorrectToolForDrops()
+                .strength(1F, 2F)
+                .sound(SoundType.NETHER_GOLD_ORE)
+        );
     // Iron and gold fittings.
     public static final IronFitting IRON_FITTING =
         ModBlocksRegister.registerBlockAndItem("iron_fitting",
@@ -211,13 +220,22 @@ public final class ModBlocks {
                 .strength(1.5F, 3F)
                 .sound(SoundType.IRON)
         );
+    public static final IronFitting GOLD_FITTING =
+        ModBlocksRegister.registerBlockAndItem("gold_fitting",
+            props -> new IronFitting(props, 2),
+            BlockBehaviour.Properties.of()
+                .mapColor(MapColor.GOLD)
+                .requiresCorrectToolForDrops()
+                .strength(1F, 2F)
+                .sound(SoundType.NETHER_GOLD_ORE)
+        );
     // All item pipes.
     public static final ItemPipe[] ITEM_PIPES = {
-        IRON_PIPE
+        IRON_PIPE, GOLD_PIPE
     };
     // All item fittings.
     public static final ItemFitting[] ITEM_FITTINGS = {
-        IRON_FITTING
+        IRON_FITTING, GOLD_FITTING
     };
 
     // endregion

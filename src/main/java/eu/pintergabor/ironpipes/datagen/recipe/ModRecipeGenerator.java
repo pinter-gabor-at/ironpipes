@@ -25,9 +25,9 @@ public final class ModRecipeGenerator extends RecipeProvider {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	private ShapedRecipeBuilder createPipeRecipe(
-		RecipeCategory recipeCategory, ItemLike input, ItemLike output, int outputCount
+		ItemLike input, ItemLike output, int outputCount
 	) {
-		return shaped(recipeCategory, output, outputCount)
+		return shaped(RecipeCategory.MISC, output, outputCount)
 			.define('#', input)
 			.pattern("###")
 			.pattern("   ")
@@ -40,9 +40,9 @@ public final class ModRecipeGenerator extends RecipeProvider {
 	 */
 	@SuppressWarnings("SameParameterValue")
 	private ShapedRecipeBuilder createFittingRecipe(
-		RecipeCategory recipeCategory, ItemLike input, ItemLike output, int outputCount
+		ItemLike input, ItemLike output, int outputCount
 	) {
-		return shaped(recipeCategory, output, outputCount)
+		return shaped(RecipeCategory.MISC, output, outputCount)
 			.define('#', input)
 			.pattern("###")
 			.pattern("# #")
@@ -67,7 +67,7 @@ public final class ModRecipeGenerator extends RecipeProvider {
 			Items.BAMBOO_PLANKS,
 		};
 		IntStream.range(0, ModBlocks.WOODEN_PIPES.length).forEach(i ->
-			createPipeRecipe(RecipeCategory.MISC, WOODEN_PLANKS[i],
+			createPipeRecipe(WOODEN_PLANKS[i],
 			ModBlocks.WOODEN_PIPES[i], 6)
 			.save(output));
 	}
@@ -77,7 +77,7 @@ public final class ModRecipeGenerator extends RecipeProvider {
 	 */
 	private void createWoodenFittingRecipes() {
 		IntStream.range(0, ModBlocks.WOODEN_PIPES.length).forEach(i ->
-			createFittingRecipe(RecipeCategory.MISC, ModBlocks.WOODEN_PIPES[i],
+			createFittingRecipe(ModBlocks.WOODEN_PIPES[i],
 				ModBlocks.WOODEN_FITTINGS[i], 8)
 				.save(output));
 	}
@@ -103,11 +103,11 @@ public final class ModRecipeGenerator extends RecipeProvider {
 			Items.COBBLED_DEEPSLATE,
 		};
 		IntStream.range(0, STONES1.length).forEach(i ->
-			createPipeRecipe(RecipeCategory.MISC, STONES1[i],
+			createPipeRecipe(STONES1[i],
 				ModBlocks.STONE_PIPES[i], 6)
 				.save(output));
 		IntStream.range(0, STONES2.length).forEach(i ->
-			createPipeRecipe(RecipeCategory.MISC, STONES2[i],
+			createPipeRecipe(STONES2[i],
 				ModBlocks.STONE_PIPES[i], 6)
 				.save(output, RecipeBuilder.
 					getDefaultRecipeId(ModBlocks.STONE_PIPES[i]) + "2"));
@@ -118,7 +118,7 @@ public final class ModRecipeGenerator extends RecipeProvider {
 	 */
 	private void createStoneFittingRecipes() {
 		IntStream.range(0, ModBlocks.STONE_PIPES.length).forEach(i ->
-			createFittingRecipe(RecipeCategory.MISC, ModBlocks.STONE_PIPES[i],
+			createFittingRecipe(ModBlocks.STONE_PIPES[i],
 				ModBlocks.STONE_FITTINGS[i], 8)
 				.save(output));
 	}
@@ -136,5 +136,11 @@ public final class ModRecipeGenerator extends RecipeProvider {
 		createStonePipeRecipes();
 		// Stone fittings.
 		createStoneFittingRecipes();
+        // Iron and gold pipes.
+        createPipeRecipe(Items.IRON_INGOT, ModBlocks.IRON_PIPE, 6);
+        createPipeRecipe(Items.GOLD_INGOT, ModBlocks.GOLD_PIPE, 6);
+        // Iron and gold fittings.
+        createFittingRecipe(ModBlocks.IRON_PIPE, ModBlocks.IRON_FITTING, 8);
+        createFittingRecipe(ModBlocks.GOLD_PIPE, ModBlocks.GOLD_FITTING, 8);
 	}
 }

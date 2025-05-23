@@ -23,73 +23,76 @@ import net.minecraft.world.phys.BlockHitResult;
 
 
 public abstract class ItemFitting extends BaseFitting {
+	// Block properties.
+	public final int inventorySize;
 
-    public ItemFitting(
-        Properties props,
-        int tickRate
-    ) {
-        super(props, tickRate);
-    }
+	public ItemFitting(
+		Properties props,
+		int tickRate, int inventorySize
+	) {
+		super(props, tickRate);
+		this.inventorySize = inventorySize;
+	}
 
-    @Override
-    protected void createBlockStateDefinition(
-        @NotNull StateDefinition.Builder<Block, BlockState> builder
-    ) {
-        super.createBlockStateDefinition(builder);
-    }
+	@Override
+	protected void createBlockStateDefinition(
+		@NotNull StateDefinition.Builder<Block, BlockState> builder
+	) {
+		super.createBlockStateDefinition(builder);
+	}
 
-    /**
-     * Create a block entity.
-     */
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ItemFittingEntity(pos, state);
-    }
+	/**
+	 * Create a block entity.
+	 */
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new ItemFittingEntity(pos, state);
+	}
 
-    /**
-     * Use item on a fitting.
-     * <p>
-     * If it is another piece of pipe or fitting then place it,
-     * otherwise continue with the default action.
-     */
-    @Override
-    protected @NotNull InteractionResult useItemOn(
-        @NotNull ItemStack stack,
-        @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-        @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
-    ) {
-        // Allow placing fittings next to pipes and fittings.
-        if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
-            return InteractionResult.PASS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
+	/**
+	 * Use item on a fitting.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		// Allow placing fittings next to pipes and fittings.
+		if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
+			return InteractionResult.PASS;
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
+	}
 
-    /**
-     * The fitting was removed.
-     */
-    @Override
-    protected void affectNeighborsAfterRemoval(
-        @NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos,
-        boolean moved
-    ) {
-        level.removeBlockEntity(pos);
-    }
+	/**
+	 * The fitting was removed.
+	 */
+	@Override
+	protected void affectNeighborsAfterRemoval(
+		@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos,
+		boolean moved
+	) {
+		level.removeBlockEntity(pos);
+	}
 
-    /**
-     * Create a ticker, which will be called at every tick both on the client and on the server.
-     */
-    @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-        @NotNull Level level, @NotNull BlockState state,
-        @NotNull BlockEntityType<T> blockEntityType
-    ) {
-        if (!level.isClientSide) {
-            // Need a tick only on the server to implement the pipe logic.
-            return createTickerHelper(
-                blockEntityType, ModBlockEntities.ITEM_FITTING_ENTITY,
-                ItemFittingEntity::serverTick);
-        }
-        return null;
-    }
+	/**
+	 * Create a ticker, which will be called at every tick both on the client and on the server.
+	 */
+	@Override
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+		@NotNull Level level, @NotNull BlockState state,
+		@NotNull BlockEntityType<T> blockEntityType
+	) {
+		if (!level.isClientSide) {
+			// Need a tick only on the server to implement the pipe logic.
+			return createTickerHelper(
+				blockEntityType, ModBlockEntities.ITEM_FITTING_ENTITY,
+				ItemFittingEntity::serverTick);
+		}
+		return null;
+	}
 }

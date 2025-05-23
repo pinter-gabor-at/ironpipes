@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 import eu.pintergabor.ironpipes.registry.ModFluidBlocks;
-
 import eu.pintergabor.ironpipes.registry.ModItemBlocks;
 
 import net.minecraft.core.HolderLookup;
@@ -36,10 +35,10 @@ public final class ModBlockLootProvider extends FabricBlockLootTableProvider {
 	@Override
 	public void generate() {
 		// Pipes.
-        generateSimpleDrops(ModFluidBlocks.FLUID_PIPES);
-        generateSimpleDrops(ModItemBlocks.ITEM_PIPES);
+		generateSimpleDrops(ModFluidBlocks.FLUID_PIPES);
+		generateSimpleDrops(ModItemBlocks.ITEM_PIPES);
 		// Fittings.
-        generateSimpleDrops(ModFluidBlocks.FLUID_FITTINGS);
-        generateSimpleDrops(ModItemBlocks.ITEM_FITTINGS);
+		generateSimpleDrops(ModFluidBlocks.FLUID_FITTINGS);
+		generateSimpleDrops(ModItemBlocks.ITEM_FITTINGS);
 	}
 }

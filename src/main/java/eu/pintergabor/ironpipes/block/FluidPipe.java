@@ -12,13 +12,6 @@ import eu.pintergabor.ironpipes.block.util.DripShowUtil;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.util.ModProperties;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
-
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +19,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -39,6 +36,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 
 
 /**
@@ -66,27 +64,27 @@ public class FluidPipe extends BasePipe implements FluidCarryBlock {
 		RecordCodecBuilder.mapCodec((instance) -> instance.group(
 			propertiesCodec(),
 			Codec.INT.fieldOf("tick_rate")
-				.forGetter((fitting) -> fitting.tickRate),
+				.forGetter((p) -> p.tickRate),
 			Codec.BOOL.fieldOf("can_carry_water")
-				.forGetter((fitting) -> fitting.canCarryWater),
+				.forGetter((p) -> p.canCarryWater),
 			Codec.BOOL.fieldOf("can_carry_lava")
-				.forGetter((fitting) -> fitting.canCarryLava),
+				.forGetter((p) -> p.canCarryLava),
 			Codec.FLOAT.fieldOf("clogging_probability")
-				.forGetter((fitting) -> fitting.cloggingProbability),
+				.forGetter((p) -> p.cloggingProbability),
 			Codec.FLOAT.fieldOf("fire_break_probability")
-				.forGetter((fitting) -> fitting.fireBreakProbability),
+				.forGetter((p) -> p.fireBreakProbability),
 			Codec.FLOAT.fieldOf("fire_drip_probability")
-				.forGetter((fitting) -> fitting.fireDripProbability),
+				.forGetter((p) -> p.fireDripProbability),
 			Codec.FLOAT.fieldOf("watering_probability")
-				.forGetter((fitting) -> fitting.wateringProbability),
+				.forGetter((p) -> p.wateringProbability),
 			Codec.FLOAT.fieldOf("water_dripping_probability")
-				.forGetter((fitting) -> fitting.waterDrippingProbability),
+				.forGetter((p) -> p.waterDrippingProbability),
 			Codec.FLOAT.fieldOf("lava_dripping_probability")
-				.forGetter((fitting) -> fitting.lavaDrippingProbability),
+				.forGetter((p) -> p.lavaDrippingProbability),
 			Codec.FLOAT.fieldOf("water_filling_probability")
-				.forGetter((fitting) -> fitting.waterFillingProbability),
+				.forGetter((p) -> p.waterFillingProbability),
 			Codec.FLOAT.fieldOf("lava_filling_probability")
-				.forGetter((fitting) -> fitting.lavaFillingProbability)
+				.forGetter((p) -> p.lavaFillingProbability)
 		).apply(instance, FluidPipe::new));
 
 	/**
@@ -148,26 +146,26 @@ public class FluidPipe extends BasePipe implements FluidCarryBlock {
 		return new FluidPipeEntity(pos, state);
 	}
 
-    /**
-     * Use item on a pipe.
-     * <p>
-     * If it is another piece of pipe or fitting then place it,
-     * otherwise continue with the default action.
-     */
-    @Override
-    protected @NotNull InteractionResult useItemOn(
-        @NotNull ItemStack stack,
-        @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-        @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
-    ) {
-        // Allow placing pipes next to pipes and fittings.
-        if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
-            return InteractionResult.PASS;
-        }
-        return InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
+	/**
+	 * Use item on a pipe.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		// Allow placing pipes next to pipes and fittings.
+		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
+			return InteractionResult.PASS;
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
+	}
 
-    /**
+	/**
 	 * Check if this fluid block is an outflow from a pipe in a direction.
 	 *
 	 * @param dir in this direction.

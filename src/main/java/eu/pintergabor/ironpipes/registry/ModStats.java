@@ -1,6 +1,7 @@
 package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -8,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-
-import org.jetbrains.annotations.NotNull;
 
 
 public final class ModStats {

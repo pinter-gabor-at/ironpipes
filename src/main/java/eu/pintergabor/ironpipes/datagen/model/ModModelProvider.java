@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.BasePipe;
-import eu.pintergabor.ironpipes.registry.ModBlocks;
+import eu.pintergabor.ironpipes.registry.ModFluidBlocks;
+import eu.pintergabor.ironpipes.registry.ModItemBlocks;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -154,11 +155,11 @@ public final class ModModelProvider extends FabricModelProvider {
     public void generateBlockStateModels(BlockModelGenerators generator) {
         // Pipes.
         Stream.concat(
-            Arrays.stream(ModBlocks.FLUID_PIPES), Arrays.stream(ModBlocks.ITEM_PIPES)
+            Arrays.stream(ModFluidBlocks.FLUID_PIPES), Arrays.stream(ModItemBlocks.ITEM_PIPES)
         ).forEach(b -> createPipe(generator, b));
         // Fittings.
         Stream.concat(
-            Arrays.stream(ModBlocks.FLUID_FITTINGS), Arrays.stream(ModBlocks.ITEM_FITTINGS)
+            Arrays.stream(ModFluidBlocks.FLUID_FITTINGS), Arrays.stream(ModItemBlocks.ITEM_FITTINGS)
         ).forEach(b -> createFitting(generator, b));
     }
 

@@ -11,7 +11,12 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 
-public class ModFluidBlocksRegister {
+public final class ModFluidBlocksRegister {
+
+    private ModFluidBlocksRegister() {
+        // Static class.
+    }
+
     /**
      * Create and register a pipe and its corresponding {@link Item}
      *

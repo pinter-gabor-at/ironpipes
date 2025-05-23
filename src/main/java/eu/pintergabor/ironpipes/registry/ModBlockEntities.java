@@ -21,22 +21,22 @@ public final class ModBlockEntities {
 	public static final BlockEntityType<FluidPipeEntity> FLUID_PIPE_ENTITY = register(
 		"fluid_pipe",
 		FluidPipeEntity::new,
-		ModBlocks.FLUID_PIPES);
+		ModFluidBlocks.FLUID_PIPES);
 	// Fluid fittings.
 	public static final BlockEntityType<FluidFittingEntity> FLUID_FITTING_ENTITY = register(
 		"fluid_fitting",
 		FluidFittingEntity::new,
-		ModBlocks.FLUID_FITTINGS);
+		ModFluidBlocks.FLUID_FITTINGS);
     // Item pipes.
     public static final BlockEntityType<ItemPipeEntity> ITEM_PIPE_ENTITY = register(
         "item_pipe",
         ItemPipeEntity::new,
-        ModBlocks.ITEM_PIPES);
+        ModItemBlocks.ITEM_PIPES);
     // Item fittings.
     public static final BlockEntityType<ItemFittingEntity> ITEM_FITTING_ENTITY = register(
         "item_fitting",
         ItemFittingEntity::new,
-        ModBlocks.ITEM_FITTINGS);
+        ModItemBlocks.ITEM_FITTINGS);
 
 	@NotNull
 	private static <T extends BlockEntity> BlockEntityType<T> register(

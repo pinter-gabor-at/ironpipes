@@ -18,17 +18,17 @@ public final class ModCreativeInventorySorting {
 			entries -> {
 				// Add pipes and fittings after the cauldron.
                 entries.addAfter(Blocks.CAULDRON,
-                    ModBlocks.ITEM_FITTINGS);
+                    ModItemBlocks.ITEM_FITTINGS);
                 entries.addAfter(Blocks.CAULDRON,
-                    ModBlocks.ITEM_PIPES);
+                    ModItemBlocks.ITEM_PIPES);
                 entries.addAfter(Blocks.CAULDRON,
-                    ModBlocks.STONE_FITTINGS);
+                    ModFluidBlocks.STONE_FITTINGS);
                 entries.addAfter(Blocks.CAULDRON,
-                    ModBlocks.STONE_PIPES);
+                    ModFluidBlocks.STONE_PIPES);
 				entries.addAfter(Blocks.CAULDRON,
-					ModBlocks.WOODEN_FITTINGS);
+					ModFluidBlocks.WOODEN_FITTINGS);
 				entries.addAfter(Blocks.CAULDRON,
-					ModBlocks.WOODEN_PIPES);
+					ModFluidBlocks.WOODEN_PIPES);
 			});
 	}
 }

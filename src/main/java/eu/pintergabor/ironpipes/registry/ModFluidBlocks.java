@@ -5,23 +5,13 @@ import java.util.stream.Stream;
 
 import eu.pintergabor.ironpipes.block.FluidFitting;
 import eu.pintergabor.ironpipes.block.FluidPipe;
-import eu.pintergabor.ironpipes.block.IronFitting;
-import eu.pintergabor.ironpipes.block.IronPipe;
-import eu.pintergabor.ironpipes.block.ItemFitting;
-import eu.pintergabor.ironpipes.block.ItemPipe;
 import eu.pintergabor.ironpipes.block.settings.FluidBlockSettings;
-import eu.pintergabor.ironpipes.registry.util.ModBlocksRegister;
 import eu.pintergabor.ironpipes.registry.util.ModFluidBlocksRegister;
 
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
 
-public final class ModBlocks {
-
-    // region Fluid pipes and fittings
-    //---------------------------------
+public final class ModFluidBlocks {
 
     // Wooden pipes.
     public static final FluidPipe OAK_PIPE =
@@ -185,65 +175,4 @@ public final class ModBlocks {
         Stream.concat(
             Arrays.stream(WOODEN_FITTINGS), Arrays.stream(STONE_FITTINGS)
         ).toArray(FluidFitting[]::new);
-
-    // endregion
-
-    // region Item pipes and fittings
-    //--------------------------------
-
-    // Iron and gold pipes.
-    public static final IronPipe IRON_PIPE =
-        ModBlocksRegister.registerBlockAndItem("iron_pipe",
-            props -> new IronPipe(props, 10),
-            BlockBehaviour.Properties.of()
-                .mapColor(MapColor.RAW_IRON)
-                .requiresCorrectToolForDrops()
-                .strength(1.5F, 3F)
-                .sound(SoundType.IRON)
-        );
-    public static final IronPipe GOLD_PIPE =
-        ModBlocksRegister.registerBlockAndItem("gold_pipe",
-            props -> new IronPipe(props, 10),
-            BlockBehaviour.Properties.of()
-                .mapColor(MapColor.GOLD)
-                .requiresCorrectToolForDrops()
-                .strength(1F, 2F)
-                .sound(SoundType.NETHER_GOLD_ORE)
-        );
-    // Iron and gold fittings.
-    public static final IronFitting IRON_FITTING =
-        ModBlocksRegister.registerBlockAndItem("iron_fitting",
-            props -> new IronFitting(props, 10),
-            BlockBehaviour.Properties.of()
-                .mapColor(MapColor.RAW_IRON)
-                .requiresCorrectToolForDrops()
-                .strength(1.5F, 3F)
-                .sound(SoundType.IRON)
-        );
-    public static final IronFitting GOLD_FITTING =
-        ModBlocksRegister.registerBlockAndItem("gold_fitting",
-            props -> new IronFitting(props, 2),
-            BlockBehaviour.Properties.of()
-                .mapColor(MapColor.GOLD)
-                .requiresCorrectToolForDrops()
-                .strength(1F, 2F)
-                .sound(SoundType.NETHER_GOLD_ORE)
-        );
-    // All item pipes.
-    public static final ItemPipe[] ITEM_PIPES = {
-        IRON_PIPE, GOLD_PIPE
-    };
-    // All item fittings.
-    public static final ItemFitting[] ITEM_FITTINGS = {
-        IRON_FITTING, GOLD_FITTING
-    };
-
-    // endregion
-
-    /**
-     * Create and register everything that was not done by static initializers
-     */
-    public static void init() {
-        // Everything has been done by static initializers.
-    }
 }

@@ -1,0 +1,14 @@
+{
+  "values": [
+    "ironpipes:iron_pipe",
+    "ironpipes:gold_pipe",
+    "ironpipes:copper_pipe",
+    "ironpipes:exposed_copper_pipe",
+    "ironpipes:weathered_copper_pipe",
+    "ironpipes:oxidized_copper_pipe",
+    "ironpipes:waxed_copper_pipe",
+    "ironpipes:waxed_exposed_copper_pipe",
+    "ironpipes:waxed_weathered_copper_pipe",
+    "ironpipes:waxed_oxidized_copper_pipe"
+  ]
+}

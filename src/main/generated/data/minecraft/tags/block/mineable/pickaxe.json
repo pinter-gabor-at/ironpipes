@@ -16,9 +16,13 @@
       "id": "#ironpipes:wooden_fittings",
       "required": false
     },
-    "ironpipes:iron_pipe",
-    "ironpipes:iron_fitting",
-    "ironpipes:gold_pipe",
-    "ironpipes:gold_fitting"
+    {
+      "id": "#ironpipes:item_pipes",
+      "required": false
+    },
+    {
+      "id": "#ironpipes:item_fittings",
+      "required": false
+    }
   ]
 }

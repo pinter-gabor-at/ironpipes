@@ -5,7 +5,7 @@ import static net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider.Item
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-import eu.pintergabor.ironpipes.registry.ModBlocks;
+import eu.pintergabor.ironpipes.registry.ModFluidBlocks;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
 
 import net.minecraft.core.HolderLookup;
@@ -39,11 +39,11 @@ public final class ModItemTagProvider extends ItemTagProvider {
 	@Override
 	protected void addTags(HolderLookup.Provider wrapperLookup) {
 		// Pipes.
-		add(ModItemTags.WOODEN_PIPES, ModBlocks.WOODEN_PIPES);
-		add(ModItemTags.STONE_PIPES, ModBlocks.STONE_PIPES);
+		add(ModItemTags.WOODEN_PIPES, ModFluidBlocks.WOODEN_PIPES);
+		add(ModItemTags.STONE_PIPES, ModFluidBlocks.STONE_PIPES);
 		// Fittings.
-		add(ModItemTags.WOODEN_FITTINGS, ModBlocks.WOODEN_FITTINGS);
-		add(ModItemTags.STONE_FITTINGS, ModBlocks.STONE_FITTINGS);
+		add(ModItemTags.WOODEN_FITTINGS, ModFluidBlocks.WOODEN_FITTINGS);
+		add(ModItemTags.STONE_FITTINGS, ModFluidBlocks.STONE_FITTINGS);
 		// All pipes and fittings.
 		getOrCreateTagBuilder(ModItemTags.FLUID_PIPES_AND_FITTINGS)
 			.addOptionalTag(ModItemTags.WOODEN_PIPES)

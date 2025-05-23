@@ -1,0 +1,7 @@
+{
+  "parent": "ironpipes:block/template_pipe_smooth",
+  "textures": {
+    "front": "ironpipes:block/waxed_oxidized_copper_pipe_front",
+    "side": "ironpipes:block/waxed_oxidized_copper_pipe"
+  }
+}

@@ -31,7 +31,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 
-public non-sealed class FluidFitting extends BaseFitting implements FluidCarryBlock {
+public class FluidFitting extends BaseFitting implements FluidCarryBlock {
+    // BlockState properties.
 	public static final EnumProperty<PipeFluid> FLUID =
 		ModProperties.FLUID;
 	// Block properties.

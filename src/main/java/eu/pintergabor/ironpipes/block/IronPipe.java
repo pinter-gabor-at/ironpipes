@@ -14,18 +14,14 @@ public class IronPipe extends ItemPipe {
         (instance) -> instance.group(
             propertiesCodec(),
             Codec.INT.fieldOf("tick_rate")
-                .forGetter((fitting) -> fitting.tickRate),
-            Codec.INT.fieldOf("cooldown")
-                .forGetter((pipe) -> pipe.cooldown)
+                .forGetter((pipe) -> pipe.tickRate)
         ).apply(instance, IronPipe::new));
-    public final int cooldown;
 
     /**
      * Create pipe as the CODEC requires it.
      */
-    public IronPipe(Properties props, int tickRate, int cooldown) {
+    public IronPipe(Properties props, int tickRate) {
         super(props, tickRate);
-        this.cooldown = cooldown;
     }
 
     @Override

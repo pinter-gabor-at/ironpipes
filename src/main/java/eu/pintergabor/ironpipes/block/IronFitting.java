@@ -13,18 +13,14 @@ public class IronFitting extends ItemFitting {
         (instance) -> instance.group(
             propertiesCodec(),
             Codec.INT.fieldOf("tick_rate")
-                .forGetter((fitting) -> fitting.tickRate),
-            Codec.INT.fieldOf("cooldown")
-                .forGetter((copperFitting) -> copperFitting.cooldown)
+                .forGetter((fitting) -> fitting.tickRate)
         ).apply(instance, IronFitting::new));
-    public final int cooldown;
 
     /**
      * Create fitting as the CODEC requires it.
      */
-    public IronFitting(Properties props, int tickRate, int cooldown) {
+    public IronFitting(Properties props, int tickRate) {
         super(props, tickRate);
-        this.cooldown = cooldown;
     }
 
     @Override

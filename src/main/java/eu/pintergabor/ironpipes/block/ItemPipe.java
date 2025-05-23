@@ -46,9 +46,6 @@ import static eu.pintergabor.ironpipes.block.util.FluidDispenseUtil.removeOutflo
  */
 public abstract class ItemPipe extends BasePipe {
 
-	/**
-	 * Create pipe as the CODEC requires it.
-	 */
 	public ItemPipe(
 		Properties props,
 		int tickRate

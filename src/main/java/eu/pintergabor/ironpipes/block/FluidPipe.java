@@ -44,11 +44,11 @@ import net.minecraft.world.level.material.Fluids;
 /**
  * A fluid pipe can carry water or lava.
  */
-public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
+public class FluidPipe extends BasePipe implements FluidCarryBlock {
 	// BlockState properties.
-	public static final EnumProperty<PipeFluid> fluid =
+	public static final EnumProperty<PipeFluid> FLUID =
 		ModProperties.FLUID;
-	public static final BooleanProperty outflow =
+	public static final BooleanProperty OUTFLOW =
 		ModProperties.OUTFLOW;
 	// Block properties.
 	public final float cloggingProbability;
@@ -112,8 +112,8 @@ public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 		this.waterFillingProbability = waterFillingProbability;
 		this.lavaFillingProbability = lavaFillingProbability;
 		registerDefaultState(defaultBlockState()
-			.setValue(fluid, PipeFluid.NONE)
-			.setValue(outflow, false));
+			.setValue(FLUID, PipeFluid.NONE)
+			.setValue(OUTFLOW, false));
 	}
 
 	/**
@@ -137,7 +137,7 @@ public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 	@Override
 	protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(fluid, outflow);
+		builder.add(FLUID, OUTFLOW);
 	}
 
 	/**

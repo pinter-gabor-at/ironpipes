@@ -3,8 +3,7 @@ package eu.pintergabor.ironpipes.block;
 import eu.pintergabor.ironpipes.block.settings.FluidBlockSettings;
 
 
-public sealed interface FluidCarryBlock extends CanCarryFluid
-	permits FluidFitting, FluidPipe {
+public interface FluidCarryBlock extends CanCarryFluid {
 
 	/**
 	 * How fast is this block?

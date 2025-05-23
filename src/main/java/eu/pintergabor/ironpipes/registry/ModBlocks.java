@@ -194,7 +194,7 @@ public final class ModBlocks {
     // Iron and gold pipes.
     public static final IronPipe IRON_PIPE =
         ModBlocksRegister.registerBlockAndItem("iron_pipe",
-            props -> new IronPipe(props, 10, 1),
+            props -> new IronPipe(props, 10),
             BlockBehaviour.Properties.of()
                 .mapColor(MapColor.RAW_IRON)
                 .requiresCorrectToolForDrops()
@@ -204,7 +204,7 @@ public final class ModBlocks {
     // Iron and gold fittings.
     public static final IronFitting IRON_FITTING =
         ModBlocksRegister.registerBlockAndItem("iron_fitting",
-            props -> new IronFitting(props, 10, 1),
+            props -> new IronFitting(props, 10),
             BlockBehaviour.Properties.of()
                 .mapColor(MapColor.RAW_IRON)
                 .requiresCorrectToolForDrops()

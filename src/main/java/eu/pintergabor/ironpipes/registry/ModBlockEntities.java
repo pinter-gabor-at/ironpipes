@@ -3,6 +3,8 @@ package eu.pintergabor.ironpipes.registry;
 import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.FluidFittingEntity;
 import eu.pintergabor.ironpipes.block.entity.FluidPipeEntity;
+import eu.pintergabor.ironpipes.block.entity.ItemFittingEntity;
+import eu.pintergabor.ironpipes.block.entity.ItemPipeEntity;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.Registry;
@@ -15,16 +17,26 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 
 
 public final class ModBlockEntities {
-	// Wooden and stone pipes.
+	// Fluid pipes.
 	public static final BlockEntityType<FluidPipeEntity> FLUID_PIPE_ENTITY = register(
 		"fluid_pipe",
 		FluidPipeEntity::new,
-		ModBlocks.PIPES);
-	// Wooden and stone fittings.
+		ModBlocks.FLUID_PIPES);
+	// Fluid fittings.
 	public static final BlockEntityType<FluidFittingEntity> FLUID_FITTING_ENTITY = register(
 		"fluid_fitting",
 		FluidFittingEntity::new,
-		ModBlocks.FITTINGS);
+		ModBlocks.FLUID_FITTINGS);
+    // Item pipes.
+    public static final BlockEntityType<ItemPipeEntity> ITEM_PIPE_ENTITY = register(
+        "item_pipe",
+        ItemPipeEntity::new,
+        ModBlocks.ITEM_PIPES);
+    // Item fittings.
+    public static final BlockEntityType<ItemFittingEntity> ITEM_FITTING_ENTITY = register(
+        "item_fitting",
+        ItemFittingEntity::new,
+        ModBlocks.ITEM_FITTINGS);
 
 	@NotNull
 	private static <T extends BlockEntity> BlockEntityType<T> register(

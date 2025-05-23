@@ -132,7 +132,7 @@ public final class FluidDispenseUtil {
 				}
 			}
 		}
-		// outflow is false and FLUID is NONE, but do not update the state here.
+		// outflow is false and fluid is NONE, but do not update the state here.
 	}
 
 	/**

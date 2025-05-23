@@ -11,6 +11,14 @@ import eu.pintergabor.ironpipes.block.settings.FluidBlockSettings;
 import eu.pintergabor.ironpipes.block.util.DripShowUtil;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.util.ModProperties;
+import eu.pintergabor.ironpipes.tag.ModItemTags;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,9 +46,9 @@ import net.minecraft.world.level.material.Fluids;
  */
 public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 	// BlockState properties.
-	public static final EnumProperty<PipeFluid> FLUID =
+	public static final EnumProperty<PipeFluid> fluid =
 		ModProperties.FLUID;
-	public static final BooleanProperty OUTFLOW =
+	public static final BooleanProperty outflow =
 		ModProperties.OUTFLOW;
 	// Block properties.
 	public final float cloggingProbability;
@@ -104,8 +112,8 @@ public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 		this.waterFillingProbability = waterFillingProbability;
 		this.lavaFillingProbability = lavaFillingProbability;
 		registerDefaultState(defaultBlockState()
-			.setValue(FLUID, PipeFluid.NONE)
-			.setValue(OUTFLOW, false));
+			.setValue(fluid, PipeFluid.NONE)
+			.setValue(outflow, false));
 	}
 
 	/**
@@ -124,12 +132,12 @@ public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 	}
 
 	/**
-	 * Append FLUID and OUTFLOW to BlockState properties.
+	 * Append fluid and outflow to BlockState properties.
 	 */
 	@Override
 	protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FLUID, OUTFLOW);
+		builder.add(fluid, outflow);
 	}
 
 	/**
@@ -140,7 +148,26 @@ public non-sealed class FluidPipe extends BasePipe implements FluidCarryBlock {
 		return new FluidPipeEntity(pos, state);
 	}
 
-	/**
+    /**
+     * Use item on a pipe.
+     * <p>
+     * If it is another piece of pipe or fitting then place it,
+     * otherwise continue with the default action.
+     */
+    @Override
+    protected @NotNull InteractionResult useItemOn(
+        @NotNull ItemStack stack,
+        @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+        @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+    ) {
+        // Allow placing pipes next to pipes and fittings.
+        if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
+            return InteractionResult.PASS;
+        }
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    /**
 	 * Check if this fluid block is an outflow from a pipe in a direction.
 	 *
 	 * @param dir in this direction.

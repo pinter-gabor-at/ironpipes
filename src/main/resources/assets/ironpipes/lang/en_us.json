@@ -47,8 +47,8 @@
   "block.ironpipes.netherrack_fitting": "Nether Fitting",
   "tag.block.ironpipes.stone_fittings": "Stone Fittings",
   "tag.item.ironpipes.stone_fittings": "Stone Fittings",
-  "tag.item.ironpipes.pipes_and_fittings": "Pipes and Fittings",
-  "stat.ironpipes.interactions": "Interactions with Fluid Pipes",
+  "tag.item.ironpipes.fluid_pipes_and_fittings": "Fluid Pipes and Fittings",
+  "stat.ironpipes.interactions": "Interactions with Pipes and Fittings",
 
   "block.ironpipes.copper_pipe": "Copper Pipe",
   "block.ironpipes.exposed_copper_pipe": "Exposed Copper Pipe",
@@ -59,6 +59,7 @@
   "block.ironpipes.waxed_weathered_copper_pipe": "Waxed Weathered Copper Pipe",
   "block.ironpipes.waxed_oxidized_copper_pipe": "Waxed Oxidized Copper Pipe",
   "tag.block.ironpipes.copper_pipes": "Copper Pipes",
+  "tag.item.ironpipes.copper_pipes": "Copper Pipes",
   "block.ironpipes.copper_fitting": "Copper Fitting",
   "block.ironpipes.exposed_copper_fitting": "Exposed Copper Fitting",
   "block.ironpipes.weathered_copper_fitting": "Weathered Copper Fitting",
@@ -68,5 +69,7 @@
   "block.ironpipes.waxed_weathered_copper_fitting": "Waxed Weathered Copper Fitting",
   "block.ironpipes.waxed_oxidized_copper_fitting": "Waxed Oxidized Copper Fitting",
   "tag.block.ironpipes.copper_fittings": "Copper Fittings",
-  "tag.block.ironpipes.waxed": "Waxed Pipes and Fittings"
+  "tag.item.ironpipes.copper_fittings": "Copper Fittings",
+  "tag.block.ironpipes.waxed": "Waxed Pipes and Fittings",
+  "tag.item.ironpipes.item_pipes_and_fittings": "Item Pipes and Fittings"
 }

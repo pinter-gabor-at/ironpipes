@@ -38,7 +38,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 	permits BaseFitting, BasePipe {
 
 	// Common BlockState properties.
-	public static final BooleanProperty WATERLOGGED =
+	public static final BooleanProperty waterlogged =
 		BlockStateProperties.WATERLOGGED;
 	public final int tickRate;
 	// All directions in pull priority order.
@@ -50,7 +50,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 		super(props);
 		this.tickRate = tickRate;
 		registerDefaultState(getStateDefinition().any()
-			.setValue(WATERLOGGED, false));
+			.setValue(waterlogged, false));
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 		@NotNull StateDefinition.Builder<Block, BlockState> builder
 	) {
 		super.createBlockStateDefinition(builder);
-		builder.add(WATERLOGGED);
+		builder.add(waterlogged);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 			final BlockPos pos = context.getClickedPos();
 			final Level level = context.getLevel();
 			return state
-				.setValue(WATERLOGGED,
+				.setValue(waterlogged,
 					level.getFluidState(pos).is(Fluids.WATER));
 		}
 		return null;
@@ -108,7 +108,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 		@NotNull BlockState neighborState,
 		@NotNull RandomSource random
 	) {
-		if (blockState.getValue(WATERLOGGED)) {
+		if (blockState.getValue(waterlogged)) {
 			scheduledTickAccess.scheduleTick(
 				pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
@@ -149,7 +149,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 	@Override
 	@NotNull
 	public FluidState getFluidState(@NotNull BlockState blockState) {
-		if (blockState.getValue(WATERLOGGED)) {
+		if (blockState.getValue(waterlogged)) {
 			return Fluids.WATER.getSource(false);
 		}
 		return super.getFluidState(blockState);

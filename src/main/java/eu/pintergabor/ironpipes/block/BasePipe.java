@@ -419,7 +419,7 @@ public abstract non-sealed class BasePipe extends BaseBlock {
 		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
 		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
 	) {
-		if (stack.is(ModItemTags.PIPES_AND_FITTINGS)) {
+		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
 			// Allow placing pipes next to pipes and fittings.
 			return InteractionResult.PASS;
 		}

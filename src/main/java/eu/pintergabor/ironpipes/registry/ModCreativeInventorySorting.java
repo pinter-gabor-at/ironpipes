@@ -17,10 +17,14 @@ public final class ModCreativeInventorySorting {
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(
 			entries -> {
 				// Add pipes and fittings after the cauldron.
-				entries.addAfter(Blocks.CAULDRON,
-					ModBlocks.STONE_FITTINGS);
-				entries.addAfter(Blocks.CAULDRON,
-					ModBlocks.STONE_PIPES);
+                entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.ITEM_FITTINGS);
+                entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.ITEM_PIPES);
+                entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.STONE_FITTINGS);
+                entries.addAfter(Blocks.CAULDRON,
+                    ModBlocks.STONE_PIPES);
 				entries.addAfter(Blocks.CAULDRON,
 					ModBlocks.WOODEN_FITTINGS);
 				entries.addAfter(Blocks.CAULDRON,

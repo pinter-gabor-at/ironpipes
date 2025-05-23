@@ -141,8 +141,8 @@ public non-sealed class FluidFitting extends BaseFitting implements FluidCarryBl
 		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
 		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
 	) {
-		// Allow placing pipes next to pipes and fittings.
-		if (stack.is(ModItemTags.PIPES_AND_FITTINGS)) {
+		// Allow placing fittings next to pipes and fittings.
+		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
 			return InteractionResult.PASS;
 		}
 		return InteractionResult.TRY_WITH_EMPTY_HAND;

@@ -1,0 +1,7 @@
+{
+  "parent": "ironpipes:block/template_pipe",
+  "textures": {
+    "front": "ironpipes:block/iron_pipe_front",
+    "side": "ironpipes:block/iron_pipe"
+  }
+}

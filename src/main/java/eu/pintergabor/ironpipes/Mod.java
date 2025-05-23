@@ -1,39 +1,22 @@
 package eu.pintergabor.ironpipes;
 
-import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeDripBehaviors;
-import eu.pintergabor.ironpipes.block.entity.leaking.LeakingPipeManager;
-import eu.pintergabor.ironpipes.config.ModConfig;
-import eu.pintergabor.ironpipes.registry.CopperPipeDispenseBehaviors;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
-import eu.pintergabor.ironpipes.registry.ModProperties;
+import eu.pintergabor.ironpipes.registry.ModBlocks;
 import eu.pintergabor.ironpipes.registry.ModCreativeInventorySorting;
 import eu.pintergabor.ironpipes.registry.ModSoundEvents;
 import eu.pintergabor.ironpipes.registry.ModStats;
-import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
-import eu.pintergabor.ironpipes.registry.ModBlocks;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 
-public class Mod implements ModInitializer {
+public final class Mod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModProperties.init();
-        ModConfig.init();
         ModBlocks.init();
         ModBlockEntities.init();
         ModSoundEvents.init();
         ModStats.init();
-        RegisterPipeNbtMethods.init();
-        CopperPipeDispenseBehaviors.init();
-        LeakingPipeDripBehaviors.init();
         ModCreativeInventorySorting.init();
-        ServerLifecycleEvents.SERVER_STOPPED.register(
-            server -> LeakingPipeManager.clearAll());
-        ServerTickEvents.START_SERVER_TICK.register(
-            listener -> LeakingPipeManager.switchAndClear());
     }
 }

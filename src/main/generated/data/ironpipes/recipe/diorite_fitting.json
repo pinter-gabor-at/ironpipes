@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "ironpipes:diorite_pipe"
+  },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "ironpipes:diorite_fitting"
+  }
+}

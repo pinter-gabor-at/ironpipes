@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:basalt"
+  },
+  "pattern": [
+    "###",
+    "   ",
+    "###"
+  ],
+  "result": {
+    "count": 6,
+    "id": "ironpipes:basalt_pipe"
+  }
+}

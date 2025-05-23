@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dark_oak_pipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ironpipes:dark_oak_pipe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ironpipes:dark_oak_fitting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dark_oak_pipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ironpipes:dark_oak_fitting"
+    ]
+  }
+}

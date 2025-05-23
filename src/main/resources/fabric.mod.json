@@ -3,7 +3,7 @@
   "id": "${mod_id}",
   "version": "${version}",
   "name": "Iron Pipes",
-  "description": "Add various pipes to carry items, water, lava, smoke and sounds around the world.",
+  "description": "Add various pipes to carry items, water, lava around the world.",
   "authors": [
     "Pintér Gábor <pinter.gabor@gmx.at>"
   ],
@@ -18,16 +18,11 @@
     "main": [
       "eu.pintergabor.ironpipes.Mod"
     ],
-    "client": [
-      "eu.pintergabor.ironpipes.ModClient"
-    ],
     "fabric-datagen": [
       "eu.pintergabor.ironpipes.datagen.ModDataGenerator"
-    ],
-    "modmenu": [
-      "eu.pintergabor.ironpipes.config.ModMenuIntegration"
     ]
   },
+  "accessWidener": "eu.pintergabor.ironpipes.accesswidener",
   "mixins": [
     "eu.pintergabor.ironpipes.mixins.json"
   ],
@@ -35,10 +30,6 @@
     "java": ">=21",
     "minecraft": "${minecraft_version}",
     "fabricloader": "${loader_version}",
-    "fabric-api": "${fabric_version}",
-    "cloth-config": "${cloth_config_version}"
-  },
-  "suggests": {
-    "modmenu": "${modmenu_version}"
+    "fabric-api": "${fabric_version}"
   }
 }

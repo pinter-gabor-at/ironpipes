@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_granite_pipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ironpipes:granite_pipe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ironpipes:granite_fitting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_granite_pipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ironpipes:granite_fitting"
+    ]
+  }
+}

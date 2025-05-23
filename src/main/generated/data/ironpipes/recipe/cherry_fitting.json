@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "ironpipes:cherry_pipe"
+  },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "ironpipes:cherry_fitting"
+  }
+}

@@ -1,6 +1,0 @@
-{
-  "parent": "ironpipes:block/template_fitting",
-  "textures": {
-    "texture": "ironpipes:block/oxidized_copper_fitting"
-  }
-}

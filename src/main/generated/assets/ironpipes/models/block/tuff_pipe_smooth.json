@@ -1,0 +1,7 @@
+{
+  "parent": "ironpipes:block/template_pipe_smooth",
+  "textures": {
+    "front": "ironpipes:block/tuff_pipe_front",
+    "side": "ironpipes:block/tuff_pipe"
+  }
+}

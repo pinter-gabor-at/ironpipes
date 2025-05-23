@@ -1,0 +1,14 @@
+{
+  "values": [
+    "ironpipes:stone_fitting",
+    "ironpipes:deepslate_fitting",
+    "ironpipes:andesite_fitting",
+    "ironpipes:diorite_fitting",
+    "ironpipes:granite_fitting",
+    "ironpipes:basalt_fitting",
+    "ironpipes:sandstone_fitting",
+    "ironpipes:tuff_fitting",
+    "ironpipes:obsidian_fitting",
+    "ironpipes:netherrack_fitting"
+  ]
+}

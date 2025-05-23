@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "ironpipes:dark_oak_pipe"
+  },
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "ironpipes:dark_oak_fitting"
+  }
+}

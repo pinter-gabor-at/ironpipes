@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:deepslate"
+  },
+  "pattern": [
+    "###",
+    "   ",
+    "###"
+  ],
+  "result": {
+    "count": 6,
+    "id": "ironpipes:deepslate_pipe"
+  }
+}

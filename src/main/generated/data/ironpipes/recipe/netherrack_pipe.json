@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:netherrack"
+  },
+  "pattern": [
+    "###",
+    "   ",
+    "###"
+  ],
+  "result": {
+    "count": 6,
+    "id": "ironpipes:netherrack_pipe"
+  }
+}

@@ -1,42 +1,40 @@
 package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
-import eu.pintergabor.ironpipes.config.ModConfig;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
 
 
-public class ModSoundEvents {
-    public static final SoundEvent ITEM_IN = register("block.copper_pipe.item_in");
-    public static final SoundEvent ITEM_OUT = register("block.copper_pipe.item_out");
-    public static final SoundEvent LAUNCH = register("block.copper_pipe.launch");
-    public static final SoundEvent TURN = register("block.copper_pipe.turn");
+public final class ModSoundEvents {
+	public static final SoundEvent TURN = register("block.pipe.turn");
 
-    @NotNull
-    public static SoundEvent register(@NotNull String path) {
-        Identifier id = Global.modId(path);
-        return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
-    }
+	private ModSoundEvents() {
+		// Static class.
+	}
 
-    public static void init() {
-        // Everything is done by static initializers.
-    }
+	@NotNull
+	public static SoundEvent register(@NotNull String path) {
+		ResourceLocation id = Global.modId(path);
+		return Registry.register(
+			BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
+	}
 
-    /**
-     * Play dispensing sound.
-     */
-    public static void playDispenseSound(ServerWorld world, BlockPos soundPos) {
-        if (ModConfig.get().dispenseSounds) {
-            world.playSound(
-                null, soundPos, LAUNCH,
-                SoundCategory.BLOCKS, 0.2f, (world.random.nextFloat() * 0.25f) + 0.8f);
-        }
-    }
+	public static void init() {
+		// Everything has been done by static initializers.
+	}
+
+	/**
+	 * Play pipe turn sound.
+	 */
+	public static void playTurnSound(@NotNull Level level, @NotNull BlockPos soundPos) {
+		level.playSound(null, soundPos, ModSoundEvents.TURN,
+			SoundSource.BLOCKS, 0.5F, 1F);
+	}
 }

@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity SLOT_INPUT I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity SLOT_FUEL I
+accessible field net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity SLOT_RESULT I
+accessible field net/minecraft/client/data/models/BlockModelGenerators ROTATION_FACING Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;

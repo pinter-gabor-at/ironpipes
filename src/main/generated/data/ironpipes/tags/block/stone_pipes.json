@@ -1,0 +1,14 @@
+{
+  "values": [
+    "ironpipes:stone_pipe",
+    "ironpipes:deepslate_pipe",
+    "ironpipes:andesite_pipe",
+    "ironpipes:diorite_pipe",
+    "ironpipes:granite_pipe",
+    "ironpipes:basalt_pipe",
+    "ironpipes:sandstone_pipe",
+    "ironpipes:tuff_pipe",
+    "ironpipes:obsidian_pipe",
+    "ironpipes:netherrack_pipe"
+  ]
+}

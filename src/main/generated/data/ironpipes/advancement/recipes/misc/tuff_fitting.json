@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ironpipes:tuff_fitting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tuff_pipe": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ironpipes:tuff_pipe"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tuff_pipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ironpipes:tuff_fitting"
+    ]
+  }
+}

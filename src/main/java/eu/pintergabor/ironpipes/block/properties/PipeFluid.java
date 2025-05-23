@@ -1,30 +1,27 @@
 package eu.pintergabor.ironpipes.block.properties;
 
-import eu.pintergabor.ironpipes.registry.RegisterPipeNbtMethods;
+import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.StringRepresentable;
 
 
-public enum PipeFluid implements StringIdentifiable {
-    NONE("none", null),
-    WATER("water", RegisterPipeNbtMethods.WATER),
-    LAVA("lava", RegisterPipeNbtMethods.LAVA);
-    private final Identifier id;
-    private final String name;
+public enum PipeFluid implements StringRepresentable {
+	NONE("none"),
+	WATER("water"),
+	LAVA("lava");
+	private final String name;
 
-    PipeFluid(String name, Identifier id) {
-        this.name = name;
-        this.id = id;
-    }
+	PipeFluid(String name) {
+		this.name = name;
+	}
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-    @Override
-    public String asString() {
-        return this.name;
-    }
+	@Override
+	public @NotNull String getSerializedName() {
+		return name;
+	}
 }

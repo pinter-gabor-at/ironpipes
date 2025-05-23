@@ -2,20 +2,35 @@ package eu.pintergabor.ironpipes.registry;
 
 import eu.pintergabor.ironpipes.Global;
 
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.stat.StatFormatter;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
 
-public class ModStats {
-	public static final Identifier INSPECT_PIPE = Global.modId("inspect_copper_pipe");
-	public static final Identifier INSPECT_FITTING = Global.modId("inspect_copper_fitting");
+import org.jetbrains.annotations.NotNull;
+
+
+public final class ModStats {
+	public static final Stat<ResourceLocation> INTERACTIONS = register("interactions");
+
+	private ModStats() {
+		// Static class.
+	}
+
+	/**
+	 * Register statistics.
+	 */
+	@SuppressWarnings("SameParameterValue")
+	private static Stat<ResourceLocation> register(@NotNull String path) {
+		ResourceLocation id = Global.modId(path);
+		return Stats.CUSTOM.get(
+			Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id),
+			StatFormatter.DEFAULT);
+	}
 
 	public static void init() {
-		Registry.register(Registries.CUSTOM_STAT, INSPECT_PIPE, INSPECT_PIPE);
-		Registry.register(Registries.CUSTOM_STAT, INSPECT_FITTING, INSPECT_FITTING);
-		Stats.CUSTOM.getOrCreateStat(INSPECT_PIPE, StatFormatter.DEFAULT);
-		Stats.CUSTOM.getOrCreateStat(INSPECT_FITTING, StatFormatter.DEFAULT);
+		// Everything has been done by static initializers.
 	}
 }

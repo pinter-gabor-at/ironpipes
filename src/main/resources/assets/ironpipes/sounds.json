@@ -1,27 +1,27 @@
 {
 	"block.pipe.item_in": {
 		"sounds": [
-			"ironpipes:block/copper_pipe/item_in1",
-			"ironpipes:block/copper_pipe/item_in2",
-			"ironpipes:block/copper_pipe/item_in3"
+			"ironpipes:block/pipe/item_in1",
+			"ironpipes:block/pipe/item_in2",
+			"ironpipes:block/pipe/item_in3"
 		]
 	},
 	"block.pipe.item_out": {
 		"sounds": [
-			"ironpipes:block/copper_pipe/item_out1",
-			"ironpipes:block/copper_pipe/item_out2"
+			"ironpipes:block/pipe/item_out1",
+			"ironpipes:block/pipe/item_out2"
 		]
 	},
 	"block.pipe.launch": {
 		"sounds": [
-			"ironpipes:block/copper_pipe/launch"
+			"ironpipes:block/pipe/launch"
 		]
 	},
 	"block.pipe.turn": {
 		"sounds": [
-			"ironpipes:block/copper_pipe/turn1",
-			"ironpipes:block/copper_pipe/turn2",
-			"ironpipes:block/copper_pipe/turn3"
+			"ironpipes:block/pipe/turn1",
+			"ironpipes:block/pipe/turn2",
+			"ironpipes:block/pipe/turn3"
 		]
 	}
 }

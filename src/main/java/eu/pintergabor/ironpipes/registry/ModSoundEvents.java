@@ -19,8 +19,8 @@ public final class ModSoundEvents {
 		// Static class.
 	}
 
-	@NotNull
-	public static SoundEvent register(@NotNull String path) {
+	@SuppressWarnings("SameParameterValue")
+	private static @NotNull SoundEvent register(@NotNull String path) {
 		ResourceLocation id = Global.modId(path);
 		return Registry.register(
 			BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));

@@ -42,23 +42,12 @@ public abstract class ItemPipe extends BasePipe {
 		return new ItemPipeEntity(pos, state);
 	}
 
-	/**
-	 * Use item on a pipe.
-	 * <p>
-	 * If it is another piece of pipe or fitting then place it,
-	 * otherwise continue with the default action.
-	 */
 	@Override
-	protected @NotNull InteractionResult useItemOn(
-		@NotNull ItemStack stack,
-		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	protected @NotNull InteractionResult useWithoutItem(
+		BlockState state, Level level, BlockPos pos,
+		Player player, BlockHitResult hit
 	) {
-		// Allow placing pipes next to pipes and fittings.
-		if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
-			return InteractionResult.PASS;
-		}
-		return InteractionResult.TRY_WITH_EMPTY_HAND;
+		return super.useWithoutItem(state, level, pos, player, hit);
 	}
 
 	/**

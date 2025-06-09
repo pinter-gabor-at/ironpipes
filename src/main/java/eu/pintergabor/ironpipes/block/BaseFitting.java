@@ -54,25 +54,6 @@ public abstract non-sealed class BaseFitting extends BaseBlock {
 		builder.add(POWERED);
 	}
 
-	/**
-	 * Use item on a fitting.
-	 * <p>
-	 * If it is another piece of pipe or fitting then place it,
-	 * otherwise continue with the default action.
-	 */
-	@Override
-	protected @NotNull InteractionResult useItemOn(
-		@NotNull ItemStack stack,
-		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
-	) {
-		// Allow placing fittings next to pipes and fittings.
-		if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
-			return InteractionResult.PASS;
-		}
-		return InteractionResult.TRY_WITH_EMPTY_HAND;
-	}
-
 	@Override
 	public @NotNull VoxelShape getShape(
 		@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos,

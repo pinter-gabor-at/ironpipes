@@ -12,6 +12,9 @@ import eu.pintergabor.ironpipes.block.util.DripShowUtil;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.registry.util.ModProperties;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
+
+import net.minecraft.tags.ItemTags;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -248,6 +251,25 @@ public class FluidPipe extends BasePipe implements FluidCarryBlock {
 				FluidPipeEntity::serverTick);
 		}
 		return null;
+	}
+
+	/**
+	 * Use item on a pipe.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
+			// Allow placing pipes next to pipes and fittings.
+			return InteractionResult.PASS;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hit);
 	}
 
 	@Override

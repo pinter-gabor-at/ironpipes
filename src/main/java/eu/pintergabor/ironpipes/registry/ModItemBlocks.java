@@ -22,10 +22,10 @@ public final class ModItemBlocks {
 	// Iron and gold pipes.
 	public static final IronPipe IRON_PIPE =
 		ModItemBlocksRegister.registerIronPipe("iron_pipe", MapColor.RAW_IRON, SoundType.IRON,
-			1.5F, 3F, 10, 16);
+			1.5F, 3F, 10, 18);
 	public static final IronPipe GOLD_PIPE =
 		ModItemBlocksRegister.registerIronPipe("gold_pipe", MapColor.GOLD, SoundType.NETHER_GOLD_ORE,
-			1F, 2F, 2, 25);
+			1F, 2F, 2, 27);
 	// Copper pipes.
 	public static final CopperPipe COPPER_PIPE =
 		ModItemBlocksRegister.registerCopperPipe("copper_pipe", MapColor.COLOR_ORANGE,
@@ -64,7 +64,7 @@ public final class ModItemBlocks {
 	// Iron and gold fittings.
 	public static final IronFitting IRON_FITTING =
 		ModBlocksRegister.registerBlockAndItem("iron_fitting",
-			props -> new IronFitting(props, 10, 16),
+			props -> new IronFitting(props, 10, 18),
 			BlockBehaviour.Properties.of()
 				.mapColor(MapColor.RAW_IRON)
 				.requiresCorrectToolForDrops()
@@ -73,7 +73,7 @@ public final class ModItemBlocks {
 		);
 	public static final IronFitting GOLD_FITTING =
 		ModBlocksRegister.registerBlockAndItem("gold_fitting",
-			props -> new IronFitting(props, 2, 25),
+			props -> new IronFitting(props, 2, 27),
 			BlockBehaviour.Properties.of()
 				.mapColor(MapColor.GOLD)
 				.requiresCorrectToolForDrops()

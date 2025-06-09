@@ -171,6 +171,25 @@ public class FluidFitting extends BaseFitting implements FluidCarryBlock {
 		return null;
 	}
 
+	/**
+	 * Use item on a fitting.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
+			// Allow placing pipes next to pipes and fittings.
+			return InteractionResult.PASS;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hit);
+	}
+
 	@Override
 	public boolean canCarryWater() {
 		return canCarryWater;

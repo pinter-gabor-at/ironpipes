@@ -1,17 +1,19 @@
 package eu.pintergabor.ironpipes.block;
 
-import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.ItemPipeEntity;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
+import eu.pintergabor.ironpipes.registry.ModStats;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -43,13 +45,41 @@ public abstract class ItemPipe extends BasePipe {
 		return new ItemPipeEntity(pos, state);
 	}
 
+	/**
+	 * Use empty hand on a pipe.
+	 * <p>
+	 * Display contents.
+	 */
 	@Override
 	protected @NotNull InteractionResult useWithoutItem(
 		BlockState state, Level level, BlockPos pos,
 		Player player, BlockHitResult hit
 	) {
-		Global.LOGGER.info("Inventory size: {}", inventorySize);
+		if (level.getBlockEntity(pos) instanceof ItemPipeEntity itemPipeEntity) {
+			player.openMenu(itemPipeEntity);
+			player.awardStat(ModStats.INTERACTIONS);
+			return InteractionResult.SUCCESS;
+		}
 		return super.useWithoutItem(state, level, pos, player, hit);
+	}
+
+	/**
+	 * Use item on a pipe.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
+			// Allow placing pipes next to pipes and fittings.
+			return InteractionResult.PASS;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hit);
 	}
 
 	/**

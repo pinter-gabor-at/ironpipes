@@ -1,5 +1,13 @@
 package eu.pintergabor.ironpipes.block;
 
+import eu.pintergabor.ironpipes.tag.ModItemTags;
+
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +52,25 @@ public abstract non-sealed class BaseFitting extends BaseBlock {
 	) {
 		super.createBlockStateDefinition(builder);
 		builder.add(POWERED);
+	}
+
+	/**
+	 * Use item on a fitting.
+	 * <p>
+	 * If it is another piece of pipe or fitting then place it,
+	 * otherwise continue with the default action.
+	 */
+	@Override
+	protected @NotNull InteractionResult useItemOn(
+		@NotNull ItemStack stack,
+		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
+	) {
+		// Allow placing fittings next to pipes and fittings.
+		if (stack.is(ModItemTags.ITEM_PIPES_AND_FITTINGS)) {
+			return InteractionResult.PASS;
+		}
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override

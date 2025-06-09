@@ -1,5 +1,6 @@
 package eu.pintergabor.ironpipes.block;
 
+import eu.pintergabor.ironpipes.Global;
 import eu.pintergabor.ironpipes.block.entity.ItemPipeEntity;
 import eu.pintergabor.ironpipes.registry.ModBlockEntities;
 import eu.pintergabor.ironpipes.tag.ModItemTags;
@@ -47,6 +48,7 @@ public abstract class ItemPipe extends BasePipe {
 		BlockState state, Level level, BlockPos pos,
 		Player player, BlockHitResult hit
 	) {
+		Global.LOGGER.info("Inventory size: {}", inventorySize);
 		return super.useWithoutItem(state, level, pos, player, hit);
 	}
 

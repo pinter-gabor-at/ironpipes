@@ -416,7 +416,7 @@ public abstract non-sealed class BasePipe extends BaseBlock {
 	@Override
 	protected @NotNull InteractionResult useItemOn(
 		@NotNull ItemStack stack,
-		@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos,
+		@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
 		@NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit
 	) {
 		if (stack.is(ModItemTags.FLUID_PIPES_AND_FITTINGS)) {
@@ -425,7 +425,7 @@ public abstract non-sealed class BasePipe extends BaseBlock {
 		}
 		if (stack.is(ItemTags.HOES)) {
 			// Turn pipes with a hoe.
-			turnWithTool(world, pos, state, player, hand, hit, stack);
+			turnWithTool(level, pos, state, player, hand, hit, stack);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.TRY_WITH_EMPTY_HAND;

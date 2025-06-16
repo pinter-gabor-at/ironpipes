@@ -9,21 +9,20 @@ import net.minecraft.world.item.Item;
 
 
 public final class ModItemTags {
-	public static final TagKey<Item> WOODEN_PIPES = bind("wooden_pipes");
-	public static final TagKey<Item> WOODEN_FITTINGS = bind("wooden_fittings");
-	public static final TagKey<Item> STONE_PIPES = bind("stone_pipes");
-	public static final TagKey<Item> STONE_FITTINGS = bind("stone_fittings");
-	public static final TagKey<Item> FLUID_PIPES_AND_FITTINGS = bind("fluid_pipes_and_fittings");
-	public static final TagKey<Item> COPPER_PIPES = bind("copper_pipes");
-	public static final TagKey<Item> COPPER_FITTINGS = bind("copper_fittings");
-	public static final TagKey<Item> ITEM_PIPES_AND_FITTINGS = bind("item_pipes_and_fittings");
+	public static final TagKey<Item> WOODEN_PIPES = register("wooden_pipes");
+	public static final TagKey<Item> WOODEN_FITTINGS = register("wooden_fittings");
+	public static final TagKey<Item> STONE_PIPES = register("stone_pipes");
+	public static final TagKey<Item> STONE_FITTINGS = register("stone_fittings");
+	public static final TagKey<Item> FLUID_PIPES_AND_FITTINGS = register("fluid_pipes_and_fittings");
+	public static final TagKey<Item> COPPER_PIPES = register("copper_pipes");
+	public static final TagKey<Item> COPPER_FITTINGS = register("copper_fittings");
+	public static final TagKey<Item> ITEM_PIPES_AND_FITTINGS = register("item_pipes_and_fittings");
 
 	private ModItemTags() {
 		// Static class.
 	}
 
-	@NotNull
-	private static TagKey<Item> bind(@NotNull String path) {
+	private static @NotNull TagKey<Item> register(@NotNull String path) {
 		return TagKey.create(Registries.ITEM, Global.modId(path));
 	}
 }

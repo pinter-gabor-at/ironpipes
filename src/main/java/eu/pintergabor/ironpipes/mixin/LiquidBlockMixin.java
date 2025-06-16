@@ -34,7 +34,8 @@ public abstract class LiquidBlockMixin {
 		LevelAccessor level,
 		BlockPos pos,
 		BlockState state,
-		CallbackInfoReturnable<ItemStack> cir) {
+		CallbackInfoReturnable<ItemStack> cir
+	) {
 		if (FluidPipe.isOutflow(level, pos, fluid)) {
 			cir.setReturnValue(ItemStack.EMPTY);
 		}

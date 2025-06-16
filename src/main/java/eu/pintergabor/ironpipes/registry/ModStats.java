@@ -22,13 +22,16 @@ public final class ModStats {
 	 * Register statistics.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	private static Stat<ResourceLocation> register(@NotNull String path) {
+	private static @NotNull Stat<ResourceLocation> register(@NotNull String path) {
 		ResourceLocation id = Global.modId(path);
 		return Stats.CUSTOM.get(
 			Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id),
 			StatFormatter.DEFAULT);
 	}
 
+	/**
+	 * Create and register everything that was not done by static initializers.
+	 */
 	public static void init() {
 		// Everything has been done by static initializers.
 	}

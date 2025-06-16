@@ -4,6 +4,7 @@ import eu.pintergabor.ironpipes.block.FluidCarryBlock;
 import eu.pintergabor.ironpipes.block.FluidFitting;
 import eu.pintergabor.ironpipes.block.FluidPipe;
 import eu.pintergabor.ironpipes.block.settings.FluidBlockSettings;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.SoundType;
@@ -25,7 +26,7 @@ public final class ModFluidBlocksRegister {
 	 * @param props       Generic settings, like color, hardness and resistance.
 	 * @return The registered block.
 	 */
-	private static FluidPipe registerPipe(
+	private static @NotNull FluidPipe registerPipe(
 		String path,
 		FluidBlockSettings modSettings,
 		BlockBehaviour.Properties props
@@ -44,12 +45,12 @@ public final class ModFluidBlocksRegister {
 	 * @param pipeBlock The matching pipe.
 	 * @return The registered block.
 	 */
-	public static FluidFitting registerFitting(
+	public static @NotNull FluidFitting registerFitting(
 		String path, FluidCarryBlock pipeBlock
 	) {
 		return ModBlocksRegister.registerBlockAndItem(path,
-			(settings1) -> new FluidFitting(
-				settings1, pipeBlock.getFluidBlockSettings()),
+			(props1) -> new FluidFitting(
+				props1, pipeBlock.getFluidBlockSettings()),
 			BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) pipeBlock));
 	}
 
@@ -60,7 +61,7 @@ public final class ModFluidBlocksRegister {
 	 * @param mapColor How it will be rendered on generated maps.
 	 * @return The registered block.
 	 */
-	public static FluidPipe registerWoodenPipe(
+	public static @NotNull FluidPipe registerWoodenPipe(
 		String path, MapColor mapColor,
 		float hardness, float resistance,
 		FluidBlockSettings modProperties
@@ -82,7 +83,7 @@ public final class ModFluidBlocksRegister {
 	 * @param mapColor How it will be rendered on generated maps.
 	 * @return The registered block.
 	 */
-	public static FluidPipe registerStonePipe(
+	public static @NotNull FluidPipe registerStonePipe(
 		String path, MapColor mapColor,
 		float hardness, float resistance,
 		FluidBlockSettings modProperties

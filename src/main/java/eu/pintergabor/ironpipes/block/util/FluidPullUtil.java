@@ -165,11 +165,12 @@ public final class FluidPullUtil {
 	) {
 		for (Direction d : BaseBlock.DIRECTIONS) {
 			// Check all side directions, but not the front and the back.
-			if (d == facing || d == opposite) continue;
-			final PipeFluid nFluid = oneSideSourceFluid(
-				level, pos, d, canCarryWater, canCarryLava);
-			if (nFluid != PipeFluid.NONE) {
-				return nFluid;
+			if (d != facing && d != opposite) {
+				final PipeFluid nFluid = oneSideSourceFluid(
+					level, pos, d, canCarryWater, canCarryLava);
+				if (nFluid != PipeFluid.NONE) {
+					return nFluid;
+				}
 			}
 		}
 		return PipeFluid.NONE;

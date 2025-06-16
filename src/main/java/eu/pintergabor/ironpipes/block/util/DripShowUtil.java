@@ -12,6 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 
+/**
+ * Show drips on pipes and fittings.
+ */
 public final class DripShowUtil {
 
 	private DripShowUtil() {
@@ -19,6 +22,8 @@ public final class DripShowUtil {
 	}
 
 	/**
+	 * Get a random position offset for drip visualization.
+	 *
 	 * @return a random number in the range of [-0.25…+0.25]
 	 */
 	private static float getDripRnd(RandomSource random) {
@@ -38,22 +43,22 @@ public final class DripShowUtil {
 		@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
 		double yOffset
 	) {
-		RandomSource random = level.random;
+		final RandomSource random = level.random;
 		// This block.
-		CanCarryFluid block = (CanCarryFluid) state.getBlock();
-		PipeFluid fluid = CanCarryFluid.getFluid(state);
-		boolean waterDripping =
+		final CanCarryFluid block = (CanCarryFluid) state.getBlock();
+		final PipeFluid fluid = CanCarryFluid.getFluid(state);
+		final boolean waterDripping =
 			random.nextFloat() <
 				block.getWaterDrippingProbability() + block.getWateringProbability() * 0.2F;
-		boolean lavaDripping =
+		final boolean lavaDripping =
 			random.nextFloat() <
 				block.getLavaDrippingProbability() * 100F;
 		if ((waterDripping && fluid == PipeFluid.WATER) ||
 			lavaDripping && fluid == PipeFluid.LAVA) {
 			// Particle position.
-			float rx = getDripRnd(random);
-			float rz = getDripRnd(random);
-			Vec3 pPos = pos.getBottomCenter().add(rx, yOffset, rz);
+			final float rx = getDripRnd(random);
+			final float rz = getDripRnd(random);
+			final Vec3 pPos = pos.getBottomCenter().add(rx, yOffset, rz);
 			level.addParticle(
 				fluid == PipeFluid.WATER ? ParticleTypes.DRIPPING_WATER : ParticleTypes.DRIPPING_LAVA,
 				pPos.x(), pPos.y(), pPos.z(),

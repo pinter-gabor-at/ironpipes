@@ -80,8 +80,8 @@ public abstract non-sealed class BaseFitting extends BaseBlock {
 		@NotNull Level level, @NotNull BlockPos blockPos
 	) {
 		for (Direction d : DIRECTIONS) {
-			final BlockPos neighbourPos = blockPos.relative(d);
-			if (0 < level.getSignal(neighbourPos, d)) {
+			final BlockPos nPos = blockPos.relative(d);
+			if (0 < level.getSignal(nPos, d)) {
 				return true;
 			}
 		}

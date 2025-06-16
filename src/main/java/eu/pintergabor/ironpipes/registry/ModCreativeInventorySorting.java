@@ -12,6 +12,9 @@ public final class ModCreativeInventorySorting {
 		// Static class.
 	}
 
+	/**
+	 * Create and register everything that was not done by static initializers.
+	 */
 	public static void init() {
 		// Creative tabs, functional item group.
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(

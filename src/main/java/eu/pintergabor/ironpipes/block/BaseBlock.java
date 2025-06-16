@@ -40,6 +40,7 @@ public sealed abstract class BaseBlock extends BaseEntityBlock implements Simple
 	// Common BlockState properties.
 	public static final BooleanProperty WATERLOGGED =
 		BlockStateProperties.WATERLOGGED;
+	// Common Block properties.
 	public final int tickRate;
 	// All directions in pull priority order.
 	public static final Direction[] DIRECTIONS = {

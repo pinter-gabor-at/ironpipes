@@ -17,6 +17,9 @@ public final class ModProperties {
 		// Static class.
 	}
 
+	/**
+	 * Create and register everything that was not done by static initializers.
+	 */
 	public static void init() {
 		// Everything has been done by static initializers.
 	}

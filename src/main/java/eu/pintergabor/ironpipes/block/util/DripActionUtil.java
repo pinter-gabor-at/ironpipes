@@ -102,7 +102,7 @@ public final class DripActionUtil {
 	/**
 	 * Drip water on, or push water into, a fire block.
 	 *
-	 * @param world The world.
+	 * @param level The world.
 	 * @param pos   Position of the block.
 	 * @param state BlockState of the block.
 	 * @return true if state changed.
@@ -127,7 +127,7 @@ public final class DripActionUtil {
 	public static boolean dripWaterOnBlock(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		Block block = state.getBlock();
+		final Block block = state.getBlock();
 		if (block == Blocks.CAULDRON) {
 			// Cauldron.
 			return dripWaterOnCauldron(level, pos, state);
@@ -156,7 +156,7 @@ public final class DripActionUtil {
 	public static boolean dripLavaOnBlock(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		Block block = state.getBlock();
+		final Block block = state.getBlock();
 		if (block == Blocks.CAULDRON) {
 			// Cauldron.
 			return dripLavaOnCauldron(level, pos, state);
@@ -170,20 +170,38 @@ public final class DripActionUtil {
 	 * @param level The world.
 	 * @param pos   Position of the block.
 	 * @param state BlockState of the block.
-	 * @return true if state changed.
 	 */
 	@SuppressWarnings("unused")
-	public static boolean dripLavaStartFire(
+	public static void dripLavaStartFire(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		BlockPos uPos = pos.above();
-		BlockState uState = level.getBlockState(uPos);
+		final BlockPos uPos = pos.above();
+		final BlockState uState = level.getBlockState(uPos);
 		if (uState.isAir()) {
 			level.setBlockAndUpdate(uPos,
 				Blocks.FIRE.defaultBlockState());
+		}
+	}
+
+	/**
+	 * Drip water on a block.
+	 *
+	 * @param level The world.
+	 * @param nPos  The block position the water is dripping on.
+	 * @return true if there was an interaction.
+	 */
+	private static boolean dripWaterOn(@NotNull ServerLevel level, BlockPos nPos) {
+		final BlockState nState = level.getBlockState(nPos);
+		if (!level.getFluidState(nPos).isEmpty()) {
+			// A block containing any liquid stops the drip.
 			return true;
 		}
-		return false;
+		if (dripWaterOnBlock(level, nPos, nState)) {
+			// A block that reacts with the drip stops the drip.
+			return true;
+		}
+		// A solid block stops the drip.
+		return nState.getCollisionShape(level, nPos) != Shapes.empty();
 	}
 
 	/**
@@ -192,33 +210,51 @@ public final class DripActionUtil {
 	 * @param level The world.
 	 * @param pos   Position of the pipe or the fitting.
 	 * @param state BlockState of the pipe or the fitting.
-	 * @return true if anything changed.
 	 */
 	@SuppressWarnings("unusedReturnValue")
-	public static boolean dripWaterDown(
+	public static void dripWaterDown(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		CanCarryFluid block = (CanCarryFluid) state.getBlock();
-		boolean waterDripping =
-			level.random.nextFloat() < block.getWaterDrippingProbability();
+		final CanCarryFluid source = (CanCarryFluid) state.getBlock();
+		final boolean waterDripping =
+			level.random.nextFloat() < source.getWaterDrippingProbability();
 		if (waterDripping) {
 			// Search down.
 			for (int dy = 1; dy <= 12; dy++) {
-				BlockPos nPos = pos.below(dy);
-				BlockState nState = level.getBlockState(nPos);
-				if (!level.getFluidState(nPos).isEmpty()) {
-					// A block containing any liquid stops the drip.
-					return false;
-				}
-				if (dripWaterOnBlock(level, nPos, nState)) {
-					// A block that reacts with the drip stops the drip.
-					return true;
-				}
-				if (nState.getCollisionShape(level, nPos) != Shapes.empty()) {
-					// A solid block stops the drip.
-					return false;
-				}
+				if (dripWaterOn(level, pos.below(dy))) break;
 			}
+		}
+	}
+
+	/**
+	 * Drip lava on a block.
+	 *
+	 * @param level  The world.
+	 * @param nPos   The block position the lava is dripping on.
+	 * @param source Source of the dripping.
+	 * @return true if there was an interaction.
+	 */
+	private static boolean dripLavaOn(
+		@NotNull ServerLevel level, @NotNull BlockPos nPos,
+		CanCarryFluid source
+	) {
+		final BlockState nState = level.getBlockState(nPos);
+		if (!level.getFluidState(nPos).isEmpty()) {
+			// A block containing any liquid stops the drip.
+			return true;
+		}
+		if (dripLavaOnBlock(level, nPos, nState)) {
+			// A block that reacts with the drip stops the drip.
+			return true;
+		}
+		if (nState.getCollisionShape(level, nPos) != Shapes.empty()) {
+			// A solid block stops the drip, but may start a fire.
+			final boolean startFire =
+				level.random.nextFloat() < source.getFireDripProbability();
+			if (startFire) {
+				dripLavaStartFire(level, nPos, nState);
+			}
+			return true;
 		}
 		return false;
 	}
@@ -229,56 +265,35 @@ public final class DripActionUtil {
 	 * @param level The world.
 	 * @param pos   Position of the pipe or the fitting.
 	 * @param state BlockState of the pipe or the fitting.
-	 * @return true if anything changed.
 	 */
-	@SuppressWarnings("unusedReturnValue")
-	public static boolean dripLavaDown(
+	public static void dripLavaDown(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		CanCarryFluid block = (CanCarryFluid) state.getBlock();
-		boolean lavaDripping =
-			level.random.nextFloat() < block.getLavaDrippingProbability();
-		// Search down.
-		for (int dy = 1; dy <= 12; dy++) {
-			BlockPos nPos = pos.below(dy);
-			BlockState nState = level.getBlockState(nPos);
-			if (!level.getFluidState(nPos).isEmpty()) {
-				// A block containing any liquid stops the drip.
-				return false;
-			}
-			if (lavaDripping) {
-				if (dripLavaOnBlock(level, nPos, nState)) {
-					// A block that reacts with the drip stops the drip.
-					return true;
-				}
-			}
-			if (nState.getCollisionShape(level, nPos) != Shapes.empty()) {
-				// A solid block stops the drip, but may start a fire.
-				boolean startFire =
-					level.random.nextFloat() < block.getFireDripProbability();
-				return startFire && dripLavaStartFire(level, nPos, nState);
+		final CanCarryFluid source = (CanCarryFluid) state.getBlock();
+		final boolean lavaDripping =
+			level.random.nextFloat() < source.getLavaDrippingProbability();
+		if (lavaDripping) {
+			// Search down.
+			for (int dy = 1; dy <= 12; dy++) {
+				if (dripLavaOn(level, pos.below(dy), source)) break;
 			}
 		}
-		return false;
 	}
 
 	/**
 	 * Dripping action for pipes and fittings.
 	 *
-	 * @param world The world.
+	 * @param level The world.
 	 * @param pos   Position of the pipe or the fitting.
 	 * @param state BlockState of the pipe or the fitting.
-	 * @return true if anything changed.
 	 */
-	@SuppressWarnings("UnusedReturnValue")
-	public static boolean dripDown(
+	public static void dripDown(
 		@NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state
 	) {
-		PipeFluid fluid = state.getValue(ModProperties.FLUID);
-		return switch (fluid) {
+		final PipeFluid fluid = state.getValue(ModProperties.FLUID);
+		switch (fluid) {
 			case WATER -> dripWaterDown(level, pos, state);
 			case LAVA -> dripLavaDown(level, pos, state);
-			case NONE -> false;
-		};
+		}
 	}
 }

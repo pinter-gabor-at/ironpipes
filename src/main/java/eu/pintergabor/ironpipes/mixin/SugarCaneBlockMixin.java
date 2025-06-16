@@ -29,8 +29,8 @@ public abstract class SugarCaneBlockMixin {
 	private void canSurvive(
 		BlockState state, LevelReader view, BlockPos pos, CallbackInfoReturnable<Boolean> cir
 	) {
-		if (view instanceof Level world &&
-			WateringUtil.isWaterPipeNearby(world, pos, 1)) {
+		if (view instanceof Level level &&
+			WateringUtil.isWaterPipeNearby(level, pos, 1)) {
 			cir.setReturnValue(true);
 		}
 	}

@@ -51,7 +51,7 @@ public final class FluidPushUtil {
 			// If it is a furnace ...
 			final Container inventory = getContainerAt(level, pos);
 			if (inventory != null) {
-				ItemStack stack = inventory.getItem(SLOT_FUEL);
+				final ItemStack stack = inventory.getItem(SLOT_FUEL);
 				if (stack.is(Items.BUCKET)) {
 					// ... and has an empty bucket in its fuel slot,
 					// then replace the emtpy bucket with a lava bucket.

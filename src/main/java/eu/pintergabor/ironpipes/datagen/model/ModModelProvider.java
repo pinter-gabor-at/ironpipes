@@ -82,7 +82,7 @@ public final class ModModelProvider extends FabricModelProvider {
 		@NotNull BlockModelGenerators generators, Block pipeBlock
 	) {
 		// Create base type.
-		TextureMapping pipeTextureMapping = new TextureMapping();
+		final TextureMapping pipeTextureMapping = new TextureMapping();
 		pipeTextureMapping.put(TextureSlot.SIDE, TextureMapping.getBlockTexture(pipeBlock));
 		pipeTextureMapping.put(TextureSlot.FRONT, TextureMapping.getBlockTexture(pipeBlock, "_front"));
 		PIPE_MODEL.create(pipeBlock, pipeTextureMapping, generators.modelOutput);
@@ -92,17 +92,17 @@ public final class ModModelProvider extends FabricModelProvider {
 		PIPE_MODEL_FRONT_EXTENSION.createWithSuffix(pipeBlock, "_front_extension", pipeTextureMapping, generators.modelOutput);
 		PIPE_MODEL_SMOOTH.createWithSuffix(pipeBlock, "_smooth", pipeTextureMapping, generators.modelOutput);
 		// Create derived types.
-		ResourceLocation model = ModelLocationUtils
+		final ResourceLocation model = ModelLocationUtils
 			.getModelLocation(pipeBlock);
-		ResourceLocation frontExtensionModel = ModelLocationUtils
+		final ResourceLocation frontExtensionModel = ModelLocationUtils
 			.getModelLocation(pipeBlock, "_front_extension");
-		ResourceLocation doubleExtensionModel = ModelLocationUtils
+		final ResourceLocation doubleExtensionModel = ModelLocationUtils
 			.getModelLocation(pipeBlock, "_double_extension");
-		ResourceLocation backExtensionModel = ModelLocationUtils
+		final ResourceLocation backExtensionModel = ModelLocationUtils
 			.getModelLocation(pipeBlock, "_back_extension");
-		ResourceLocation smoothModel = ModelLocationUtils
+		final ResourceLocation smoothModel = ModelLocationUtils
 			.getModelLocation(pipeBlock, "_smooth");
-		ResourceLocation backSmoothModel = ModelLocationUtils
+		final ResourceLocation backSmoothModel = ModelLocationUtils
 			.getModelLocation(pipeBlock, "_back_smooth");
 		generators.registerSimpleItemModel(pipeBlock, model);
 		// Create the models.
@@ -138,11 +138,11 @@ public final class ModModelProvider extends FabricModelProvider {
 		@NotNull BlockModelGenerators generators, Block fittingBlock
 	) {
 		// Create base type.
-		TextureMapping fittingTextureMapping = new TextureMapping();
+		final TextureMapping fittingTextureMapping = new TextureMapping();
 		fittingTextureMapping.put(TextureSlot.TEXTURE, TextureMapping.getBlockTexture(fittingBlock));
 		FITTING_MODEL.create(fittingBlock, fittingTextureMapping, generators.modelOutput);
 		// Create derived types.
-		ResourceLocation model = ModelLocationUtils.getModelLocation(fittingBlock);
+		final ResourceLocation model = ModelLocationUtils.getModelLocation(fittingBlock);
 		generators.registerSimpleItemModel(fittingBlock, model);
 		generators.blockStateOutput.accept(
 			BlockModelGenerators.createSimpleBlock(fittingBlock, plainVariant(model)));
